@@ -1,0 +1,1207 @@
+{
+  "validatedAt": "2026-10-08T02:55:44.492115+09:00",
+  "productionSha256": "30FE699D1E0E241B13A077A3C17482EFE82B3F3403BC254F80B88012295696B5",
+  "unit": {
+    "core": {
+      "passed": 79,
+      "completed": "2026-10-08T02:01:45.162377+09:00"
+    },
+    "addressSanitizer": {
+      "passed": 79,
+      "completed": "2026-10-08T02:01:45.368751+09:00"
+    }
+  },
+  "e2e": {
+    "stress": {
+      "completed": "2026-10-08T02:12:28.6316061+09:00",
+      "mode": "--stress",
+      "executableSha256": "E67043AF2B379CDA5CF783D5A3E535511EFD0341863ED48A8ACA27E5B1954CC7",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "1000 add/remove private growth <=2 MiB",
+          "passed": true
+        },
+        {
+          "name": "1000 add/remove GDI and USER resources return to baseline",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-020112",
+      "passedCount": 4,
+      "skippedCount": 0
+    },
+    "interaction": {
+      "completed": "2026-10-08T02:22:22.9430887+09:00",
+      "mode": "--interaction",
+      "executableSha256": "0E2668960A7762889795ED5197B33B1A602591628594EBE285258CC04FB8A62C",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Drag targets the owned widget",
+          "passed": true
+        },
+        {
+          "name": "Native drag messages change saved position",
+          "passed": true
+        },
+        {
+          "name": "Native drag messages snap to four-DIP grid",
+          "passed": true
+        },
+        {
+          "name": "Drag targets the owned widget",
+          "passed": true
+        },
+        {
+          "name": "Locked widget rejects native drag messages",
+          "passed": true
+        },
+        {
+          "name": "Click-through enabled outside edit mode",
+          "passed": true
+        },
+        {
+          "name": "Edit mode restores pointer access",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-022121",
+      "passedCount": 9,
+      "skippedCount": 0
+    },
+    "visual": {
+      "completed": "2026-10-08T02:26:03.4687776+09:00",
+      "mode": "--visual",
+      "executableSha256": "0E2668960A7762889795ED5197B33B1A602591628594EBE285258CC04FB8A62C",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Desktop hit test widget 0",
+          "passed": true
+        },
+        {
+          "name": "Desktop hit test widget 1",
+          "passed": true
+        },
+        {
+          "name": "Desktop hit test widget 2",
+          "passed": true
+        },
+        {
+          "name": "Desktop hit test widget 3",
+          "passed": true
+        },
+        {
+          "name": "Desktop hit test widget 4",
+          "passed": true
+        },
+        {
+          "name": "Shell Show Desktop / physical Win+D",
+          "passed": null,
+          "skipped": true,
+          "reason": "Shell.ToggleDesktop had no observable effect in this automation session; physical keyboard input must be verified separately."
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-022528",
+      "passedCount": 7,
+      "skippedCount": 1
+    },
+    "full": {
+      "completed": "2026-10-08T02:27:55.9098598+09:00",
+      "mode": "full",
+      "executableSha256": "0E2668960A7762889795ED5197B33B1A602591628594EBE285258CC04FB8A62C",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Settings persisted by UI",
+          "passed": true
+        },
+        {
+          "name": "All nine widget types added",
+          "passed": true
+        },
+        {
+          "name": "Per-widget theme",
+          "passed": true
+        },
+        {
+          "name": "Independent opacity persistence",
+          "passed": true
+        },
+        {
+          "name": "Calendar large size",
+          "passed": true
+        },
+        {
+          "name": "Calendar next month",
+          "passed": true
+        },
+        {
+          "name": "Invalid opacity rejected",
+          "passed": true
+        },
+        {
+          "name": "Edit mode entered",
+          "passed": true
+        },
+        {
+          "name": "All widgets hidden",
+          "passed": true
+        },
+        {
+          "name": "Calendar connection only in settings",
+          "passed": true
+        },
+        {
+          "name": "No calendar mutation controls",
+          "passed": true
+        },
+        {
+          "name": "Missing OAuth credentials handled",
+          "passed": true
+        },
+        {
+          "name": "Global theme persistence",
+          "passed": true
+        },
+        {
+          "name": "Closing management keeps widgets alive",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "Restart restores nine widgets",
+          "passed": true
+        },
+        {
+          "name": "Nine native widget windows",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "Settings contain no OAuth token",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-022603",
+      "passedCount": 20,
+      "skippedCount": 0
+    },
+    "live-smoke": {
+      "completed": "2026-10-08T02:28:14.1919336+09:00",
+      "mode": "--live-smoke",
+      "executableSha256": "0E2668960A7762889795ED5197B33B1A602591628594EBE285258CC04FB8A62C",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Live system usage available: 2",
+          "passed": true
+        },
+        {
+          "name": "Live system usage available: 3",
+          "passed": true
+        },
+        {
+          "name": "Live system usage available: 4",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-022755",
+      "passedCount": 5,
+      "skippedCount": 0
+    },
+    "matrix": {
+      "completed": "2026-10-08T02:36:43.3547108+09:00",
+      "mode": "--matrix",
+      "executableSha256": "0E2668960A7762889795ED5197B33B1A602591628594EBE285258CC04FB8A62C",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Matrix uses one widget to check all supported sizes",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 0 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 1 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 2 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 3 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 4 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 5 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 6 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Widget 7 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 0 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 0 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 0 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 0 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Calendar size 0 hides provider branding",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 1 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 1 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 1 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 1 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Calendar size 1 hides provider branding",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 2 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 2 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 2 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 2 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Calendar size 2 hides provider branding",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 3 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 3 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 3 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 3 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Calendar size 3 hides provider branding",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 4 accepted",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 4 keeps aspect ratio at 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 4 has tool-window style",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 size 4 accessible summary",
+          "passed": true
+        },
+        {
+          "name": "Calendar size 4 hides provider branding",
+          "passed": true
+        },
+        {
+          "name": "Widget 8 scales to 200 percent",
+          "passed": true
+        },
+        {
+          "name": "Fully transparent widget persists",
+          "passed": true
+        },
+        {
+          "name": "Invisible widget can enter recovery edit mode",
+          "passed": true
+        },
+        {
+          "name": "Tray icon registered",
+          "passed": true
+        },
+        {
+          "name": "Calendar detail opens from widget",
+          "passed": true
+        },
+        {
+          "name": "Calendar detail is strictly read-only",
+          "passed": true
+        },
+        {
+          "name": "Tray re-registration message handled",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-022814",
+      "passedCount": 171,
+      "skippedCount": 0
+    },
+    "behavior": {
+      "completed": "2026-10-08T02:38:47.4619016+09:00",
+      "mode": "--behavior",
+      "executableSha256": "0E2668960A7762889795ED5197B33B1A602591628594EBE285258CC04FB8A62C",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "CPU individual refresh set to ten seconds",
+          "passed": true
+        },
+        {
+          "name": "Duplicate CPU widgets share one collector",
+          "passed": true
+        },
+        {
+          "name": "Shared collection preserves separate presentation intervals",
+          "passed": true
+        },
+        {
+          "name": "Hidden widgets stop drawing",
+          "passed": true
+        },
+        {
+          "name": "Monitor 0 uses its own 144 DPI",
+          "passed": true
+        },
+        {
+          "name": "Monitor 0 origin applied",
+          "passed": true
+        },
+        {
+          "name": "Monitor 1 uses its own 120 DPI",
+          "passed": true
+        },
+        {
+          "name": "Monitor 1 origin applied",
+          "passed": true
+        },
+        {
+          "name": "Clock seconds and interval agree",
+          "passed": true
+        },
+        {
+          "name": "Clock refresh dropdown updates seconds display",
+          "passed": true
+        },
+        {
+          "name": "Twelve-hour display persists",
+          "passed": true
+        },
+        {
+          "name": "Invalid timezone rejected",
+          "passed": true
+        },
+        {
+          "name": "IANA timezone accepted",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "Layout export created through UI",
+          "passed": true
+        },
+        {
+          "name": "Layout export excludes account data",
+          "passed": true
+        },
+        {
+          "name": "All widgets can be removed",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "Layout import restores widget",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-023643",
+      "passedCount": 27,
+      "skippedCount": 0
+    },
+    "package": {
+      "completed": "2026-10-08T02:46:17.296201+09:00",
+      "mode": "--smoke",
+      "executableSha256": "30FE699D1E0E241B13A077A3C17482EFE82B3F3403BC254F80B88012295696B5",
+      "results": [
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "All 3837 packaged weather regions loaded",
+          "passed": true
+        },
+        {
+          "name": "Diagnostic file created",
+          "passed": true
+        },
+        {
+          "name": "Packaged executable uses production providers",
+          "passed": true
+        },
+        {
+          "name": "Package excludes test host",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "run": "e2e-20261008-024603",
+      "passedCount": 6,
+      "skippedCount": 0
+    }
+  },
+  "e2ePassed": 249,
+  "e2eSkipped": 1,
+  "stress": {
+    "cycles": 1000,
+    "warmupSeconds": 300,
+    "settleSeconds": 300,
+    "privateGrowth": 1421312,
+    "handleGrowth": -4,
+    "gdiGrowth": 0,
+    "userGrowth": 0,
+    "warmupCycles": 100
+  },
+  "performance": [
+    {
+      "started": "2026-10-08T02:37:03.7791981+09:00",
+      "completed": "2026-10-08T02:40:34.3344083+09:00",
+      "executableSha256": "30FE699D1E0E241B13A077A3C17482EFE82B3F3403BC254F80B88012295696B5",
+      "windows": "10.0.26300.0",
+      "profile": "Final packaged binary; five M widgets; default intervals; real CPU/GPU/memory; no weather key; settings closed; short regression after drag event fix",
+      "warmupSeconds": 30,
+      "sampleSeconds": 180,
+      "intervalSeconds": 1,
+      "logicalProcessors": 16,
+      "count": 178,
+      "averageCpuPercent": 0.02980262548061151,
+      "p95CpuPercent": 0.19288054634337626,
+      "averageRawCpuMsPerSecond": 4.768420076897841,
+      "maximumPrivateBytes": 19488768.0,
+      "maximumWorkingSet": 41328640.0,
+      "privateGrowth": 86016,
+      "handleGrowth": 3,
+      "gdiGrowth": 0,
+      "userGrowth": 0,
+      "run": "performance-final-five-20261008-023703"
+    },
+    {
+      "started": "2026-10-08T02:40:35.8926059+09:00",
+      "completed": "2026-10-08T02:44:06.5059673+09:00",
+      "executableSha256": "30FE699D1E0E241B13A077A3C17482EFE82B3F3403BC254F80B88012295696B5",
+      "windows": "10.0.26300.0",
+      "profile": "Final packaged binary; nine M widgets; real CPU/GPU/memory/network/system/disk; local calendar without account; weather key absent; settings closed; short expanded regression",
+      "warmupSeconds": 30,
+      "sampleSeconds": 180,
+      "intervalSeconds": 1,
+      "logicalProcessors": 16,
+      "count": 178,
+      "averageCpuPercent": 0.021653980454943107,
+      "p95CpuPercent": 0.0966552878391391,
+      "averageRawCpuMsPerSecond": 3.464636872790898,
+      "maximumPrivateBytes": 23687168.0,
+      "maximumWorkingSet": 46350336.0,
+      "privateGrowth": 991232,
+      "handleGrowth": 1,
+      "gdiGrowth": 0,
+      "userGrowth": 0,
+      "run": "performance-final-nine-20261008-024035"
+    },
+    {
+      "started": "2026-10-08T02:47:05.0743452+09:00",
+      "completed": "2026-10-08T02:55:05.4198303+09:00",
+      "executableSha256": "30FE699D1E0E241B13A077A3C17482EFE82B3F3403BC254F80B88012295696B5",
+      "windows": "10.0.26300.0",
+      "profile": "Final packaged binary; five M widgets; default intervals; real CPU/GPU/memory; no weather key; settings closed; five-minute warmup and three-minute follow-up for the raw CPU budget",
+      "warmupSeconds": 300,
+      "sampleSeconds": 180,
+      "intervalSeconds": 1,
+      "logicalProcessors": 16,
+      "count": 178,
+      "averageCpuPercent": 0.010843027399884648,
+      "p95CpuPercent": 0.09638484712011931,
+      "averageRawCpuMsPerSecond": 1.7348843839815438,
+      "maximumPrivateBytes": 19603456.0,
+      "maximumWorkingSet": 41676800.0,
+      "privateGrowth": 90112,
+      "handleGrowth": -2,
+      "gdiGrowth": 0,
+      "userGrowth": 0,
+      "run": "performance-final-warmed-five-20261008-024704"
+    },
+    {
+      "started": "2026-10-08T02:01:08.9083968+09:00",
+      "completed": "2026-10-08T02:36:09.1790315+09:00",
+      "executableSha256": "AC11268401C9380E0C284A74FA6D7641D5092578EF6FE551C8F36633F5300B62",
+      "windows": "10.0.26300.0",
+      "profile": "Five M widgets; clock/weather/CPU/GPU/memory; real CPU and GPU counters; no weather key; default intervals; settings closed; SegmentHeap",
+      "warmupSeconds": 300,
+      "sampleSeconds": 1800,
+      "intervalSeconds": 1,
+      "logicalProcessors": 16,
+      "count": 1778,
+      "averageCpuPercent": 0.01876559545487443,
+      "p95CpuPercent": 0.09660742186379248,
+      "averageRawCpuMsPerSecond": 3.0024952727799086,
+      "maximumPrivateBytes": 20348928.0,
+      "maximumWorkingSet": 42029056.0,
+      "privateGrowth": 237568,
+      "handleGrowth": -2,
+      "gdiGrowth": 0,
+      "userGrowth": 1,
+      "run": "performance-release-final-20261008-020108"
+    }
+  ],
+  "limitations": [
+    "No live KMA credentials or Google Calendar OAuth account were available.",
+    "Physical cursor injection and Shell.ToggleDesktop had no observable effect in this automation session. Drag is checked using native messages to owned widget HWNDs; physical pointer and Win+D verification remains pending.",
+    "No 24-hour soak or process heap ownership trace was performed.",
+    "No physical monitor unplug, Explorer restart, sleep/resume, or DWM/GPU total-cost comparison was performed.",
+    "The 30-minute baseline and stress build precede the drag event coordinate fix. Provider collection, timers, resource ownership, and steady rendering are unchanged. Final-binary short profiles are reported separately by SHA-256."
+  ]
+}

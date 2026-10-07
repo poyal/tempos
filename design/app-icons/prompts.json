@@ -1,0 +1,57 @@
+{
+  "concept": "Galaxy-inspired / Concept 01",
+  "created_at": "2026-10-07",
+  "status": "icon-direction-selected",
+  "generation_method": "built-in image_gen",
+  "selected_icon": {
+    "id": "pulse",
+    "number": 4,
+    "file": "04-pulse.png",
+    "title": "시스템 모니터",
+    "selected_by": "user",
+    "selected_at": "2026-10-07"
+  },
+  "notes": "User confirmed candidate 4. Preserve its monitor, chart, and yellow endpoint. Other candidates are historical. Small-size optical tuning and production ICO remain future design asset work; no app implementation.",
+  "outputs": [
+    {
+      "id": "clock",
+      "file": "01-clock.png",
+      "title": "시계",
+      "prompt": "Use case: logo-brand / desktop-app-icon. Design one original Tempos Windows desktop-widget application icon, a raster concept for choosing a brand direction. 1024x1024 square canvas. TRANSPARENT background OUTSIDE one central rounded-square app tile. The tile fills about84% of canvas, perfectly centered, corners about22% of tile width. Tile itself is fully opaque. Calm matte gradient from deep medium blue #286BCC at upper left to light soft blue #6EA5D1 at lower right, matching a Galaxy-weather-inspired widget family. A strong warm-white primary glyph, optional one small muted warm-yellow accent. Refined simple geometry, visually centered, crisp silhouette legible at16/24/32/48pixels. Flat front view, no perspective, no mockup board. Extremely restrained soft depth, no glossy bevels, no glass reflections, no grain. No typography, title, letters, numerals or words unless the specific concept explicitly requests a T monogram. No surrounding shadows outside the tile. No Samsung, Google, Windows or other existing logo. Exactly ONE icon on canvas, not a grid or comparison sheet.\nSpecific concept: Central substantial white outlined clock circle, broad rounded hands pointing about10:10, no tick marks or numbers. One small warm-yellow sun-like circle at the upper-right outside edge of the clock ring, creating a memorable time-and-weather cue. The circle remains within the blue tile. Keep icon very bold and simple.",
+      "transparent_background": true,
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-1b3e6de9-2eba-42fb-a3dc-998820537991.png"
+    },
+    {
+      "id": "grid",
+      "file": "02-grid.png",
+      "title": "위젯 그리드",
+      "prompt": "Use case: logo-brand / desktop-app-icon. Design one original Tempos Windows desktop-widget application icon, a raster concept for choosing a brand direction. 1024x1024 square canvas. TRANSPARENT background OUTSIDE one central rounded-square app tile. The tile fills about84% of canvas, perfectly centered, corners about22% of tile width. Tile itself is fully opaque. Calm matte gradient from deep medium blue #286BCC at upper left to light soft blue #6EA5D1 at lower right, matching a Galaxy-weather-inspired widget family. A strong warm-white primary glyph, optional one small muted warm-yellow accent. Refined simple geometry, visually centered, crisp silhouette legible at16/24/32/48pixels. Flat front view, no perspective, no mockup board. Extremely restrained soft depth, no glossy bevels, no glass reflections, no grain. No typography, title, letters, numerals or words unless the specific concept explicitly requests a T monogram. No surrounding shadows outside the tile. No Samsung, Google, Windows or other existing logo. Exactly ONE icon on canvas, not a grid or comparison sheet.\nSpecific concept: A memorable asymmetric arrangement of exactly THREE white rounded widget panels: one tall vertical rounded panel at left, two stacked short horizontal rounded panels at right, equal gutters. Each panel is solid warm-white, no text, no tiny content. Put one small flat warm-yellow disk in the upper right short panel; its distinct warm tone remains visible on white. Clear screen-widget organization silhouette.",
+      "transparent_background": true,
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-d6df1cab-290b-4dea-b212-0a4b6e178754.png"
+    },
+    {
+      "id": "monogram",
+      "file": "03-monogram.png",
+      "title": "T 모노그램",
+      "prompt": "Use case: logo-brand / desktop-app-icon. Design one original Tempos Windows desktop-widget application icon, a raster concept for choosing a brand direction. 1024x1024 square canvas. TRANSPARENT background OUTSIDE one central rounded-square app tile. The tile fills about84% of canvas, perfectly centered, corners about22% of tile width. Tile itself is fully opaque. Calm matte gradient from deep medium blue #286BCC at upper left to light soft blue #6EA5D1 at lower right, matching a Galaxy-weather-inspired widget family. A strong warm-white primary glyph, optional one small muted warm-yellow accent. Refined simple geometry, visually centered, crisp silhouette legible at16/24/32/48pixels. Flat front view, no perspective, no mockup board. Extremely restrained soft depth, no glossy bevels, no glass reflections, no grain. No typography, title, letters, numerals or words unless the specific concept explicitly requests a T monogram. No surrounding shadows outside the tile. No Samsung, Google, Windows or other existing logo. Exactly ONE icon on canvas, not a grid or comparison sheet.\nSpecific concept: One large bold uppercase T monogram drawn from rounded white geometric strokes, broad rounded top bar and centered short thick stem; NOT typography printed on a tile, construct as a memorable app symbol. Subtly soften corners. One small warm-yellow rounded-square block separated just above/right from the T top bar as a widget accent. No other letters. Strong negative space.",
+      "transparent_background": true,
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-9f68c75e-3554-4b15-bda7-bd58179ad241.png"
+    },
+    {
+      "id": "pulse",
+      "file": "04-pulse.png",
+      "title": "시스템 모니터",
+      "prompt": "Use case: logo-brand / desktop-app-icon. Design one original Tempos Windows desktop-widget application icon, a raster concept for choosing a brand direction. 1024x1024 square canvas. TRANSPARENT background OUTSIDE one central rounded-square app tile. The tile fills about84% of canvas, perfectly centered, corners about22% of tile width. Tile itself is fully opaque. Calm matte gradient from deep medium blue #286BCC at upper left to light soft blue #6EA5D1 at lower right, matching a Galaxy-weather-inspired widget family. A strong warm-white primary glyph, optional one small muted warm-yellow accent. Refined simple geometry, visually centered, crisp silhouette legible at16/24/32/48pixels. Flat front view, no perspective, no mockup board. Extremely restrained soft depth, no glossy bevels, no glass reflections, no grain. No typography, title, letters, numerals or words unless the specific concept explicitly requests a T monogram. No surrounding shadows outside the tile. No Samsung, Google, Windows or other existing logo. Exactly ONE icon on canvas, not a grid or comparison sheet.\nSpecific concept: A bold continuous warm-white rounded metric sparkline running horizontally, gentle two rises and falls ending at a distinct medium warm-yellow circular data point. Place within one broad rounded white open frame suggesting a monitor/dashboard tile, frame has a deliberate gap near yellow data point. Avoid ECG/medical heartbeat sharp spikes, no cross, no tiny ticks or labels. Solid legible system monitoring symbol.",
+      "transparent_background": true,
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-98328ad4-3239-44de-8695-246f136fac5f.png"
+    },
+    {
+      "id": "panels",
+      "file": "05-panels.png",
+      "title": "겹친 패널",
+      "prompt": "Use case: logo-brand / desktop-app-icon. Design one original Tempos Windows desktop-widget application icon, a raster concept for choosing a brand direction. 1024x1024 square canvas. TRANSPARENT background OUTSIDE one central rounded-square app tile. The tile fills about84% of canvas, perfectly centered, corners about22% of tile width. Tile itself is fully opaque. Calm matte gradient from deep medium blue #286BCC at upper left to light soft blue #6EA5D1 at lower right, matching a Galaxy-weather-inspired widget family. A strong warm-white primary glyph, optional one small muted warm-yellow accent. Refined simple geometry, visually centered, crisp silhouette legible at16/24/32/48pixels. Flat front view, no perspective, no mockup board. Extremely restrained soft depth, no glossy bevels, no glass reflections, no grain. No typography, title, letters, numerals or words unless the specific concept explicitly requests a T monogram. No surrounding shadows outside the tile. No Samsung, Google, Windows or other existing logo. Exactly ONE icon on canvas, not a grid or comparison sheet.\nSpecific concept: Exactly TWO overlapping rounded rectangular widget panels arranged diagonally, rear pale-ice-blue panel offset upper-left, front warm-white panel offset lower-right, with a slim blue negative-space separation where they overlap. Both occupy central region with generous margins. Front panel contains a simple large blue outlined clock with two blue hands and no marks; one tiny warm-yellow dot near rear panel top-right. Bold two-layer silhouette representing widgets on multiple desktops; avoid document folded corners.",
+      "transparent_background": true,
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-23d6d13b-e841-4879-9488-823bad5c74f1.png"
+    }
+  ]
+}

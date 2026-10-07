@@ -1,0 +1,103 @@
+{
+  "concept": "Galaxy-inspired / Concept 01",
+  "created_at": "2026-10-07",
+  "status": "design-exploration-not-final",
+  "generation_method": "built-in image_gen",
+  "palette_scope": "All widget types; inherited global palette or per-instance override. Weather defaults to automatic scene.",
+  "palettes": [
+    {
+      "id": "sky",
+      "title": "스카이",
+      "gradient": [
+        "#286BCC",
+        "#6EA5D1"
+      ]
+    },
+    {
+      "id": "blue",
+      "title": "블루",
+      "gradient": [
+        "#2550AD",
+        "#668BCA"
+      ]
+    },
+    {
+      "id": "cobalt",
+      "title": "코발트",
+      "gradient": [
+        "#315DD1",
+        "#6C7CC5"
+      ]
+    },
+    {
+      "id": "indigo",
+      "title": "인디고",
+      "gradient": [
+        "#445AB0",
+        "#8188BB"
+      ]
+    },
+    {
+      "id": "teal",
+      "title": "틸",
+      "gradient": [
+        "#277D91",
+        "#72ACA9"
+      ]
+    },
+    {
+      "id": "slate",
+      "title": "슬레이트",
+      "gradient": [
+        "#426780",
+        "#819CAF"
+      ]
+    },
+    {
+      "id": "ocean",
+      "title": "오션",
+      "gradient": [
+        "#256F9B",
+        "#70A7C7"
+      ]
+    },
+    {
+      "id": "steel",
+      "title": "스틸",
+      "gradient": [
+        "#476CB0",
+        "#849FC6"
+      ]
+    },
+    {
+      "id": "lavender",
+      "title": "라벤더",
+      "gradient": [
+        "#7952B5",
+        "#A28BCD"
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "id": "weather-states",
+      "file": "16-weather-states.png",
+      "title": "날씨·시간대별 배경",
+      "prompt": "Use case: ui-mockup. Create a polished Tempos CONCEPT01 companion design board, matching the supplied widget sheet's calm Galaxy-weather-inspired matte gradients, round corners, clean white numerals, navy Korean headings, pale blue-gray #EEF3F9 presentation background. Flat front view, no perspective, no device/browser/app frame. This is a static design exploration, not a working application. Crisp Korean.\nLandscape canvas with enough height for THREE rows of THREE identical M widgets (9 total), each card proportion21:10 (336x160DIP logical size). Keep all9 cards at identical display scale, equal aligned gaps, generous margins. Each has an OUTSIDE label above it, not extra product text inside. Header \"TEMPOS / CONCEPT 01\". Footer \"디자인 시안 · 샘플 데이터\". Avoid heavy shadows, glass, photorealism, noise, cinematic scenery, branded logos, code/API labels.\nInput image1 role: visual family reference, specifically its M weather card. Redesign into a3x3 WEATHER STATE comparison board. Title \"날씨에 따라 바뀌는 배경\", small subtitle \"같은 위젯 · 날씨와 시간대에 맞춘 표현\".\nEvery card preserves one clean layout: left \"서울\", large temperature, short weather text; right a LARGE SIMPLE FLAT weather icon and low-contrast background decoration. Thin translucent vertical divider. No forecast, no high/low temperatures needed on this state board. Don't place decoration behind essential text.\nRow1:\n1 outside label \"맑은 낮\". Sky blue gradient #286BCC to #6EA5D1, bright yellow sun, few very subtle light bands; inside \"23°\", \"맑음\".\n2 outside \"흐린 낮\". Soft slate-blue gradient #587487 to #879BA8, layered flat clouds, inside \"19°\", \"흐림\".\n3 outside \"비 오는 낮\". Rain-blue gradient #315572 to #638394, cloud with visible static diagonal raindrops mainly at right; inside \"17°\", \"비\".\nRow2:\n4 outside \"눈 오는 낮\". Cool blue-lavender gradient #647DA5 to #93A9BD, cloud and few static white snowflakes, maintain white text contrast using a slightly darker left region; inside \"-2°\", \"눈\".\n5 outside \"맑은 밤\". Deep indigo #243762 to #52638C, pale cream crescent moon and3-5small star dots at right, inside \"14°\", \"맑음\".\n6 outside \"비 오는 밤\". Deep navy rain gradient #24394F to #435E79, cloud with static drops, subtle crescent partially occluded by cloud, no visible stars; inside \"12°\", \"비\".\nRow3:\n7 outside \"뇌우\". Muted indigo #383F63 to #626B88, cloud rain and a single restrained pale-yellow lightning-bolt icon (STATIC, not glowing), inside \"18°\", \"뇌우\".\n8 outside \"안개\". Muted blue-gray #607D89 to #91A4AC with faint horizontal mist bands only at right, flat fog glyph, inside \"11°\", \"안개\".\n9 outside \"해 질 무렵\". Restrained lavender-to-peach gradient #665888 to #B58D9B, a small low sun with simple horizon arc at right, inside \"20°\", \"맑음\".\nKeep ALL nine cards recognizably the same family. Weather decoration changes the card background, not just the tiny icon. Moon/night must not erase rain. No streaming rain or snow animations implied, use sparse static vector-like motifs, preserving the low-resource product direction. No extra label outside canvas, noGoogleorSamsungword.",
+      "refs": [
+        "01-weather.png"
+      ],
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-9a729aee-82ae-4f9e-98e6-b02acad03048.png"
+    },
+    {
+      "id": "theme-palettes",
+      "file": "17-theme-palettes.png",
+      "title": "공통 색상 테마",
+      "prompt": "Use case: ui-mockup. Create a polished Tempos CONCEPT01 companion design board, matching the supplied widget sheet's calm Galaxy-weather-inspired matte gradients, round corners, clean white numerals, navy Korean headings, pale blue-gray #EEF3F9 presentation background. Flat front view, no perspective, no device/browser/app frame. This is a static design exploration, not a working application. Crisp Korean.\nLandscape canvas with enough height for THREE rows of THREE identical M widgets (9 total), each card proportion21:10 (336x160DIP logical size). Keep all9 cards at identical display scale, equal aligned gaps, generous margins. Each has an OUTSIDE label above it, not extra product text inside. Header \"TEMPOS / CONCEPT 01\". Footer \"디자인 시안 · 샘플 데이터\". Avoid heavy shadows, glass, photorealism, noise, cinematic scenery, branded logos, code/API labels.\nInput image1 role: style and layout reference for the CPU M widget only. Design a NEW3x3 board comparing NINE interchangeable color themes on the SAME CPU M widget. Board title \"모든 위젯에 적용하는 테마\", subtitle \"위젯 종류와 색상은 별개\".\nALL9cards have exactly identical shape, typography, geometry, data and graph; ONLY gradient palette changes. Inside everycard: left small title\"CPU\", large\"27%\", small\"Ryzen 7\"; right same smooth compact white60-second line graph (not dense spikes), small \"최근 60초\". Subtle thin vertical divider. Don't show theme name inside the widget; place it above eachcard. No weather/calendar/network data, no selected checkmark, no one palette implied compulsory.\nPalette labels and gradients in reading order3rows:\n1. \"스카이\" gradient #286BCC to #6EA5D1.\n2. \"블루\" gradient #2550AD to #668BCA.\n3. \"코발트\" gradient #315DD1 to #6C7CC5.\n4. \"인디고\" gradient #445AB0 to #8188BB.\n5. \"틸\" gradient #277D91 to #72ACA9.\n6. \"슬레이트\" gradient #426780 to #819CAF.\n7. \"오션\" gradient #256F9B to #70A7C7.\n8. \"스틸\" gradient #476CB0 to #849FC6.\n9. \"라벤더\" gradient #7952B5 to #A28BCD.\nAll white text must remain readable. No icons or information moved between theme variants. This communicates any widget can use any of these color themes. Footer additionally \"전체 적용 · 위젯별 지정 가능\".",
+      "refs": [
+        "03-cpu.png"
+      ],
+      "source": "C:\\Users\\ttt45\\.codex\\generated_images\\01a11631-ef28-7ca3-929e-2a5e86c02e71\\exec-8d423715-377d-442f-b518-87ed9162e29f.png"
+    }
+  ]
+}

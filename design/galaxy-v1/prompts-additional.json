@@ -1,0 +1,64 @@
+{
+  "concept": "Galaxy-inspired / Concept 01",
+  "created_at": "2026-10-07",
+  "status": "design-exploration-not-final",
+  "generation_method": "built-in image_gen",
+  "reference_url": "https://blog.naver.com/artismart/224334916129",
+  "sizes_dip": {
+    "S": [
+      160,
+      160
+    ],
+    "Slim": [
+      336,
+      72
+    ],
+    "M": [
+      336,
+      160
+    ],
+    "L": [
+      336,
+      336
+    ]
+  },
+  "constraints": {
+    "calendar": "Strictly read-only; all Google/provider/connection/sync labels only in settings, absent from widgets.",
+    "aspect_ratio": "locked; uniform 100/150/200% scaling",
+    "desktop_grid": "per-monitor grid",
+    "excluded_widgets": [
+      "battery",
+      "focus timer",
+      "notes/checklist"
+    ]
+  },
+  "outputs": [
+    {
+      "id": "network",
+      "title": "네트워크",
+      "file": "07-network.png",
+      "input_assets": [
+        "05-memory.png"
+      ],
+      "prompt": "Use case: ui-mockup.\nEdit target: the provided Tempos memory widget size-comparison sheet. Produce a new companion sheet for the widget specified below.\nPreserve the image's overall landscape aspect ratio, pale #EEF3F9 blue-gray presentation background, typography hierarchy, whitespace, header/footer positions, four-card arrangement and visual family. Replace the old title and ALL memory values, icons, labels and card content. No memory content should remain unless explicitly requested. All four cards are different size variants of ONE specified widget. Create a crisp polished flat front-facing UI design mockup with legible Korean.\nHeader top left: \"TEMPOS / CONCEPT 01\", large specified Korean widget title below. Top right: \"크기별 디자인 탐색\". Bottom left: \"디자인 시안 · 샘플 데이터 · 크기는 DIP 기준\".\nEXACTLY four cards: S square on left with \"S · 160 × 160\" above; middle column slim capsule on top labeled \"Slim · 336 × 72\" and medium wide rectangle below labeled \"M · 336 × 160\"; large square in right column labeled \"L · 336 × 336\". Keep squares square and slim truly shallow. Same approximate display scale across cards, not same width for small and large. Medium/slim widths equal the large width; small width is about half the large width. Preserve plenty of outside whitespace.\nStyle: calm Samsung Galaxy weather-inspired UI translated to Windows widgets: soft two-tone matte gradients, generously rounded corners, white hero numerals, smaller white labels, thin translucent dividers, simple original white-outline icons. Flat implementation-plausible drawings, no 3D device photos. Cards have no thick outline or heavy drop shadow. Secondary text must remain readable. Support real information hierarchy, not just enlarged copies.\nKeep all units, labels, numbers consistent. No smartphone, browser frame, app window chrome, Samsung logo, decorative OS icons, watermark, brand logos, rainbow neon, glass bevels, decorative paragraphs, or any fifth card. Do not include implementation details in user-facing UI. Only use specified fields.\n\nWidget title outside cards: \"네트워크\". Card gradient palette: #256F9B to #70A7C7.\nChosen adapter is \"Wi-Fi\". Fictional current receive speed 24.8 Mbps, send speed 3.2 Mbps. Always use Mbps (megabits per second), never MB/s.\nS: small title \"네트워크\" and Wi-Fi icon, a large down-arrow with \"24.8\", unit \"Mbps\"; below a smaller up-arrow with \"3.2 Mbps\". Enough space to distinguish download from upload.\nSlim: small Wi-Fi icon at left; \"↓ 24.8 Mbps\" and \"↑ 3.2 Mbps\" across the pill, separated by a subtle hairline.\nM: left current download \"↓ 24.8 Mbps\" large and upload \"↑ 3.2 Mbps\" smaller; small top \"Wi-Fi\". Right two simple miniature sixty-second lines, download in white and upload in pale mint, with tiny \"최근 60초\".\nL: top \"네트워크\", smaller \"Wi-Fi\". Clear paired readouts \"다운로드 24.8 Mbps\" and \"업로드 3.2 Mbps\" with arrows; download value prominent. Middle a spacious shared 60-second history plot with TWO lines in white and pale mint, tiny \"-60s\" and \"지금\" at ends. Below plot two legend items \"다운로드\" and \"업로드\". Do not show total traffic, IP address, ping, packet loss, connection quality score or speedtest button.\nThis is live traffic, not maximum bandwidth."
+    },
+    {
+      "id": "disk",
+      "title": "디스크",
+      "file": "08-disk.png",
+      "input_assets": [
+        "05-memory.png"
+      ],
+      "prompt": "Use case: ui-mockup.\nEdit target: the provided Tempos memory widget size-comparison sheet. Produce a new companion sheet for the widget specified below.\nPreserve the image's overall landscape aspect ratio, pale #EEF3F9 blue-gray presentation background, typography hierarchy, whitespace, header/footer positions, four-card arrangement and visual family. Replace the old title and ALL memory values, icons, labels and card content. No memory content should remain unless explicitly requested. All four cards are different size variants of ONE specified widget. Create a crisp polished flat front-facing UI design mockup with legible Korean.\nHeader top left: \"TEMPOS / CONCEPT 01\", large specified Korean widget title below. Top right: \"크기별 디자인 탐색\". Bottom left: \"디자인 시안 · 샘플 데이터 · 크기는 DIP 기준\".\nEXACTLY four cards: S square on left with \"S · 160 × 160\" above; middle column slim capsule on top labeled \"Slim · 336 × 72\" and medium wide rectangle below labeled \"M · 336 × 160\"; large square in right column labeled \"L · 336 × 336\". Keep squares square and slim truly shallow. Same approximate display scale across cards, not same width for small and large. Medium/slim widths equal the large width; small width is about half the large width. Preserve plenty of outside whitespace.\nStyle: calm Samsung Galaxy weather-inspired UI translated to Windows widgets: soft two-tone matte gradients, generously rounded corners, white hero numerals, smaller white labels, thin translucent dividers, simple original white-outline icons. Flat implementation-plausible drawings, no 3D device photos. Cards have no thick outline or heavy drop shadow. Secondary text must remain readable. Support real information hierarchy, not just enlarged copies.\nKeep all units, labels, numbers consistent. No smartphone, browser frame, app window chrome, Samsung logo, decorative OS icons, watermark, brand logos, rainbow neon, glass bevels, decorative paragraphs, or any fifth card. Do not include implementation details in user-facing UI. Only use specified fields.\n\nWidget title outside cards: \"디스크\". Card gradient palette: #476CB0 to #849FC6.\nChosen volume is \"로컬 디스크 (C:)\". Capacity is 1 TB = 1000 GB, used 620 GB, free 380 GB, usage62%. Use these consistent decimal sample values. Disk bars exactly approximately62% full.\nS: small disk outline icon and \"디스크 C:\"; hero \"62%\" with smaller word \"사용\"; lower text \"380 GB 여유\", small capacity bar.\nSlim: disk icon, \"C:\", \"여유 380 GB\", a compact capacity bar62% full. Do not cram extra numbers.\nM: left title \"디스크 C:\", hero \"380 GB\", caption \"사용 가능\"; right a clean horizontal usage bar, \"620 GB / 1 TB\" and small \"62% 사용\".\nL: top \"로컬 디스크 (C:)\" and simple disk glyph; hero \"380 GB\" with caption \"사용 가능\"; long horizontal capacity bar62% full. Then three clean rows separated by thin lines: \"사용 중\" → \"620 GB\"; \"전체 용량\" → \"1 TB\"; \"사용률\" → \"62%\". Do not literally draw arrows in these rows.\nNo other drives, disk temperature, SMART health, read/write rates, file category analysis, fake cleaning button or file-management actions."
+    },
+    {
+      "id": "calendar",
+      "title": "캘린더",
+      "file": "10-calendar.png",
+      "input_assets": [
+        "original calendar board in generation cache"
+      ],
+      "prompt": "Edit the provided Tempos calendar four-size design board. Keep the four size variants, purple gradients, dimensions, dates, month grid, sample event titles and exact overall layout. Make ONLY these corrections:\n1. Change large board title \"캘린더 · Google 연동\" to exactly \"캘린더\".\n2. Remove EVERY visible occurrence of \"Google\", \"Google Calendar\", \"연결됨\", \"동기화\", \"방금 동기화\" and ALL provider / account / connection status labels from ALL four widgets. Provider and connection management live only in app settings, never in the widget.\n3. In S, replace the removed top connection line with a small neutral calendar-outline glyph, keep \"2026년 10월\", \"7\", \"수요일\", and next event.\n4. In M, replace the removed top connection row with the neutral title \"캘린더\". Keep date and \"오늘 일정\" with both events.\n5. In L, remove \"Google Calendar · 연결됨\" below the month title. Remove the complete bottom provider link, external-link icon and sync status. Redistribute the freed space for comfortable month cells and the two agenda rows; add NO replacement actions.\n6. Calendar is strictly read-only: no add, edit, delete, RSVP or new-event buttons. Previous/next MONTH chevrons can remain.\nNo Google word or logo anywhere in the result, not even outside the widgets. All other content and pale presentation board stay invariant. Render crisp Korean."
+    }
+  ]
+}
