@@ -356,7 +356,7 @@ int64_t parseRfc3339(std::string_view value) {
     return INT64_MIN;
   if ((value[suffix] == 'Z' || value[suffix] == 'z') && suffix + 1 != value.size())
     return INT64_MIN;
-  int y, m, d, h = 0, min = 0, sec = 0;
+  int y = 0, m = 0, d = 0, h = 0, min = 0, sec = 0;
   if (value.size() < 20 || value[4] != '-' || value[7] != '-' || value[10] != 'T' || value[13] != ':' ||
       value[16] != ':' ||
       sscanf_s(std::string(value).c_str(), "%d-%d-%dT%d:%d:%d", &y, &m, &d, &h, &min, &sec) != 6)
@@ -370,7 +370,9 @@ int64_t parseRfc3339(std::string_view value) {
     size_t pos = value.find_first_of("+-", 19);
     if (pos != std::string::npos) {
       int oh = 0, om = 0;
-      if (value.size() != pos + 6 || value[pos + 3] != ':' ||
+      if (value.size() != pos + 6 || value[pos + 3] != ':' || value[pos + 1] < '0' || value[pos + 1] > '9' ||
+          value[pos + 2] < '0' || value[pos + 2] > '9' || value[pos + 4] < '0' || value[pos + 4] > '9' ||
+          value[pos + 5] < '0' || value[pos + 5] > '9' ||
           sscanf_s(std::string(value.substr(pos + 1)).c_str(), "%d:%d", &oh, &om) != 2 || oh < 0 || om < 0 ||
           oh > 23 || om > 59)
         return INT64_MIN;

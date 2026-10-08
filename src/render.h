@@ -43,12 +43,14 @@ private:
   bool surface(HWND, RenderSurface &);
   void text(const std::wstring &, float x, float y, float width, float height, float size = 16,
             bool bold = false, uint32_t color = 0xffffff,
-            DWRITE_TEXT_ALIGNMENT align = DWRITE_TEXT_ALIGNMENT_LEADING);
+            DWRITE_TEXT_ALIGNMENT align = DWRITE_TEXT_ALIGNMENT_LEADING, bool wrap = false);
   void line(float x, float y, float x2, float y2, uint32_t color = 0xffffff, float alpha = .25f,
             float stroke = 1);
   void dot(float x, float y, float radius, uint32_t color, float alpha = 1);
   void bar(float x, float y, float width, float height, uint32_t color, float alpha = 1, float radius = 4);
   void graph(const History &, float x, float y, float width, float height, uint32_t color, double max = 100);
+  void analog(const Widget &, int64_t now, float x, float y, float radius);
+  void weatherIcon(int sky, int rain, bool night, float x, float y, float scale = 1);
   void calendar(const Widget &, const Snapshot *, Extent);
   void weather(const Widget &, const Snapshot *, Extent);
   ComPtr<ID3D11Device> d3d_;

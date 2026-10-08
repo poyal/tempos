@@ -33,11 +33,16 @@ std::string pkceChallenge(const std::string &v) {
   return base64(b, sizeof b);
 }
 static year_month_day parseDate(const std::string &s) {
+  if (s.size() != 10 || s[4] != '-' || s[7] != '-')
+    throw std::runtime_error("date");
+  for (size_t i : {0, 1, 2, 3, 5, 6, 8, 9})
+    if (s[i] < '0' || s[i] > '9')
+      throw std::runtime_error("date");
   int y = 0, m = 0, d = 0;
   if (sscanf_s(s.c_str(), "%d-%d-%d", &y, &m, &d) != 3)
     throw std::runtime_error("date");
   year_month_day date{year{y}, month{unsigned(m)}, day{unsigned(d)}};
-  if (!date.ok())
+  if (!date.ok() || y < 1)
     throw std::runtime_error("date");
   return date;
 }

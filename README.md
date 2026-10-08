@@ -54,6 +54,13 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- .
 dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --matrix
 dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --behavior
 dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --interaction
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --persistence
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --failures
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --options
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --capacity
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --placement
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --clock-layout
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --design
 dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --stress
 dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --visual
 dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release -- . --live-smoke
@@ -67,7 +74,17 @@ DPAPI와 E2E는 같은 실제 Windows 사용자 세션에서 실행해야 합니
 
 `--live-smoke`는 샘플 대신 실제 CPU·GPU·메모리 카운터를 확인하므로 GPU 카운터가 없는 장치에서는 실패할 수 있습니다. 패키징 결과는 `artifacts/Tempos-0.1.0-win-x64.zip`과 SHA-256 파일이며, `--smoke --exe <패키지의 Tempos.exe 경로>`로 실제 배포 실행 파일도 검증할 수 있습니다. 성능 스크립트는 다른 Tempos 프로세스를 종료한 상태에서 실행하세요.
 
-`--stress`는 5분 준비 후 1,000회 위젯을 생성·제거하고 5분 안정화하므로 약 11분 걸립니다. 성능 스크립트의 기본 표본 간격은 1초입니다. 실제 날씨·일정 연결이 없는 측정을 해당 연결까지 포함한 인수 결과로 해석하지 마세요.
+`--persistence`는 9종 추가·적용, 정렬 모드 반복, 설정창 닫기, 숨김·표시, 재시작, 중간 항목 삭제 후 모든 위젯의 저장 ID·실제 창·화면 히트 테스트를 대조합니다. `--failures`는 파일 잠금에 의한 저장 실패, 잘못된 입력·가져오기, 정상 백업 복구를 확인합니다. `--options`는 위젯별 옵션 격리·배율·항상 위·전체 테마를, `--capacity`는 64개 한도와 빈 레이아웃을 검사합니다.
+
+`--placement`는 연결되지 않은 모니터의 레이아웃을 가져와 임시 배치한 뒤, 위젯을 추가해도 기존 위젯이 숨겨지지 않고 공간 부족을 알리는지 검사합니다. 실제 모니터를 분리하지는 않습니다. `--clock-layout`는 시계 4개 크기 × 12/24시간 × 초 표시 유무의 16개 조합을 검증하고 위젯 영역만 캡처합니다.
+
+디자인 검수 기준은 [디자인 가이드](docs/design-guide.md)에 있습니다. `--design`은 테스트 호스트에서 37개 크기별 구성, 9개 테마, 설정 4개 탭, 날씨·장치·캘린더 상태를 캡처하고 창의 크기·배치·표시 여부를 검사합니다. 긴 장치명과 결측 그래프 등은 제작용 데이터이며 실제 센서 측정이 아닙니다. `./scripts/design-review.ps1 -Results <E2E 결과 폴더>`로 비교 이미지를 만든 뒤 별도 육안 검수합니다. 이 모드의 전용 시각 데이터 명령은 배포 실행 파일에 포함되지 않습니다.
+
+기존 설정으로 재현할 때는 `--saved-layout <settings.json 경로> --exe <Tempos.exe 경로>`를 사용하세요. 원본은 테스트 폴더에 복사하고, 각 위젯 적용·9종 추가·정렬 종료·재시작을 검사합니다. 원본 설정 파일은 변경하지 않습니다.
+
+`--stress`는 준비 100회·5분 대기 후 1,000회 위젯 생성·테마/확대/투명도 변경·정렬 시작/종료·제거를 수행하고 5분 안정화합니다. 각 회차의 실제 저장값을 대조하며 메모리 잔여 증가 2MiB와 GDI/USER/핸들 증가를 검사합니다. `stress-handles.json`에는 반복 중 100회마다, 대기 중 30초마다 자원 수와 핸들 종류를 기록합니다. 성능 스크립트의 기본 표본 간격은 1초이며, 기본 `-Budget Five`에서 평균 CPU 0.1%, P95 0.3%, CPU 시간 4ms/초, Private Bytes 32MiB, Working Set 48MiB를 넘으면 실패합니다. `-Budget Nine`은 9종 프로필에 CPU 0.2%, Private Bytes 48MiB, Working Set 72MiB 기준을 적용합니다. `-Budget Clock`은 시계 1개의 CPU 0.02%를, `-Budget None`은 예산 판정 없이 측정만 지원합니다. 프로필의 위젯 수와 실제 표시 여부도 확인합니다.
+
+성능 결과는 `report.json`과 1초 표본 `samples.jsonl`에 남습니다. 5분 준비·30분 측정·1초 표본 조건을 충족하지 못한 실행은 `standardDuration: false`로 구분합니다. 실제 날씨·일정 연결이 없는 측정을 해당 연결까지 포함한 인수 결과로 해석하지 마세요.
 
 검증 결과와 남은 제약은 [개발·검증 기록](docs/development.md), 설계와 연동 근거는 [plan.md](plan.md)에 기록합니다. 낮은 사용량은 측정 조건과 함께 판단하며 모든 PC의 수치나 메모리 누수 0건을 보장하는 문구를 사용하지 않습니다.
 

@@ -522,8 +522,8 @@ void ProviderService::run(std::stop_token token) {
             try {
               if (fixture_) {
                 s.status = Status::Ready;
-                s.title = L"테스트 자료";
-                s.value = 42;
+                s.title = L"C:\\";
+                s.value = 48.8;
                 s.secondary = 512e9;
                 s.total = 1e12;
                 s.available = 512e9;
@@ -553,6 +553,8 @@ void ProviderService::run(std::stop_token token) {
         s.secondary = w.kind == Kind::Network ? 125000. : 8. * 1024 * 1024 * 1024;
         s.total = 16. * 1024 * 1024 * 1024;
         s.available = s.total - s.secondary;
+        if (w.kind == Kind::Memory)
+          s.value = s.secondary / s.total * 100.;
         s.title = std::wstring(kindName(w.kind));
         s.detail = L"테스트 자료";
       } else {

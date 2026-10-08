@@ -59,6 +59,7 @@ private:
   void add(Kind);
   void removeSelected();
   void save();
+  bool commit(Settings);
   void tray(bool add);
   void menu(HWND, bool widget = false);
   void loadRegions();
@@ -103,5 +104,8 @@ private:
   bool trayAdded_ = false;
   uint64_t redraws_ = 0;
   std::wstring status_;
+#ifdef TEMPOS_TEST_HOST
+  int designCase_ = -1;
+#endif
 };
 } // namespace tempos

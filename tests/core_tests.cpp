@@ -1,4 +1,5 @@
 #include "model.h"
+#include "design.h"
 #include "storage.h"
 #include "weather.h"
 #include "calendar.h"
@@ -26,6 +27,10 @@ template <class F> void throws(F fn, const char *name) {
 int main() {
   CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   try {
+    for (const auto &palette : palettes())
+      check(design::whiteContrast(design::readableSurface(palette.top)) >= 4.5 &&
+                design::whiteContrast(design::readableSurface(palette.bottom)) >= 4.5,
+            "Opaque palette supports readable small white labels");
     check(gpuEngineKey(L"pid_10184_luid_0x00000000_0x000129F0_phys_0_eng_0_engtype_3D") ==
               gpuEngineKey(L"pid_7_luid_0x00000000_0x000129f0_phys_0_eng_0_engtype_3d"),
           "GPU process instances share case-insensitive engine identity");
@@ -121,6 +126,46 @@ int main() {
     Store store(testRoot);
     check(store.save(settings), "atomic settings save");
     check(store.load().widgets[0].id == copy.id, "settings read");
+    auto changed = settings;
+    changed.theme = 8;
+    auto savedBytes = boundedRead(testRoot / L"settings.json");
+    HANDLE locked = CreateFileW((testRoot / L"settings.json").c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
+                                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    check(locked != INVALID_HANDLE_VALUE, "lock settings file for failed-write regression");
+    bool rejected = !store.save(changed);
+    CloseHandle(locked);
+    check(rejected && boundedRead(testRoot / L"settings.json") == savedBytes,
+          "failed replace preserves complete previous settings");
+    check(!std::filesystem::exists(testRoot / L"settings.json.tmp"), "failed save removes temporary file");
+    check(store.save(changed), "save succeeds after file lock released");
+    check(boundedRead(testRoot / L"settings.backup.json") == savedBytes,
+          "backup contains previous valid settings");
+    atomicWrite(testRoot / L"settings.json", "{broken");
+    Store recovery(testRoot);
+    check(settingsJson(recovery.load()) == settingsJson(settings) && !recovery.warning.empty(),
+          "corrupt settings restore entire valid backup with warning");
+    bool retained = false;
+    for (auto &file : std::filesystem::directory_iterator(testRoot))
+      retained |= file.path().filename().wstring().starts_with(L"settings.corrupt.");
+    check(retained, "corrupt source retained for diagnosis");
+    settings.widgets.clear();
+    check(store.save(settings) && store.load().widgets.empty(), "explicit empty layout stays empty");
+    Settings full;
+    for (int i = 0; i < 64; ++i)
+      full.widgets.emplace_back();
+    check(readSettings(settingsJson(full)).widgets.size() == 64, "64 widgets round trip");
+    full.widgets.emplace_back();
+    throws([&] { readSettings(settingsJson(full)); }, "65 widgets rejected");
+    for (auto offset : {"+00:0x", "+ 1:00", "+01:+1", "+24:00", "+00:60"})
+      check(parseRfc3339(std::string("2026-10-08T12:30:00") + offset) == INT64_MIN,
+            "malformed timezone offset rejected");
+    for (auto date : {"2026-10-08junk", "2026-2-08", "0000-10-08", "2026-02-30"})
+      throws(
+          [&] {
+            parseEvent({{"id", "invalid"}, {"start", {{"date", date}}}, {"end", {{"date", "2027-01-01"}}}},
+                       L"primary", 0);
+          },
+          "malformed all-day date rejected");
     check(store.saveSecret(L"test", "private-data"), "DPAPI save");
     check(store.secret(L"test") == "private-data", "DPAPI read");
     auto raw = boundedRead(testRoot / L"test.bin");

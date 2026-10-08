@@ -430,6 +430,7 @@ void App::selectTab(int tab) {
 void App::updateList() {
   if (!settingsBuilt_)
     return;
+  SendMessageW(control(1500), CB_SETCURSEL, settings_.theme, 0);
   auto list = control(1200);
   SendMessageW(list, LB_RESETCONTENT, 0, 0);
   for (size_t i = 0; i < settings_.widgets.size(); ++i) {
@@ -527,11 +528,11 @@ bool App::place(Widget &w, bool keep) {
   Extent area{(mi->work.right - mi->work.left) * factor, (mi->work.bottom - mi->work.top) * factor};
   auto size = extent(w.size, w.scale);
   std::vector<Box> occupied;
-  for (auto &other : settings_.widgets)
-    if (other.id != w.id && (other.monitor == mi->id || other.monitor.empty() && mi->primary)) {
-      auto s = extent(other.size, other.scale);
-      occupied.push_back({other.x, other.y, s.width, s.height});
-    }
+  // Temporarily relocated widgets still occupy their displayed monitor, even
+  // though their saved monitor/position must remain available for reconnection.
+  for (auto &other : arrangeWidgets(settings_.widgets, monitors_))
+    if (other.id != w.id && other.visible && other.monitor == mi->id)
+      occupied.push_back(other.box);
   Box proposed{snap(w.x), snap(w.y), size.width, size.height};
   bool valid =
       proposed.x >= 16 && proposed.y >= 16 && proposed.x + proposed.w <= area.width - 16 &&
@@ -609,8 +610,10 @@ void App::applyControls() {
       throw std::runtime_error("values");
     if (!place(w))
       throw std::runtime_error("space");
-    *current = std::move(w);
-    save();
+    auto next = settings_;
+    next.widgets[size_t(current - settings_.widgets.data())] = std::move(w);
+    if (!commit(std::move(next)))
+      return;
     rebuild();
     status(L"설정을 적용했어요.");
   } catch (...) {
@@ -620,6 +623,14 @@ void App::applyControls() {
 void App::save() {
   if (!store_.save(settings_))
     status(L"설정 저장 실패 · 데이터 폴더 권한을 확인하세요.");
+}
+bool App::commit(Settings next) {
+  if (!store_.save(next)) {
+    status(L"설정 저장 실패 · 기존 설정을 유지했어요. 데이터 폴더 권한을 확인하세요.");
+    return false;
+  }
+  settings_ = std::move(next);
+  return true;
 }
 void App::add(Kind kind) {
   if (settings_.widgets.size() >= 64) {
@@ -652,18 +663,22 @@ void App::add(Kind kind) {
     status(L"위젯을 놓을 빈 공간이 없어요. 크기를 줄이거나 기존 위젯을 이동하세요.");
     return;
   }
+  auto next = settings_;
+  next.widgets.push_back(w);
+  if (!commit(std::move(next)))
+    return;
   selected_ = w.id;
-  settings_.widgets.push_back(w);
-  save();
   rebuild();
   status(L"위젯을 추가했어요.");
 }
 void App::removeSelected() {
-  settings_.widgets.erase(std::remove_if(settings_.widgets.begin(), settings_.widgets.end(),
-                                         [&](auto &w) { return w.id == selected_; }),
-                          settings_.widgets.end());
+  auto next = settings_;
+  next.widgets.erase(
+      std::remove_if(next.widgets.begin(), next.widgets.end(), [&](auto &w) { return w.id == selected_; }),
+      next.widgets.end());
+  if (!commit(std::move(next)))
+    return;
   selected_.clear();
-  save();
   rebuild();
   status(L"위젯을 제거했어요.");
 }
@@ -740,12 +755,17 @@ void App::position(WidgetWindow &window) {
                                               GetWindowDpiAwarenessContext(parent))) {
     parent = nullptr;
   }
+  // Clear the native topmost state before returning a popup to the desktop.
+  // Changing GWL_EXSTYLE alone does not update its position in the Z order.
+  if (!w->topmost && (GetWindowLongPtrW(window.hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST))
+    SetWindowPos(window.hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
   if (GetParent(window.hwnd) != parent) {
+    auto style = GetWindowLongPtrW(window.hwnd, GWL_STYLE);
     if (parent)
-      SetWindowLongPtrW(window.hwnd, GWL_STYLE, WS_CHILD);
+      SetWindowLongPtrW(window.hwnd, GWL_STYLE, (style & ~WS_POPUP) | WS_CHILD);
     SetParent(window.hwnd, parent);
     if (!parent)
-      SetWindowLongPtrW(window.hwnd, GWL_STYLE, WS_POPUP);
+      SetWindowLongPtrW(window.hwnd, GWL_STYLE, (style & ~WS_CHILD) | WS_POPUP);
   }
   LONG_PTR ex =
       WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | (renderer_.layered() ? WS_EX_LAYERED : WS_EX_NOREDIRECTIONBITMAP);
@@ -782,6 +802,74 @@ void App::draw(WidgetWindow &window) {
   if (!window.displayed && providers_)
     window.displayed = providers_->snapshot(*w);
   auto data = window.displayed;
+#ifdef TEMPOS_TEST_HOST
+  // Visual fixtures are compiled only into the test host; production cannot enable them.
+  if (fixture_ && designCase_ >= 0) {
+    auto sample = std::make_shared<Snapshot>(data ? *data : Snapshot{});
+    sample->status = Status::Ready;
+    sample->title = w->kind == Kind::System ? L"TEMPOS-WORKSTATION"
+                    : w->kind == Kind::Cpu  ? L"AMD Ryzen 9 9950X 16-Core Processor"
+                    : w->kind == Kind::Gpu  ? L"NVIDIA GeForce RTX 5070 Ti"
+                    : w->kind == Kind::Disk ? L"C:\\"
+                                            : L"Ethernet 2 · Realtek PCIe";
+    sample->detail = L"Windows 11 Pro 24H2";
+    sample->extra = L"AMD Ryzen 9 9950X 16-Core Processor\nNVIDIA GeForce RTX 5070 Ti";
+    if (w->kind == Kind::System)
+      sample->value = 93840;
+    double end = monotonic();
+    sample->history = {};
+    sample->history2 = {};
+    for (int i = 0; i < 60; ++i) {
+      double value = 42 + 19 * std::sin(i * .7);
+      sample->history.add(
+          {end - 60 + i, end - 59 + i, w->kind == Kind::Network ? value * 25000 : value, i != 29});
+      sample->history2.add({end - 60 + i, end - 59 + i, value * 4000, i != 29});
+    }
+    if (w->kind == Kind::Weather) {
+      auto weather = std::make_shared<WeatherData>(sample->weather ? *sample->weather : WeatherData{});
+      weather->temperature = designCase_ == 3 ? -12 : 21;
+      weather->low = designCase_ == 3 ? -16 : 16;
+      weather->high = designCase_ == 3 ? -8 : 24;
+      weather->sky = designCase_ == 1 ? 4 : designCase_ == 6 ? 0 : 1;
+      weather->rain = designCase_ == 2 || designCase_ == 5 ? 1 : designCase_ == 3 ? 3 : 0;
+      weather->night = designCase_ == 4 || designCase_ == 5;
+      weather->observed = weather->fetched = nowUnix() - (designCase_ == 7 ? 8000 : 0);
+      weather->condition = weather->rain == 3  ? L"눈"
+                           : weather->rain     ? L"비"
+                           : weather->sky == 4 ? L"흐림"
+                           : weather->sky == 0 ? L"하늘 상태 정보 없음"
+                                               : L"맑음";
+      sample->weather = weather;
+      if (designCase_ == 8) {
+        sample->weather.reset();
+        sample->message = L"인증키를 확인하세요";
+        sample->status = Status::Error;
+      }
+    } else if (designCase_ == 9) {
+      sample->status = Status::Loading;
+      sample->message = L"불러오는 중";
+      sample->calendar.reset();
+    } else if (designCase_ == 10 && w->kind == Kind::Calendar) {
+      using namespace std::chrono;
+      auto calendar = std::make_shared<CalendarData>();
+      calendar->connected = calendar->complete = true;
+      for (int i = 0; i < 12; ++i) {
+        Event event;
+        event.id = L"overflow-" + std::to_wstring(i);
+        event.title = L"긴 일정 제목 · 디자인 검토 및 다음 단계 세부 사항 확인";
+        event.allDay = true;
+        event.first = localDate(nowUnix(), w->timezone);
+        event.last = year_month_day{sys_days{event.first} + days{i % 3 + 1}};
+        calendar->events.push_back(event);
+      }
+      sample->calendar = calendar;
+    } else if (designCase_ == 10) {
+      sample->status = Status::Error;
+      sample->message = L"장치를 찾을 수 없음 · 설정에서 다시 선택하세요";
+    }
+    data = sample;
+  }
+#endif
   if (renderer_.draw(window.hwnd, window.surface, *w, data.get(), settings_.theme, settings_.edit,
                      window.dpi)) {
     window.renderedAt = monotonic();
@@ -892,8 +980,9 @@ void App::menu(HWND owner, bool widget) {
     command(id, 0);
   PostMessageW(owner, WM_NULL, 0, 0);
 }
-void App::calendarMonth(Widget &w, int delta) {
+void App::calendarMonth(Widget &current, int delta) {
   using namespace std::chrono;
+  Widget w = current;
   if (delta == 0)
     w.source.clear();
   else {
@@ -907,6 +996,10 @@ void App::calendarMonth(Widget &w, int delta) {
       return;
     w.source = std::to_wstring(int(ym.year())) + L"-" + std::to_wstring(unsigned(ym.month()));
   }
+  auto next = settings_;
+  next.widgets[size_t(&current - settings_.widgets.data())] = w;
+  if (!commit(std::move(next)))
+    return;
   configure();
   providers_->refresh();
   for (auto &window : windows_)
@@ -914,13 +1007,18 @@ void App::calendarMonth(Widget &w, int delta) {
       window->displayed.reset();
       draw(*window);
     }
-  save();
 }
 void App::command(int id, int notification) {
 #ifdef TEMPOS_TEST_HOST
   std::ofstream trace(store_.root() / L"commands.log", std::ios::app);
   trace << id << " " << notification << "\n";
   trace.close();
+  if (fixture_ && id >= 1900 && id <= 1912) {
+    designCase_ = id == 1912 ? -1 : id - 1900;
+    for (auto &window : windows_)
+      draw(*window);
+    return;
+  }
 #endif
   if (id == 1200 && notification == LBN_SELCHANGE) {
     int i = int(SendMessageW(control(1200), LB_GETCURSEL, 0, 0));
@@ -943,8 +1041,10 @@ void App::command(int id, int notification) {
     rebuild();
     status(settings_.edit ? L"정렬 모드 · 위젯을 드래그해서 이동하세요." : L"정렬 모드를 종료했어요.");
   } else if (id == 1205 || id == 2003) {
-    settings_.hidden = !settings_.hidden;
-    save();
+    auto next = settings_;
+    next.hidden = !next.hidden;
+    if (!commit(std::move(next)))
+      return;
     rebuild();
   } else if (id >= 1317 && id <= 1319) {
     auto *w = find(selected_);
@@ -1008,8 +1108,10 @@ void App::command(int id, int notification) {
   } else if (id == 1501) {
     int theme = choice(1500);
     if (theme >= 0 && theme < 9) {
-      settings_.theme = theme;
-      save();
+      auto next = settings_;
+      next.theme = theme;
+      if (!commit(std::move(next)))
+        return;
       rebuild();
       status(L"전체 테마를 적용했어요.");
     }
@@ -1052,8 +1154,8 @@ void App::command(int id, int notification) {
           if (!content)
             throw std::runtime_error("read");
           auto imported = readSettings(Json::parse(*content));
-          settings_ = std::move(imported);
-          save();
+          if (!commit(std::move(imported)))
+            return;
           rebuild();
           status(L"레이아웃을 가져왔어요.");
         }
@@ -1066,7 +1168,9 @@ void App::command(int id, int notification) {
   else if (id == 1506)
     ShellExecuteW(main_, L"open", store_.root().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
   else if (id == 1620) {
-    if (auto *w = find(selected_)) {
+    if (auto *current = find(selected_)) {
+      auto next = settings_;
+      auto *w = &next.widgets[size_t(current - settings_.widgets.data())];
       w->twelveHour = checked(1600);
       w->fahrenheit = checked(1601);
       w->networkBytes = checked(1602);
@@ -1074,7 +1178,8 @@ void App::command(int id, int notification) {
       w->weekStart = checked(1604) ? 1 : 0;
       for (int i = 0; i < 5; ++i)
         w->systemFields[i] = checked(1610 + i);
-      save();
+      if (!commit(std::move(next)))
+        return;
       rebuild();
       status(L"표시 옵션을 적용했어요.");
     }
@@ -1347,10 +1452,12 @@ LRESULT App::widgetMessage(WidgetWindow &window, UINT msg, WPARAM wp, LPARAM lp)
         GetWindowRect(hwnd, &r);
         candidate.x = snap((r.left - mi->work.left) * 96.f / mi->dpi);
         candidate.y = snap((r.top - mi->work.top) * 96.f / mi->dpi);
-        if (place(candidate))
-          *w = candidate;
+        if (place(candidate)) {
+          auto next = settings_;
+          next.widgets[size_t(w - settings_.widgets.data())] = candidate;
+          commit(std::move(next));
+        }
       }
-      save();
       position(window);
       draw(window);
       loadControls();

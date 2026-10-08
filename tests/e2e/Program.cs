@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json.Nodes;
 using App = FlaUI.Core.Application;
 
-internal static class Program
+internal static partial class Program
 {
     [DllImport("user32.dll")] static extern bool PostMessage(nint hwnd, uint msg, nint w, nint l);
     [DllImport("user32.dll")] static extern bool ShowWindow(nint hwnd, int cmd);
@@ -25,7 +25,7 @@ internal static class Program
     [DllImport("user32.dll")] static extern bool IsWindowVisible(nint window);
     [DllImport("user32.dll")] static extern bool IsIconic(nint window);
     [DllImport("user32.dll")] static extern nint GetDlgItem(nint dialog, int id);
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern bool SetWindowText(nint window, string text);
+    [DllImport("user32.dll", EntryPoint = "SendMessageW", CharSet = CharSet.Unicode)] static extern nint SendText(nint window, uint msg, nint w, string text);
     [DllImport("user32.dll")] static extern nint GetDC(nint window);
     [DllImport("user32.dll")] static extern int ReleaseDC(nint window, nint dc);
     [DllImport("gdi32.dll")] static extern bool BitBlt(nint dest, int x, int y, int width, int height, nint source, int sx, int sy, uint rop);
@@ -57,7 +57,7 @@ internal static class Program
         for (int i = 0; i < 100; i++) { Thread.Sleep(100); handle = OwnedWindow("#32770"); if (handle != 0 && IsWindowVisible(handle) && GetDlgItem(handle, 1) != 0) break; }
         Check(handle != 0 && IsWindowVisible(handle), "Native layout file dialog opens"); Thread.Sleep(1000); var dialog = Automation.FromHandle(handle);
         var nativeName = GetDlgItem(handle, 1152);
-        if (nativeName != 0) { Check(SetWindowText(nativeName, file), "Native file name entered"); PostMessage(handle, 0x111, 1, 0); Thread.Sleep(1000); return; }
+        if (nativeName != 0) { Check(SendText(nativeName, 0xC, 0, file) != 0, "Native file name entered"); PostMessage(handle, 0x111, 1, 0); Thread.Sleep(1000); return; }
         var name = dialog.FindFirstDescendant(c => c.ByAutomationId("FileNameControlHost")) ?? dialog.FindFirstDescendant(c => c.ByAutomationId("1148"));
         var edit = name?.FindFirstDescendant(c => c.ByControlType(FlaUI.Core.Definitions.ControlType.Edit)) ?? dialog.FindFirstDescendant(c => c.ByAutomationId("1152"));
         Check(edit != null, "File name control found");
@@ -65,11 +65,13 @@ internal static class Program
         var accept = GetDlgItem(handle, 1); Check(accept != 0, "File dialog accept button found"); PostMessage(accept, 0xF5, 0, 0);
         for (int i = 0; i < 100 && IsWindowVisible(handle); i++) Thread.Sleep(100);
         Check(!IsWindowVisible(handle), "File dialog completed");
+        // Dialog closure precedes the app's import/save handler completing.
+        SendMessage(Window.Properties.NativeWindowHandle, 0, 0, 0); Thread.Sleep(200);
     }
     static bool WaitExit(App app, int milliseconds) { var until = DateTime.UtcNow.AddMilliseconds(milliseconds); while (!app.HasExited && DateTime.UtcNow < until) Thread.Sleep(100); return app.HasExited; }
-    static void Screenshot(string name)
+    static void Screenshot(string name, Rectangle? area = null)
     {
-        var bounds = SystemInformation.VirtualScreen;
+        var bounds = area ?? SystemInformation.VirtualScreen;
         using var image = new Bitmap(bounds.Width, bounds.Height); using var graphics = Graphics.FromImage(image);
         var dest = graphics.GetHdc(); var source = GetDC(0);
         try { if (!BitBlt(dest, 0, 0, bounds.Width, bounds.Height, source, bounds.X, bounds.Y, 0x40CC0020)) throw new Exception("Desktop capture failed"); }
@@ -88,15 +90,31 @@ internal static class Program
     [STAThread]
     static int Main(string[] args)
     {
+        var started = DateTimeOffset.Now;
         System.Windows.Forms.Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         Root = Path.GetFullPath(args.Length > 0 ? args[0] : "."); Data = Path.Combine(Root, "test-results", "e2e-" + DateTime.Now.ToString("yyyyMMdd-HHmmss")); Directory.CreateDirectory(Data);
         Live = args.Contains("--live-smoke");
+        int savedLayoutArg = Array.IndexOf(args, "--saved-layout");
+        if (savedLayoutArg >= 0)
+        {
+            if (savedLayoutArg + 1 >= args.Length) throw new ArgumentException("--saved-layout requires a settings file");
+            File.Copy(Path.GetFullPath(args[savedLayoutArg + 1]), Path.Combine(Data, "settings.json"));
+        }
         string exe = Path.Combine(Root, "out", "release", "Tempos.TestHost.exe");
         int exeArg = Array.IndexOf(args, "--exe"); if (exeArg >= 0 && exeArg + 1 < args.Length) exe = Path.GetFullPath(args[exeArg + 1]);
         App? app = null; Automation = new UIA3Automation();
         try
         {
-            app = Start(exe); Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
+            app = Start(exe);
+            if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
+            Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
+            if (args.Contains("--design")) { DesignAudit(ref app); return 0; }
+            if (args.Contains("--persistence")) { Persistence(ref app, exe); return 0; }
+            if (args.Contains("--failures")) { Failures(ref app, exe); return 0; }
+            if (args.Contains("--options")) { Options(ref app, exe); return 0; }
+            if (args.Contains("--capacity")) { Capacity(ref app, exe); return 0; }
+            if (args.Contains("--clock-layout")) { ClockLayout(ref app); return 0; }
+            if (args.Contains("--placement")) { Placement(ref app, exe); return 0; }
             if (Live) { Thread.Sleep(4000); var state = Diagnostic(); foreach (var entry in state["windows"]!.AsArray().Where(x => new[] { 2, 3, 4 }.Contains(x!["kind"]!.GetValue<int>()))) { var summary = Automation.FromHandle(WidgetHandle(entry!)).Name; Console.WriteLine("LIVE " + summary); Check(summary.Contains('%'), "Live system usage available: " + entry!["kind"]); } Quit(app); app = null; return 0; }
             if (args.Contains("--layout")) { Tab(2); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI"); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 5, "Layout import through UI"); Quit(app); app = null; return 0; }
             if (args.Contains("--smoke"))
@@ -240,21 +258,7 @@ internal static class Program
                 Tab(2); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 1, "Layout import restores widget");
                 Quit(app); app = null; return 0;
             }
-            if (args.Contains("--stress"))
-            {
-                var add = Element(1202).Properties.NativeWindowHandle.Value; var remove = Element(1203).Properties.NativeWindowHandle.Value;
-                var list = Element(1200).Properties.NativeWindowHandle.Value;
-                using var process = Process.GetProcessById(app.ProcessId);
-                void Cycle() { SendMessage(add, 0xF5, 0, 0); if (SendMessage(list, 0x18B, 0, 0) != 6) throw new Exception("Stress add count"); SendMessage(remove, 0xF5, 0, 0); if (SendMessage(list, 0x18B, 0, 0) != 5) throw new Exception("Stress remove count"); }
-                for (int i = 0; i < 100; i++) { Cycle(); Thread.Sleep(2); }
-                Settle(300, "before"); process.Refresh(); long startPrivate = process.PrivateMemorySize64; int startHandles = process.HandleCount; uint startGdi = GetGuiResources(process.Handle, 0), startUser = GetGuiResources(process.Handle, 1);
-                for (int i = 0; i < 1000; i++) { Cycle(); Thread.Sleep(2); if ((i + 1) % 100 == 0) { process.Refresh(); Console.WriteLine($"STRESS {i + 1}/1000 private={process.PrivateMemorySize64} growth={process.PrivateMemorySize64 - startPrivate}"); } }
-                Settle(300, "after"); process.Refresh(); long growth = process.PrivateMemorySize64 - startPrivate;
-                var stress = new { cycles = 1000, warmupSeconds = 300, settleSeconds = 300, privateGrowth = growth, handleGrowth = process.HandleCount - startHandles, gdiGrowth = (long)GetGuiResources(process.Handle, 0) - startGdi, userGrowth = (long)GetGuiResources(process.Handle, 1) - startUser };
-                File.WriteAllText(Path.Combine(Data, "stress.json"), System.Text.Json.JsonSerializer.Serialize(stress)); Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(stress));
-                Check(growth <= 2 * 1024 * 1024, "1000 add/remove private growth <=2 MiB"); Check(stress.gdiGrowth <= 0 && stress.userGrowth <= 0, "1000 add/remove GDI and USER resources return to baseline");
-                Quit(app); app = null; return 0;
-            }
+            if (args.Contains("--stress")) { Stress(ref app); return 0; }
             Button(1316); Check(File.Exists(Path.Combine(Data, "settings.json")), "Settings persisted by UI");
             for (int kind = 5; kind <= 8; kind++) { Combo(1201, kind); Button(1202); }
             Check(Element(1200).AsListBox().Items.Length == 9, "All nine widget types added");
@@ -284,7 +288,7 @@ internal static class Program
         {
             if (DesktopToggled) { try { ToggleDesktop(); } catch { } }
             if (app != null) { try { var dialog = OwnedWindow("#32770"); if (dialog != 0) { PostMessage(dialog, 0x10, 0, 0); Thread.Sleep(200); } PostMessage(Window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); } catch { } app.Dispose(); }
-            Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
         }
     }
 }

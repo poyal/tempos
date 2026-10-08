@@ -136,7 +136,10 @@ bool atomicWrite(const std::filesystem::path &p, const std::string &data) {
     DeleteFileW(temp.c_str());
     return false;
   }
-  return MoveFileExW(temp.c_str(), p.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+  if (MoveFileExW(temp.c_str(), p.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+    return true;
+  DeleteFileW(temp.c_str());
+  return false;
 }
 Store::Store(std::filesystem::path root) : root_(std::move(root)) {
   if (root_.empty()) {
