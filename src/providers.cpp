@@ -354,10 +354,12 @@ Snapshot LocalMetrics::disk(const std::wstring &source) {
   }
   return s;
 }
-std::wstring providerKey(const Widget &w) {
+std::wstring providerKey(const Widget &w, WeatherProvider provider) {
   std::wstring key = std::to_wstring(int(w.kind)) + L":" + w.source;
   if (w.kind == Kind::Weather)
-    key += L":" + std::to_wstring(w.nx) + L":" + std::to_wstring(w.ny);
+    key += provider == WeatherProvider::Kma
+               ? L":kma:" + std::to_wstring(w.nx) + L":" + std::to_wstring(w.ny)
+               : L":open-meteo:" + std::to_wstring(w.latitude) + L":" + std::to_wstring(w.longitude);
   if (w.kind == Kind::Calendar) {
     key += L":" + w.timezone + L":" + std::to_wstring(int(w.size)) + L":" + std::to_wstring(w.weekStart);
     for (auto &id : w.calendars)
@@ -378,8 +380,10 @@ void ProviderService::stop() {
     thread_.join();
   remoteQueue_.stop();
 }
-void ProviderService::configure(const std::vector<Widget> &widgets, bool paused, bool energy) {
+void ProviderService::configure(const std::vector<Widget> &widgets, bool paused, bool energy,
+                                WeatherProvider provider) {
   std::lock_guard g(mutex_);
+  weatherProvider_ = provider;
   {
     std::lock_guard localGuard(localMutex_);
     auto has = [&](Kind k) {
@@ -394,13 +398,13 @@ void ProviderService::configure(const std::vector<Widget> &widgets, bool paused,
   for (auto &w : widgets) {
     if (w.kind == Kind::Clock)
       continue;
-    auto key = providerKey(w);
+    auto key = providerKey(w, provider);
     keys.insert(key);
     int period = w.interval;
     if (energy && (w.kind == Kind::Cpu || w.kind == Kind::Gpu || w.kind == Kind::Network))
       period = std::max(5, period);
     if (w.kind == Kind::Weather)
-      period = std::max(600, period);
+      period = std::max(provider == WeatherProvider::Kma ? 600 : 900, period);
     if (!periods.contains(key))
       periods[key] = period;
     else
@@ -408,6 +412,8 @@ void ProviderService::configure(const std::vector<Widget> &widgets, bool paused,
     if (!entries_.contains(key)) {
       Entry e;
       e.widget = w;
+      e.provider = provider;
+      e.data->weatherProvider = provider;
       e.generation = ++generation_;
       entries_.emplace(key, std::move(e));
     } else
@@ -436,7 +442,7 @@ size_t ProviderService::subscriptions() const {
 }
 std::shared_ptr<const Snapshot> ProviderService::snapshot(const Widget &w) {
   std::lock_guard g(mutex_);
-  auto i = entries_.find(providerKey(w));
+  auto i = entries_.find(providerKey(w, weatherProvider_));
   return i == entries_.end() ? std::make_shared<Snapshot>() : i->second.data;
 }
 std::vector<Device> ProviderService::devices(Kind k) {
@@ -456,6 +462,7 @@ void ProviderService::invalidate(Kind kind) {
       e.generation = ++generation_;
       e.busy = false;
       e.data = std::make_shared<Snapshot>();
+      e.data->weatherProvider = e.provider;
       e.due = Clock::now();
     }
   cv_.notify_all();
@@ -466,6 +473,7 @@ void ProviderService::publish(const std::wstring &key, uint64_t generation, Snap
   if (i == entries_.end() || i->second.generation != generation)
     return;
   auto &e = i->second;
+  data.weatherProvider = e.provider;
   auto old = e.data;
   double t = monotonic();
   if (e.widget.kind == Kind::Cpu || e.widget.kind == Kind::Gpu || e.widget.kind == Kind::Network) {
@@ -489,6 +497,7 @@ void ProviderService::run(std::stop_token token) {
   while (!token.stop_requested()) {
     std::wstring key;
     Widget w;
+    WeatherProvider provider = WeatherProvider::Kma;
     uint64_t generation = 0;
     {
       std::unique_lock l(mutex_);
@@ -500,6 +509,7 @@ void ProviderService::run(std::stop_token token) {
           if (e.due <= Clock::now()) {
             key = k;
             w = e.widget;
+            provider = e.provider;
             generation = e.generation;
             e.busy = true;
             break;
@@ -517,7 +527,7 @@ void ProviderService::run(std::stop_token token) {
       }
     }
     if (w.kind == Kind::Weather || w.kind == Kind::Calendar || w.kind == Kind::Disk) {
-      if (!remoteQueue_.post([this, key, w, generation](std::stop_token st) {
+      if (!remoteQueue_.post([this, key, w, generation, provider](std::stop_token st) {
             Snapshot s;
             try {
               if (fixture_) {
@@ -528,12 +538,12 @@ void ProviderService::run(std::stop_token token) {
                 s.total = 1e12;
                 s.available = 512e9;
                 if (w.kind != Kind::Disk)
-                  s = remote_(w, st);
+                  s = remote_(w, st, provider);
               } else if (w.kind == Kind::Disk) {
                 LocalMetrics diskReader;
                 s = diskReader.read(w.kind, w.source);
               } else
-                s = remote_(w, st);
+                s = remote_(w, st, provider);
             } catch (...) {
               s.status = Status::Error;
               s.message = L"자료를 읽을 수 없음";

@@ -4,6 +4,7 @@
 #include "weather.h"
 #include "calendar.h"
 #include "accessibility.h"
+#include "startup.h"
 #include <shellapi.h>
 namespace tempos {
 class App;
@@ -49,6 +50,7 @@ private:
   void updateViewport();
   void selectTab(int);
   void loadControls();
+  void weatherControls();
   void applyControls();
   void command(int, int);
   void rebuild();
@@ -81,6 +83,8 @@ private:
   NOTIFYICONDATAW tray_{};
   Store store_;
   Settings settings_;
+  StartupRegistration startup_;
+  std::filesystem::path startupRoot_;
   Renderer renderer_;
   HttpClient http_;
   WeatherService weather_;
@@ -106,6 +110,7 @@ private:
   std::wstring status_;
 #ifdef TEMPOS_TEST_HOST
   int designCase_ = -1;
+  bool startupFailure_ = false;
 #endif
 };
 } // namespace tempos

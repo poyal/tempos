@@ -56,16 +56,9 @@ internal static partial class Program
         VisibleWidgets("copied-layout-started", count, true);
         var saved = Settings().DeepClone();
         for (int i = 0; i < count; i++) { SelectWidget(i); NativeButton(1316); VisibleWidgets("copied-layout-apply-" + i, count, true); }
-        // Applying a weather region resolves its coordinates from the packaged
-        // region table; old profiles can contain the rounded default coordinates.
-        var regions = JsonNode.Parse(File.ReadAllText(Path.Combine(Root, "data", "regions.json")))!.AsArray();
-        foreach (var w in saved["widgets"]!.AsArray().Where(w => w!["kind"]!.GetValue<int>() == 1))
-        {
-            var region = regions.FirstOrDefault(r => r!["name"]!.GetValue<string>() == w!["region"]!.GetValue<string>());
-            if (region == null) continue;
-            w!["latitude"] = region["lat"]!.DeepClone(); w["longitude"] = region["lon"]!.DeepClone();
-            w["nx"] = region["nx"]!.DeepClone(); w["ny"] = region["ny"]!.DeepClone();
-        }
+        // A legacy layout gains only the explicit provider field; applying style
+        // must preserve existing coordinates when the selected region is unchanged.
+        saved["weatherProvider"] ??= "kma";
         Check(JsonNode.DeepEquals(saved, Settings()), "Applying every copied widget preserves complete saved layout");
         Button(1204);
         for (int kind = 0; kind < 9; kind++)

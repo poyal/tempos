@@ -35,13 +35,14 @@ private:
   std::map<std::wstring, NetPrevious> previous_;
   std::wstring cpuName_, osName_, pcName_;
 };
-std::wstring providerKey(const Widget &widget);
+std::wstring providerKey(const Widget &widget, WeatherProvider provider = WeatherProvider::Kma);
 class ProviderService {
 public:
-  using RemoteRead = std::function<Snapshot(const Widget &, std::stop_token)>;
+  using RemoteRead = std::function<Snapshot(const Widget &, std::stop_token, WeatherProvider)>;
   ProviderService(HWND notify, RemoteRead remote, bool fixture = false);
   ~ProviderService();
-  void configure(const std::vector<Widget> &widgets, bool paused, bool energySaving = false);
+  void configure(const std::vector<Widget> &widgets, bool paused, bool energySaving = false,
+                 WeatherProvider provider = WeatherProvider::Kma);
   std::shared_ptr<const Snapshot> snapshot(const Widget &widget);
   std::vector<Device> devices(Kind kind);
   void refresh();
@@ -52,6 +53,7 @@ public:
 private:
   struct Entry {
     Widget widget;
+    WeatherProvider provider = WeatherProvider::Kma;
     int interval{};
     Clock::time_point due{};
     bool busy = false;
@@ -69,6 +71,7 @@ private:
   RemoteRead remote_;
   HWND notify_{};
   bool paused_ = false, fixture_ = false;
+  WeatherProvider weatherProvider_ = WeatherProvider::Kma;
   uint64_t generation_ = 0;
   std::jthread thread_;
 };

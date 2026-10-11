@@ -78,6 +78,7 @@ Widget readWidget(const Json &j) {
 }
 Json settingsJson(const Settings &s, bool exporting) {
   Json j = {{"version", 1}, {"theme", s.theme}, {"widgets", Json::array()}};
+  j["weatherProvider"] = s.weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
   if (!exporting)
     j["hidden"] = s.hidden;
   for (auto &w : s.widgets)
@@ -88,6 +89,10 @@ Settings readSettings(const Json &j) {
   if (j.value("version", 0) != 1)
     throw std::runtime_error("Unsupported settings version");
   Settings s;
+  auto provider = j.value("weatherProvider", std::string("kma"));
+  if (provider != "kma" && provider != "open-meteo")
+    throw std::runtime_error("Invalid weather provider");
+  s.weatherProvider = provider == "kma" ? WeatherProvider::Kma : WeatherProvider::OpenMeteo;
   s.theme = j.value("theme", 1);
   s.hidden = j.value("hidden", false);
   if (s.theme < 0 || s.theme >= 9)

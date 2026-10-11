@@ -5,6 +5,9 @@
 #include <psapi.h>
 #include <commdlg.h>
 #include <fstream>
+#ifdef TEMPOS_TEST_HOST
+#include "weather_fixture.h"
+#endif
 namespace tempos {
 constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3;
 static LRESULT CALLBACK gridProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
@@ -118,11 +121,20 @@ void App::updateViewport() {
   }
 }
 App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visible)
-    : instance_(instance), store_(root), settings_(store_.load()), weather_(store_, http_, fixture),
-      calendar_(store_, http_, fixture), fixture_(fixture), visible_(visible) {
+    : instance_(instance), store_(root), settings_(store_.load()),
+      startupRoot_(root.empty() ? root : std::filesystem::absolute(root)),
+#ifdef TEMPOS_TEST_HOST
+      http_(fixture ? weatherFixture(store_.root()) : HttpClient::Transport{}),
+#endif
+      weather_(store_, http_, fixture), calendar_(store_, http_, fixture), fixture_(fixture),
+      visible_(visible) {
   if (!renderer_.ready())
     throw std::runtime_error("renderer");
   monitors_ = monitors();
+#ifdef TEMPOS_TEST_HOST
+  startup_ = StartupRegistration(L"Software\\Tempos\\Tests\\" +
+                                 std::to_wstring(std::hash<std::wstring>{}(store_.root().wstring())));
+#endif
 }
 App::~App() {
   closing_ = true;
@@ -211,8 +223,8 @@ int App::run() {
                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
   providers_ = std::make_unique<ProviderService>(
       main_,
-      [this](const Widget &w, std::stop_token stop) {
-        return w.kind == Kind::Weather ? weather_.read(w, stop) : calendar_.read(w, stop);
+      [this](const Widget &w, std::stop_token stop, WeatherProvider provider) {
+        return w.kind == Kind::Weather ? weather_.read(w, stop, provider) : calendar_.read(w, stop);
       },
       fixture_);
   WTSRegisterSessionNotification(main_, NOTIFY_FOR_THIS_SESSION);
@@ -337,22 +349,29 @@ void App::buildSettings() {
   button(L"이전 달", 253, 628, 113, 1317, 0);
   button(L"오늘", 375, 628, 100, 1318, 0);
   button(L"다음 달", 484, 628, 113, 1319, 0);
-  label(L"기상청 API허브 인증키", 27, 67, 760, 1);
-  edit(27, 100, 775, 1400, 1, true);
-  button(L"날씨 인증키 저장", 27, 143, 224, 1401, 1);
-  button(L"API허브 열기", 264, 143, 224, 1402, 1);
-  label(L"개인 키를 PC에 암호화해 저장합니다. 공공데이터포털 ServiceKey와 다릅니다.", 27, 190, 777, 1);
-  label(L"Google 캘린더 · 일정 조회 전용", 27, 245, 777, 1);
-  label(L"데스크톱 앱 OAuth 클라이언트 ID", 27, 281, 777, 1);
-  edit(27, 308, 775, 1410, 1);
-  label(L"클라이언트 보안 비밀 (발급 정보에 있을 때 입력)", 27, 346, 777, 1);
-  edit(27, 373, 775, 1411, 1, true);
-  button(L"브라우저에서 연결", 27, 416, 224, 1412, 1);
-  button(L"연결 해제", 264, 416, 224, 1413, 1);
-  label(L"표시할 캘린더 (여러 개 선택 가능)", 27, 466, 777, 1);
-  create(L"LISTBOX", L"", WS_TABSTOP | WS_BORDER | WS_VSCROLL | LBS_EXTENDEDSEL, 27, 495, 580, 151, 1414, 1);
-  button(L"캘린더 선택 저장", 620, 495, 182, 1415, 1);
-  create(L"STATIC", calendar_.account().status, 0, 27, 658, 777, 25, 1416, 1);
+  label(L"날씨 서비스 · 모든 날씨 위젯에 적용", 27, 67, 777, 1);
+  auto weatherProvider = combo(27, 94, 450, 1403, 1);
+  addItem(weatherProvider, L"기상청");
+  addItem(weatherProvider, L"Open-Meteo");
+  button(L"날씨 서비스 적용", 496, 94, 304, 1404, 1);
+  create(L"STATIC", L"", 0, 27, 136, 777, 26, 1405, 1);
+  label(L"기상청 API허브 인증키", 27, 173, 777, 1);
+  edit(27, 201, 775, 1400, 1, true);
+  button(L"날씨 인증키 저장", 27, 244, 224, 1401, 1);
+  button(L"날씨 서비스 안내", 264, 244, 224, 1402, 1);
+  label(L"기상청 키는 PC에 암호화해 보관합니다. 공공데이터포털 ServiceKey와 다릅니다.", 27, 285, 777, 1);
+  label(L"Google 캘린더 · 일정 조회 전용", 27, 330, 777, 1);
+  label(L"데스크톱 앱 OAuth 클라이언트 ID", 27, 365, 777, 1);
+  edit(27, 392, 775, 1410, 1);
+  label(L"클라이언트 보안 비밀 (발급 정보에 있을 때 입력)", 27, 431, 777, 1);
+  edit(27, 458, 775, 1411, 1);
+  button(L"브라우저에서 연결", 27, 500, 224, 1412, 1);
+  button(L"연결 해제", 264, 500, 224, 1413, 1);
+  label(L"표시할 캘린더 (여러 개 선택 가능)", 27, 546, 777, 1);
+  create(L"LISTBOX", L"", WS_TABSTOP | WS_BORDER | WS_VSCROLL | LBS_EXTENDEDSEL, 27, 575, 580, 83, 1414, 1);
+  button(L"캘린더 선택 저장", 620, 575, 182, 1415, 1);
+  create(L"STATIC", calendar_.account().status, 0, 27, 666, 777, 25, 1416, 1);
+  weatherControls();
   label(L"전체 테마", 27, 71, 777, 2);
   auto global = combo(27, 103, 450, 1500, 2);
   for (auto &p : palettes())
@@ -360,13 +379,7 @@ void App::buildSettings() {
   SendMessageW(global, CB_SETCURSEL, settings_.theme, 0);
   button(L"전체 테마 적용", 496, 102, 304, 1501, 2);
   check(L"Windows 로그인 시 시작", 27, 168, 550, 1502, 2);
-  HKEY runKey{};
-  if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ,
-                    &runKey) == ERROR_SUCCESS) {
-    if (RegQueryValueExW(runKey, L"Tempos", nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS)
-      SendMessageW(control(1502), BM_SETCHECK, BST_CHECKED, 0);
-    RegCloseKey(runKey);
-  }
+  SendMessageW(control(1502), BM_SETCHECK, startup_.enabled() ? BST_CHECKED : BST_UNCHECKED, 0);
   button(L"레이아웃 내보내기", 27, 225, 363, 1503, 2);
   button(L"레이아웃 가져오기", 408, 225, 392, 1504, 2);
   button(L"진단 정보 저장", 27, 279, 363, 1505, 2);
@@ -393,11 +406,21 @@ void App::buildSettings() {
   selectTab(0);
   updateViewport();
 }
+void App::weatherControls() {
+  SendMessageW(control(1403), CB_SETCURSEL, int(settings_.weatherProvider), 0);
+  bool kma = settings_.weatherProvider == WeatherProvider::Kma;
+  EnableWindow(control(1400), kma);
+  EnableWindow(control(1401), kma);
+  SetWindowTextW(control(1405),
+                 kma ? L"기상청: 개인 인증키 필요 · 외부 요청 최소 10분 (5분 선택 시 캐시 사용)"
+                     : L"Open-Meteo: 키 없이 사용 · 비상업적 이용 · 외부 요청 최소 15분");
+}
 void App::selectTab(int tab) {
   tab_ = tab;
   for (auto &[hwnd, page] : controls_)
     ShowWindow(hwnd, page < 0 || page == tab ? SW_SHOW : SW_HIDE);
   if (tab == 1) {
+    weatherControls();
     SetWindowTextW(control(1416), calendar_.account().status.c_str());
     auto account = calendar_.account();
     SendMessageW(control(1414), LB_RESETCONTENT, 0, 0);
@@ -594,7 +617,7 @@ void App::applyControls() {
     }
     if (w.kind == Kind::Weather) {
       int i = choice(1314);
-      if (i >= 0 && i < int(regions_.size())) {
+      if (i >= 0 && i < int(regions_.size()) && regions_[i].name != w.region) {
         auto &r = regions_[i];
         w.region = r.name;
         w.nx = r.nx;
@@ -723,10 +746,11 @@ void App::rebuild() {
     }
     position(window);
     ShowWindow(window.hwnd, settings_.hidden || !window.placed ? SW_HIDE : SW_SHOWNOACTIVATE);
-    if (!settings_.hidden && window.placed)
-      draw(window);
   }
   configure();
+  for (auto &window : windows_)
+    if (!settings_.hidden && window->placed)
+      draw(*window);
   updateList();
   armTimer();
 }
@@ -793,7 +817,8 @@ void App::configure() {
       active.push_back(w);
   SYSTEM_POWER_STATUS power{};
   bool saving = GetSystemPowerStatus(&power) && power.SystemStatusFlag == 1;
-  providers_->configure(active, settings_.hidden || suspended_ || sessionLocked_, saving);
+  providers_->configure(active, settings_.hidden || suspended_ || sessionLocked_, saving,
+                        settings_.weatherProvider);
 }
 void App::draw(WidgetWindow &window) {
   auto *w = find(window.id);
@@ -839,6 +864,7 @@ void App::draw(WidgetWindow &window) {
                            : weather->sky == 4 ? L"흐림"
                            : weather->sky == 0 ? L"하늘 상태 정보 없음"
                                                : L"맑음";
+      weather->state = kmaWeatherState(weather->rain, weather->sky);
       sample->weather = weather;
       if (designCase_ == 8) {
         sample->weather.reset();
@@ -1013,6 +1039,18 @@ void App::command(int id, int notification) {
   std::ofstream trace(store_.root() / L"commands.log", std::ios::app);
   trace << id << " " << notification << "\n";
   trace.close();
+  if (fixture_ && id == 1914) {
+    startupFailure_ = !startupFailure_;
+    return;
+  }
+  if (fixture_ && id == 1913) {
+    actions_.post([this](std::stop_token) {
+      weather_.invalidate();
+      providers_->invalidate(Kind::Weather);
+      PostMessageW(main_, WM_ACTION, 0, 0);
+    });
+    return;
+  }
   if (fixture_ && id >= 1900 && id <= 1912) {
     designCase_ = id == 1912 ? -1 : id - 1900;
     for (auto &window : windows_)
@@ -1050,6 +1088,17 @@ void App::command(int id, int notification) {
     auto *w = find(selected_);
     if (w && w->kind == Kind::Calendar)
       calendarMonth(*w, id == 1317 ? -1 : id == 1318 ? 0 : 1);
+  } else if (id == 1404) {
+    auto next = settings_;
+    int selected = choice(1403);
+    if (selected < 0 || selected > 1)
+      return;
+    next.weatherProvider = WeatherProvider(selected);
+    if (commit(std::move(next))) {
+      rebuild();
+      status(L"날씨 서비스를 모든 날씨 위젯에 적용했어요.");
+    }
+    weatherControls();
   } else if (id == 1401) {
     auto key = utf8(input(1400));
     if (key.empty() || key.size() > 1024) {
@@ -1068,7 +1117,10 @@ void App::command(int id, int notification) {
       status(L"인증키 저장 실패");
     SecureZeroMemory(key.data(), key.size());
   } else if (id == 1402)
-    ShellExecuteW(main_, L"open", L"https://apihub.kma.go.kr/", nullptr, nullptr, SW_SHOWNORMAL);
+    ShellExecuteW(main_, L"open",
+                  settings_.weatherProvider == WeatherProvider::Kma ? L"https://apihub.kma.go.kr/"
+                                                                    : L"https://open-meteo.com/en/terms",
+                  nullptr, nullptr, SW_SHOWNORMAL);
   else if (id == 1412) {
     auto client = utf8(input(1410));
     if (client.empty() || client.find(".apps.googleusercontent.com") == std::string::npos) {
@@ -1116,24 +1168,19 @@ void App::command(int id, int notification) {
       status(L"전체 테마를 적용했어요.");
     }
   } else if (id == 1502) {
-    HKEY key{};
-    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, nullptr,
-                        0, KEY_SET_VALUE, nullptr, &key, nullptr) == ERROR_SUCCESS) {
-      LONG result;
-      if (checked(1502)) {
-        wchar_t exe[MAX_PATH]{};
-        GetModuleFileNameW(nullptr, exe, MAX_PATH);
-        std::wstring value = L"\"" + std::wstring(exe) + L"\"";
-        result = RegSetValueExW(key, L"Tempos", 0, REG_SZ, reinterpret_cast<const BYTE *>(value.c_str()),
-                                DWORD((value.size() + 1) * sizeof(wchar_t)));
-      } else {
-        result = RegDeleteValueW(key, L"Tempos");
-        if (result == ERROR_FILE_NOT_FOUND)
-          result = ERROR_SUCCESS;
-      }
-      RegCloseKey(key);
-      status(result == ERROR_SUCCESS ? L"시작 설정을 저장했어요." : L"시작 설정 저장 실패");
-    }
+    wchar_t exe[32768]{};
+    DWORD size = GetModuleFileNameW(nullptr, exe, DWORD(std::size(exe)));
+    auto registration = startup_;
+#ifdef TEMPOS_TEST_HOST
+    if (startupFailure_)
+      registration = StartupRegistration(L"", nullptr);
+#endif
+    LONG result = size && size < std::size(exe)
+                      ? registration.set(checked(1502), startupCommand(exe, startupRoot_))
+                      : ERROR_BAD_PATHNAME;
+    SendMessageW(control(1502), BM_SETCHECK, startup_.enabled() ? BST_CHECKED : BST_UNCHECKED, 0);
+    status(result == ERROR_SUCCESS ? L"시작 설정을 저장했어요."
+                                   : L"시작 설정 저장 실패 · 기존 상태를 유지했어요.");
   } else if (id == 1503 || id == 1504) {
     wchar_t path[MAX_PATH] = L"tempos-layout.json";
     OPENFILENAMEW ofn{sizeof ofn};
@@ -1527,6 +1574,10 @@ void App::diagnose() {
   j["softwareRendering"] = renderer_.software();
   j["hidden"] = settings_.hidden;
   j["fixture"] = fixture_;
+  j["weatherProvider"] = settings_.weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
+#ifdef TEMPOS_TEST_HOST
+  j["startupRegistryKey"] = utf8(startup_.key());
+#endif
   j["trayRegistered"] = trayAdded_;
   j["monitors"] = Json::array();
   for (auto &m : monitors_)
@@ -1556,6 +1607,14 @@ void App::diagnose() {
                             {"height", r.bottom - r.top},
                             {"dpi", window->dpi},
                             {"windowDpi", GetDpiForWindow(window->hwnd)}});
+    if (w && w->kind == Kind::Weather) {
+      auto data = providers_->snapshot(*w);
+      j["windows"].back()["weatherProvider"] =
+          data->weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
+      j["windows"].back()["weatherStatus"] = int(data->status);
+      j["windows"].back()["weatherTemperature"] = data->weather ? Json(data->weather->temperature) : Json();
+      j["windows"].back()["weatherState"] = data->weather ? int(data->weather->state) : 0;
+    }
   }
   if (atomicWrite(store_.root() / L"diagnostics.json", j.dump(2)))
     status(L"diagnostics.json을 데이터 폴더에 저장했어요.");
@@ -1592,15 +1651,23 @@ void App::details(const Widget &w, std::optional<std::chrono::year_month_day> da
     body = w.region + L"\r\n\r\n";
     if (data->weather) {
       auto &d = *data->weather;
-      body += d.condition + L"  " + number(d.temperature) + L"°C\r\n습도 " + number(d.humidity) +
-              L"%\r\n바람 " + number(d.wind, 1) + L" m/s\r\n최저 / 최고 " + number(d.low) + L"° / " +
-              number(d.high) + L"°\r\n";
+      auto temperature = [&](double value) { return number(w.fahrenheit ? value * 1.8 + 32 : value); };
+      auto unit = w.fahrenheit ? L"°F" : L"°C";
+      body += d.condition + L"  " + temperature(d.temperature) + unit + L"\r\n습도 " + number(d.humidity) +
+              L"%\r\n바람 " + number(d.wind, 1) + L" m/s\r\n최저 / 최고 " + temperature(d.low) + L"° / " +
+              temperature(d.high) + unit + L"\r\n";
       if (d.observed)
-        body += L"관측 시각 (UTC) " + wide(rfc3339(d.observed)) + L"\r\n";
+        body += (data->weatherProvider == WeatherProvider::Kma ? L"관측 시각 (UTC) " : L"자료 시각 (UTC) ") +
+                wide(rfc3339(d.observed)) + L"\r\n";
       if (d.skyForecast)
         body += L"하늘 상태: 초단기예보 기준\r\n";
     }
-    body += L"\r\n자료: 기상청\r\nhttps://apihub.kma.go.kr/\r\n" + data->message;
+    body += L"\r\n" + weatherSource(data->weatherProvider) + L"\r\n";
+    body += data->weatherProvider == WeatherProvider::Kma
+                ? L"https://apihub.kma.go.kr/\r\n"
+                : L"모델 기반 현재값·예보 (직접 관측값이 아닙니다)\r\nhttps://open-meteo.com/\r\nCC BY 4.0 · "
+                  L"단위·날씨 코드 변환 표시\r\n";
+    body += data->message;
   }
   UINT dpi = GetDpiForWindow(main_);
   auto hwnd = CreateWindowExW(0, L"Tempos.Details", title.c_str(), WS_OVERLAPPEDWINDOW | WS_VISIBLE,

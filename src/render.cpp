@@ -221,17 +221,36 @@ void Renderer::analog(const Widget &w, int64_t now, float cx, float cy, float ra
   hand(minute / 60, .73f, 2.5f);
   dot(cx, cy, 3, 0xffffff);
 }
-void Renderer::weatherIcon(int sky, int rain, bool night, float x, float y, float scale) {
+void Renderer::weatherIcon(WeatherState state, bool night, float x, float y, float scale) {
+  int sky = state == WeatherState::Clear     ? 1
+            : state == WeatherState::Cloudy  ? 3
+            : state == WeatherState::Unknown ? 0
+                                             : 4;
+  int rain = state == WeatherState::Snow ? 3
+             : state == WeatherState::Rain || state == WeatherState::Sleet ||
+                     state == WeatherState::Showers || state == WeatherState::Drizzle ||
+                     state == WeatherState::Thunder
+                 ? 1
+                 : 0;
   auto circle = [&](float dx, float dy, float r, uint32_t rgb) {
     dot(x + dx * scale, y + dy * scale, r * scale, rgb);
   };
   if (rain > 0 || sky >= 3) {
     if (night)
-      weatherIcon(1, 0, true, x + 19 * scale, y - 20 * scale, .6f * scale);
+      weatherIcon(WeatherState::Clear, true, x + 19 * scale, y - 20 * scale, .6f * scale);
     circle(-10, 0, 14, 0xf2f4ff);
     circle(7, -4, 19, 0xf2f4ff);
     bar(x - 26 * scale, y, 55 * scale, 15 * scale, 0xf2f4ff, 1, 8 * scale);
-    if (rain > 0)
+    if (state == WeatherState::Fog)
+      for (int i = 0; i < 3; ++i)
+        line(x - 25 * scale, y + (21 + i * 7) * scale, x + 25 * scale, y + (21 + i * 7) * scale, 0xdce5ed,
+             .9f, 2 * scale);
+    if (state == WeatherState::Thunder) {
+      line(x + 4 * scale, y + 13 * scale, x - 5 * scale, y + 27 * scale, 0xffda67, 1, 4 * scale);
+      line(x - 5 * scale, y + 27 * scale, x + 4 * scale, y + 27 * scale, 0xffda67, 1, 4 * scale);
+      line(x + 4 * scale, y + 27 * scale, x - 5 * scale, y + 41 * scale, 0xffda67, 1, 4 * scale);
+    }
+    if (rain > 0 && state != WeatherState::Thunder)
       for (int i = -1; i <= 1; ++i)
         if (rain == 3 || rain == 7)
           circle(float(i * 15), 27, 3, 0xffffff);
@@ -292,10 +311,12 @@ std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
   }
   if (!s)
     return out + L" 불러오는 중";
-  if (w.kind == Kind::Weather && s->weather) {
-    double temperature = w.fahrenheit ? s->weather->temperature * 1.8 + 32 : s->weather->temperature;
-    out += L" " + w.region + L" " + number(temperature) + (w.fahrenheit ? L"°F " : L"°C ") +
-           s->weather->condition + L" 자료: 기상청";
+  if (w.kind == Kind::Weather) {
+    out += L" " + w.region + L" " + weatherSource(s->weatherProvider);
+    if (s->weather) {
+      double temperature = w.fahrenheit ? s->weather->temperature * 1.8 + 32 : s->weather->temperature;
+      out += L" " + number(temperature) + (w.fahrenheit ? L"°F " : L"°C ") + s->weather->condition;
+    }
   } else if (w.kind == Kind::Network && std::isfinite(s->value)) {
     auto rate = [&](double value) {
       return w.networkBytes ? formatBytes(value) + L"/s" : number(value * 8 / 1e6, 2) + L" Mbps";
@@ -312,7 +333,9 @@ std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
 void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   auto d = s ? s->weather : nullptr;
   float pad = w.size == Size::Slim ? 16 : 20;
-  bool stale = d && nowUnix() - (d->observed > 0 ? d->observed : d->fetched) > 7200;
+  bool stale = s && (s->status == Status::Stale ||
+                     (d && nowUnix() - (d->observed > 0 ? d->observed : d->fetched) > 7200));
+  auto source = weatherSource(s ? s->weatherProvider : WeatherProvider::Kma);
   std::wstring place = w.region;
   if (auto p = place.find_last_of(L' '); p != std::wstring::npos)
     place = place.substr(p + 1);
@@ -321,7 +344,7 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   if (!d || !std::isfinite(d->temperature)) {
     text(s ? s->message : L"날씨 불러오는 중", pad, w.size == Size::Slim ? 28 : 57, e.width - 2 * pad,
          w.size == Size::Slim ? 24 : 68, w.size == Size::Slim ? 12 : 15);
-    text(L"자료: 기상청", pad, e.height - 21, e.width - 2 * pad, 18, 10);
+    text(source, pad, e.height - 21, e.width - 2 * pad, 18, 10);
     return;
   }
   double temperature = w.fahrenheit ? d->temperature * 1.8 + 32 : d->temperature;
@@ -331,13 +354,9 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   float iconX = w.size == Size::S ? 121.f : e.width - 52, iconY = w.size == Size::S      ? 30.f
                                                                   : w.size == Size::Slim ? 30.f
                                                                                          : 65.f;
-  weatherIcon(d->sky, d->rain, d->night, iconX, iconY,
-              w.size == Size::S      ? .5f
-              : w.size == Size::Slim ? .7f
-                                     : 1.f);
+  weatherIcon(d->state, d->night, iconX, iconY, w.size == Size::S ? .5f : w.size == Size::Slim ? .7f : 1.f);
   if (w.size != Size::Slim) {
-    text(d->rain == 0 && d->sky != 1 && d->sky < 3 ? L"상태 정보 없음" : d->condition, pad, 103,
-         w.size == Size::S ? 120.f : 99.f, 23, 13);
+    text(d->condition, pad, 103, w.size == Size::S ? 120.f : 99.f, 23, 13);
     if (w.size != Size::S) {
       text(L"최저 " + number(w.fahrenheit ? d->low * 1.8 + 32 : d->low) + L"°   최고 " +
                number(w.fahrenheit ? d->high * 1.8 + 32 : d->high) + L"°",
@@ -357,7 +376,7 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
           double hour = duration<double, std::ratio<3600>>(local - floor<days>(local)).count();
           bool night = std::isfinite(sun.first) && std::isfinite(sun.second) &&
                        (hour < sun.first || hour >= sun.second);
-          weatherIcon(h.sky, h.rain, night, x + 28, 220, .38f);
+          weatherIcon(h.state, night, x + 28, 220, .38f);
           text(number(w.fahrenheit ? h.temperature * 1.8 + 32 : h.temperature) + L"°", x, 242, 70, 28, 21,
                true);
           text(std::isfinite(h.probability) ? number(h.probability) + L"%" : L"—", x, 278, 70, 20, 12);
@@ -365,7 +384,9 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
       }
     }
   }
-  text(stale ? L"자료: 기상청 · 갱신 지연" : L"자료: 기상청", pad, e.height - 22, e.width - 2 * pad, 18, 10);
+  text(source, pad, e.height - 22, e.width - 2 * pad, 18, 10);
+  if (stale)
+    text(L"갱신 지연", e.width - 77, w.size == Size::Slim ? 8 : 16, 66, 20, 10);
 }
 void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
   auto today = localDate(nowUnix(), w.timezone);
@@ -583,15 +604,18 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
   if (w.kind == Kind::Weather && w.weatherAuto && data && data->weather && data->weather->fetched &&
       nowUnix() - (data->weather->observed > 0 ? data->weather->observed : data->weather->fetched) < 7200) {
     auto &d = *data->weather;
-    if (d.rain == 3 || d.rain == 7)
+    if (d.state == WeatherState::Snow)
       palette = d.night ? Palette{L"눈 오는 밤", 0x293951, 0x576884} : Palette{L"눈", 0x7b9fb8, 0xb2cbdc};
-    else if (d.rain > 0)
+    else if (d.state == WeatherState::Rain || d.state == WeatherState::Sleet ||
+             d.state == WeatherState::Showers || d.state == WeatherState::Drizzle ||
+             d.state == WeatherState::Thunder)
       palette = d.night ? Palette{L"비 오는 밤", 0x233750, 0x45577b} : Palette{L"비", 0x3a5978, 0x7a96ba};
-    else if (d.night)
+    else if (d.night && d.state != WeatherState::Unknown)
       palette = {L"밤", 0x192d63, 0x535089};
-    else if (d.sky >= 3)
+    else if (d.state == WeatherState::Cloudy || d.state == WeatherState::Overcast ||
+             d.state == WeatherState::Fog)
       palette = {L"구름", 0x6b92b1, 0xa6bccd};
-    else if (d.sky == 1)
+    else if (d.state == WeatherState::Clear)
       palette = {L"맑음", 0x3f91d9, 0x91c9ee};
   }
   if (highContrast_) {

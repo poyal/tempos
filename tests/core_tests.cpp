@@ -24,9 +24,13 @@ template <class F> void throws(F fn, const char *name) {
   }
   check(threw, name);
 }
-int main() {
+void weatherTests();
+int liveWeatherProbe();
+int main(int argc, char **argv) {
   CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   try {
+    if (argc == 2 && std::string_view(argv[1]) == "--live-weather")
+      return liveWeatherProbe();
     for (const auto &palette : palettes())
       check(design::whiteContrast(design::readableSurface(palette.top)) >= 4.5 &&
                 design::whiteContrast(design::readableSurface(palette.bottom)) >= 4.5,
@@ -213,6 +217,7 @@ int main() {
       return j.dump();
     };
     auto todayKst = localDate(nowUnix(), L"Asia/Seoul");
+    const auto observationBase = kmaBase(nowUnix(), 0);
     char dateText[16]{};
     sprintf_s(dateText, "%04d%02u%02u", int(todayKst.year()), unsigned(todayKst.month()),
               unsigned(todayKst.day()));
@@ -227,8 +232,8 @@ int main() {
                      {"T1H", "0"}, {"REH", "85"}, {"PTY", "3"}, {"WSD", "1.2"}})
               items.push_back({{"category", pair.first},
                                {"obsrValue", pair.second},
-                               {"baseDate", dateText},
-                               {"baseTime", "0000"}});
+                               {"baseDate", observationBase.date},
+                               {"baseTime", observationBase.time}});
           } else if (path.find(L"getVilageFcst") != std::wstring::npos) {
             items.push_back({{"category", "TMN"}, {"fcstValue", "-3"}, {"fcstDate", dateText}});
             items.push_back({{"category", "TMX"}, {"fcstValue", "4"}, {"fcstDate", dateText}});
@@ -276,8 +281,8 @@ int main() {
                        {"obsrValue", second        ? "2.5"
                                      : pageFailure ? "17"
                                                    : "10"},
-                       {"baseDate", dateText},
-                       {"baseTime", "0100"}});
+                       {"baseDate", observationBase.date},
+                       {"baseTime", observationBase.time}});
       auto page = Json::parse(envelope(items));
       page["response"]["body"]["pageNo"] = second ? 2 : 1;
       page["response"]["body"]["totalCount"] = 2;
@@ -372,6 +377,7 @@ int main() {
     auto staleResponse = raced.read(calendarWidget, {});
     check(staleResponse.calendar->events.empty() && store.secret(L"calendar-events").empty(),
           "late calendar response cannot resurrect disconnected data");
+    weatherTests();
     std::cout << "PASS " << passed << " checks\n";
     CoUninitialize();
     return 0;

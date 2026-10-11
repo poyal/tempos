@@ -30,6 +30,22 @@ std::wstring newId();
 enum class Kind { Clock, Weather, Cpu, Gpu, Memory, System, Network, Disk, Calendar };
 enum class Size { S, Slim, M, L, XL };
 enum class Status { Loading, Ready, Stale, Unavailable, Error };
+enum class WeatherProvider { Kma, OpenMeteo };
+enum class WeatherState {
+  Unknown,
+  Clear,
+  Cloudy,
+  Overcast,
+  Rain,
+  Sleet,
+  Snow,
+  Showers,
+  Drizzle,
+  Fog,
+  Thunder
+};
+std::wstring weatherSource(WeatherProvider provider);
+WeatherState kmaWeatherState(int rain, int sky);
 constexpr size_t KindCount = 9;
 std::wstring_view kindName(Kind kind);
 std::wstring_view sizeName(Size size);
@@ -74,6 +90,7 @@ struct Widget {
 };
 struct Settings {
   int version = 1, theme = 1;
+  WeatherProvider weatherProvider = WeatherProvider::OpenMeteo;
   bool edit = false, hidden = false;
   std::vector<Widget> widgets;
 };
@@ -114,12 +131,14 @@ struct WeatherHour {
   int64_t time{};
   double temperature = NAN, probability = NAN;
   int sky{}, rain{};
+  WeatherState state = WeatherState::Unknown;
 };
 struct WeatherData {
   double temperature = NAN, low = NAN, high = NAN, humidity = NAN, wind = NAN;
   int sky{}, rain{};
   int64_t observed{}, fetched{};
   bool night = false, skyForecast = false;
+  WeatherState state = WeatherState::Unknown;
   std::wstring condition;
   std::vector<WeatherHour> hours;
 };
@@ -137,6 +156,7 @@ struct CalendarData {
 };
 struct Snapshot {
   Status status = Status::Loading;
+  WeatherProvider weatherProvider = WeatherProvider::Kma;
   std::wstring title, detail, extra, message;
   double value = NAN, secondary = NAN, total = NAN, available = NAN;
   double sampledAt{};

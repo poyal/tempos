@@ -3,6 +3,29 @@
 #include <stdexcept>
 namespace tempos {
 using namespace std::chrono;
+std::wstring weatherSource(WeatherProvider provider) {
+  return provider == WeatherProvider::Kma ? L"자료: 기상청" : L"자료: Open-Meteo";
+}
+WeatherState kmaWeatherState(int rain, int sky) {
+  switch (rain) {
+  case 1:
+    return WeatherState::Rain;
+  case 2:
+  case 6:
+    return WeatherState::Sleet;
+  case 3:
+  case 7:
+    return WeatherState::Snow;
+  case 4:
+    return WeatherState::Showers;
+  case 5:
+    return WeatherState::Drizzle;
+  }
+  return sky == 1   ? WeatherState::Clear
+         : sky == 3 ? WeatherState::Cloudy
+         : sky == 4 ? WeatherState::Overcast
+                    : WeatherState::Unknown;
+}
 static std::string compactDate(sys_days day) {
   year_month_day d{day};
   char b[20]{};
@@ -105,6 +128,9 @@ void WeatherService::invalidate() {
   cache_.clear();
   retries_.clear();
   blockedUntil_ = 0;
+  openDue_.clear();
+  openFailures_.clear();
+  openBlockedUntil_ = 0;
 }
 std::vector<Json> WeatherService::fetch(const Widget &w, int product, std::stop_token stop, int64_t now,
                                         bool previous) {
@@ -114,7 +140,7 @@ std::vector<Json> WeatherService::fetch(const Widget &w, int product, std::stop_
   auto old = cache_.find(id);
   if (old != cache_.end() && (product == 2 || nowUnix() - old->second.at < 600))
     return Json::parse(old->second.items).get<std::vector<Json>>();
-  auto key = store_.secret(L"weather-key");
+  auto key = fixture_ ? std::string("fixture") : store_.secret(L"weather-key");
   if (key.empty())
     throw std::runtime_error("KEY_REQUIRED");
   if (nowUnix() < blockedUntil_)
@@ -216,8 +242,10 @@ static int64_t forecastTime(const Json &j) {
   return parseRfc3339(date.substr(0, 4) + "-" + date.substr(4, 2) + "-" + date.substr(6, 2) + "T" +
                       time.substr(0, 2) + ":" + time.substr(2, 2) + ":00+09:00");
 }
-Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
+Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProvider provider) {
   std::lock_guard g(mutex_);
+  if (provider == WeatherProvider::OpenMeteo)
+    return readOpenMeteo(w, stop);
   Snapshot s;
   s.title = w.region;
   WeatherData d;
@@ -238,6 +266,7 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
           saved.rain = v.value("rain", 0);
           saved.sky = v.value("sky", 0);
           saved.condition = weatherCondition(saved.rain, saved.sky);
+          saved.state = kmaWeatherState(saved.rain, saved.sky);
           for (auto field : {"low", "high", "humidity", "wind"})
             if (v.contains(field) && v[field].is_number()) {
               double value = v[field].get<double>();
@@ -257,17 +286,7 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
     }
   }
   try {
-    if (fixture_) {
-      d.temperature = 21;
-      d.low = 16;
-      d.high = 24;
-      d.humidity = 62;
-      d.wind = 2.1;
-      d.sky = 1;
-      d.observed = d.fetched = now;
-      for (int i = 1; i <= 6; ++i)
-        d.hours.push_back({now + i * 3600, 21. - i, 10., 1, 0});
-    } else {
+    {
       auto obs = fetch(w, 0, stop, now);
       for (auto &j : obs) {
         auto c = j.value("category", std::string{});
@@ -287,7 +306,8 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
                                       "T" + time.substr(0, 2) + ":" + time.substr(2, 2) + ":00+09:00");
         }
       }
-      if (!std::isfinite(d.temperature))
+      if (!std::isfinite(d.temperature) || d.observed <= 0 || d.observed > now + 300 ||
+          now - d.observed >= 86400)
         throw std::runtime_error("NO_DATA");
       std::map<int64_t, WeatherHour> hourly;
       try {
@@ -309,6 +329,7 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
             h.rain = int(v);
         }
         for (auto &[t, h] : hourly) {
+          h.state = kmaWeatherState(h.rain, h.sky);
           if (d.sky == 0)
             d.sky = h.sky;
           if (t >= now && d.hours.size() < 6)
@@ -344,6 +365,7 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
       d.fetched = now;
     }
     d.condition = weatherCondition(d.rain, d.sky);
+    d.state = kmaWeatherState(d.rain, d.sky);
     auto sun = sunriseSunset(localDate(now, L"Asia/Seoul"), w.latitude, w.longitude);
     auto local = localTime(now, L"Asia/Seoul");
     double hour = duration<double, std::ratio<3600>>(local - floor<days>(local)).count();
@@ -368,10 +390,12 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop) {
                            {"rain", value.rain}});
       store_.savePrivate(L"weather-cache", cache);
     }
-    s.status = Status::Ready;
+    s.status = now - d.observed > 7200 ? Status::Stale : Status::Ready;
+    if (s.status == Status::Stale)
+      s.message = L"최근 자료 · 갱신 지연";
   } catch (const std::exception &e) {
     auto found = last_.find(id);
-    if (found != last_.end() && now - found->second.fetched < 86400) {
+    if (found != last_.end() && now - found->second.observed < 86400 && now - found->second.fetched < 86400) {
       d = found->second;
       s.status = Status::Stale;
       s.message = L"최근 자료 · 갱신 대기";

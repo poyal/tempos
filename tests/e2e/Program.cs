@@ -78,10 +78,10 @@ internal static partial class Program
         finally { graphics.ReleaseHdc(dest); ReleaseDC(0, source); }
         image.Save(Path.Combine(Data, name + ".png"));
     }
-    static App Start(string exe)
+    static App Start(string exe, string? arguments = null)
     {
         Controls.Clear();
-        var app = App.Launch(new ProcessStartInfo(exe, $"--data-dir \"{Data}\" --settings" + (Live ? " --live" : "")) { WorkingDirectory = Root, UseShellExecute = false });
+        var app = App.Launch(new ProcessStartInfo(exe, (arguments ?? $"--data-dir \"{Data}\" --settings") + (Live ? " --live" : "")) { WorkingDirectory = Root, UseShellExecute = false });
         ProcessId = app.ProcessId;
         for (int i = 0; i < 100; i++) { Thread.Sleep(100); var windows = app.GetAllTopLevelWindows(Automation); var window = windows.FirstOrDefault(x => x.Title.Contains("위젯 설정")); if (window != null) { Window = window; return app; } if (app.HasExited) throw new Exception($"App exited before its settings window was created: {app.ExitCode:X8}"); }
         throw new Exception("Management window startup timeout");
@@ -92,7 +92,7 @@ internal static partial class Program
     {
         var started = DateTimeOffset.Now;
         System.Windows.Forms.Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-        Root = Path.GetFullPath(args.Length > 0 ? args[0] : "."); Data = Path.Combine(Root, "test-results", "e2e-" + DateTime.Now.ToString("yyyyMMdd-HHmmss")); Directory.CreateDirectory(Data);
+        Root = Path.GetFullPath(args.Length > 0 ? args[0] : "."); Data = Path.Combine(Root, "test-results", "e2e-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + (args.Contains("--startup") ? " 시작 옵션" : "")); Directory.CreateDirectory(Data);
         Live = args.Contains("--live-smoke");
         int savedLayoutArg = Array.IndexOf(args, "--saved-layout");
         if (savedLayoutArg >= 0)
@@ -109,6 +109,8 @@ internal static partial class Program
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
             if (args.Contains("--design")) { DesignAudit(ref app); return 0; }
+            if (args.Contains("--weather")) { WeatherOptions(ref app, exe); return 0; }
+            if (args.Contains("--startup")) { StartupOptions(ref app, exe); return 0; }
             if (args.Contains("--persistence")) { Persistence(ref app, exe); return 0; }
             if (args.Contains("--failures")) { Failures(ref app, exe); return 0; }
             if (args.Contains("--options")) { Options(ref app, exe); return 0; }

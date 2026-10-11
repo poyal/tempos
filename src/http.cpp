@@ -43,7 +43,8 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
     r.error = ERROR_CANCELLED;
     return r;
   }
-  if (host != L"apihub.kma.go.kr" && host != L"oauth2.googleapis.com" && host != L"www.googleapis.com") {
+  if (host != L"apihub.kma.go.kr" && host != L"api.open-meteo.com" && host != L"oauth2.googleapis.com" &&
+      host != L"www.googleapis.com") {
     r.error = ERROR_ACCESS_DENIED;
     return r;
   }
@@ -95,7 +96,10 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
   DWORD redirect = WINHTTP_OPTION_REDIRECT_POLICY_NEVER;
   WinHttpSetOption(request, WINHTTP_OPTION_REDIRECT_POLICY, &redirect, sizeof redirect);
   DWORD decompression = WINHTTP_DECOMPRESSION_FLAG_GZIP | WINHTTP_DECOMPRESSION_FLAG_DEFLATE;
-  WinHttpSetOption(request, WINHTTP_OPTION_DECOMPRESSION, &decompression, sizeof decompression);
+  // The small Open-Meteo response stays below the same body limit without compression.
+  // Some Windows builds abort decompression of its streamed response after HTTP 200.
+  if (host != L"api.open-meteo.com")
+    WinHttpSetOption(request, WINHTTP_OPTION_DECOMPRESSION, &decompression, sizeof decompression);
   if (!WinHttpSendRequest(request, headers.empty() ? WINHTTP_NO_ADDITIONAL_HEADERS : headers.c_str(),
                           DWORD(headers.size()),
                           body.empty() ? WINHTTP_NO_REQUEST_DATA : const_cast<char *>(body.data()),
