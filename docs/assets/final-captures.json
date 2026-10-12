@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-13",
+  "mode": "TestHost actual Win32/Direct2D renderer, fixture data",
+  "source": "../../design/final-2026-10-12/captures.json",
+  "files": {
+    "clock": "design-kind-0-size-2",
+    "memory": "design-kind-4-size-3",
+    "system": "design-kind-5-size-3",
+    "disk-all": "design-kind-7-size-3",
+    "disk-single": "design-kind-7-size-2",
+    "calendar-month": "design-kind-8-size-4",
+    "settings-clock": "settings-kind-0",
+    "settings-weather": "settings-kind-1",
+    "settings-network": "settings-kind-6",
+    "weather-clear": "design-weather-scene-0",
+    "weather-rain": "design-weather-scene-2",
+    "weather-night": "design-weather-scene-4"
+  }
+}

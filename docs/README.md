@@ -5,7 +5,7 @@
 | 구분 | 문서 |
 | --- | --- |
 | 상세 사용법 | [위젯·설정·복원 안내](user-guide.md), [날씨 서비스 연결](weather.md) |
-| 실제 화면 | [촬영 조건과 화면 안내](screenshots.md) |
+| 실제 화면 | [촬영 조건과 화면 안내](screenshots.md), [최종 디자인](../design/final-2026-10-12/index.html), [앱 화면 대조](../design/final-2026-10-12/app-review.html) |
 | 문서 유지 | [README 작성 가이드](README-작성-가이드.md) |
 | 개발 | [개발·빌드 안내](development.md), [E2E 실행과 격리](e2e.md) |
 | 검증·배포 | [검증 기록](verification.md), [로컬 검증·패키징 안내](local-release-guide.md) |

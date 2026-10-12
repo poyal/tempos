@@ -154,6 +154,10 @@ struct CalendarData {
   bool connected = false, complete = false;
   int64_t fetched{};
 };
+struct DiskVolume {
+  std::wstring id, name;
+  double total = NAN, available = NAN, freeForUser = NAN;
+};
 struct Snapshot {
   Status status = Status::Loading;
   WeatherProvider weatherProvider = WeatherProvider::Kma;
@@ -161,6 +165,7 @@ struct Snapshot {
   double value = NAN, secondary = NAN, total = NAN, available = NAN;
   double sampledAt{};
   History history, history2;
+  std::vector<DiskVolume> disks;
   std::shared_ptr<const WeatherData> weather;
   std::shared_ptr<const CalendarData> calendar;
 };

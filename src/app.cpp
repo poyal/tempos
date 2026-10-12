@@ -9,7 +9,7 @@
 #include "weather_fixture.h"
 #endif
 namespace tempos {
-constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3;
+constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3, WM_LOCATION = WM_APP + 5;
 static LRESULT CALLBACK gridProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
   if (msg == WM_NCHITTEST)
     return HTTRANSPARENT;
@@ -138,6 +138,7 @@ App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visi
 }
 App::~App() {
   closing_ = true;
+  location_.cancel();
   http_.cancel();
   actions_.stop();
   if (providers_)
@@ -337,13 +338,14 @@ void App::buildSettings() {
   check(L"초 표시 (시계)", 253, 373, 187, 1310, 0);
   check(L"그래프", 453, 373, 140, 1311, 0);
   check(L"날씨 배경 자동", 621, 373, 183, 1312, 0);
-  label(L"장치 / 볼륨", 253, 418, 551, 0);
+  create(L"STATIC", L"장치 / 볼륨", 0, 253, 418, 551, 23, 1321, 0);
   combo(253, 444, 551, 1313, 0);
-  label(L"날씨 지역", 253, 484, 551, 0);
-  combo(253, 510, 551, 1314, 0);
+  create(L"STATIC", L"날씨 지역", 0, 253, 484, 551, 23, 1322, 0);
+  combo(253, 510, 362, 1314, 0);
+  button(L"현재 위치 찾기", 630, 508, 174, 1320, 0);
   for (auto &r : regions_)
     SendMessageW(control(1314), CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(r.name.c_str()));
-  label(L"시간대 (비우면 Windows 설정 · 예: Asia/Seoul)", 253, 550, 551, 0);
+  create(L"STATIC", L"시간대 (비우면 Windows 설정 · 예: Asia/Seoul)", 0, 253, 550, 551, 23, 1323, 0);
   edit(253, 576, 551, 1315, 0);
   button(L"적용", 662, 628, 142, 1316, 0);
   button(L"이전 달", 253, 628, 113, 1317, 0);
@@ -389,13 +391,13 @@ void App::buildSettings() {
   label(L"정렬 모드에서는 드래그 이동과 투명한 위젯 복구가 가능합니다.", 27, 429, 777, 2);
   label(L"일정과 인증정보는 레이아웃 내보내기에 포함되지 않습니다.", 27, 462, 777, 2);
   button(L"Tempos 종료", 27, 615, 773, 1507, 2);
-  label(L"위젯 탭에서 선택한 위젯의 추가 표시 옵션입니다.", 27, 71, 777, 3);
+  create(L"STATIC", L"", 0, 27, 71, 777, 23, 1621, 3);
   check(L"시계 · 오전 / 오후 12시간 표시", 27, 120, 777, 1600, 3);
   check(L"날씨 · 화씨 (°F)", 27, 162, 777, 1601, 3);
   check(L"네트워크 · 바이트 단위 (KiB/s, MiB/s)", 27, 204, 777, 1602, 3);
   check(L"디스크 · 이진 단위 (GiB, TiB)", 27, 246, 777, 1603, 3);
   check(L"캘린더 · 월요일부터 한 주 시작", 27, 288, 777, 1604, 3);
-  label(L"시스템 정보 표시 항목", 27, 351, 777, 3);
+  create(L"STATIC", L"시스템 정보 표시 항목", 0, 27, 351, 777, 23, 1622, 3);
   check(L"PC 이름", 27, 393, 350, 1610, 3);
   check(L"Windows 버전", 405, 393, 395, 1611, 3);
   check(L"CPU 이름", 27, 435, 350, 1612, 3);
@@ -449,6 +451,129 @@ void App::selectTab(int tab) {
         check(1610 + i, w->systemFields[i]);
     }
   }
+  layoutWidgetFields();
+}
+void App::layoutWidgetFields() {
+  auto *w = find(selected_);
+  auto is = [&](Kind kind) { return w && w->kind == kind; };
+  auto show = [&](int id, bool visible, int page) {
+    ShowWindow(control(id), visible && tab_ == page ? SW_SHOW : SW_HIDE);
+  };
+  auto move = [&](int id, int x, int y, int width, int height) {
+    MoveWindow(control(id), MulDiv(x, settingsDpi_, 96) - GetScrollPos(main_, SB_HORZ),
+               MulDiv(y, settingsDpi_, 96) - GetScrollPos(main_, SB_VERT), MulDiv(width, settingsDpi_, 96),
+               MulDiv(height, settingsDpi_, 96), TRUE);
+  };
+  const bool graph = is(Kind::Cpu) || is(Kind::Gpu) || is(Kind::Memory) || is(Kind::Network);
+  const bool device = is(Kind::Gpu) || is(Kind::Network) || (is(Kind::Disk) && w->size != Size::L);
+  const bool timezone = is(Kind::Clock) || is(Kind::Calendar);
+  const bool month = is(Kind::Calendar) && (w->size == Size::L || w->size == Size::XL);
+  show(1310, is(Kind::Clock), 0);
+  show(1311, graph, 0);
+  show(1312, is(Kind::Weather), 0);
+  for (int id : {1310, 1311, 1312})
+    move(id, 253, 373, 551, 27);
+  int y = is(Kind::Clock) || graph || is(Kind::Weather) ? 418 : 382;
+  show(1321, device, 0);
+  show(1313, device, 0);
+  if (device) {
+    SetWindowTextW(control(1321), is(Kind::Network) ? L"네트워크 집계 대상"
+                                  : is(Kind::Disk)  ? L"볼륨"
+                                                    : L"GPU 장치");
+    move(1321, 253, y, 551, 23);
+    move(1313, 253, y + 26, 551, 220);
+    y += 66;
+  }
+  for (int id : {1322, 1314, 1320})
+    show(id, is(Kind::Weather), 0);
+  if (is(Kind::Weather)) {
+    move(1322, 253, y, 551, 23);
+    move(1314, 253, y + 26, 362, 220);
+    move(1320, 630, y + 24, 174, 31);
+    y += 66;
+  }
+  show(1323, timezone, 0);
+  show(1315, timezone, 0);
+  if (timezone) {
+    move(1323, 253, y, 551, 23);
+    move(1315, 253, y + 26, 551, 27);
+    y += 66;
+  }
+  for (int id : {1317, 1318, 1319})
+    show(id, month, 0);
+  move(1317, 253, y + 12, 113, 31);
+  move(1318, 375, y + 12, 100, 31);
+  move(1319, 484, y + 12, 113, 31);
+  move(1316, 662, y + 12, 142, 31);
+  EnableWindow(control(1320), is(Kind::Weather) && locationTarget_.empty());
+
+  const Kind optionKinds[]{Kind::Clock, Kind::Weather, Kind::Network, Kind::Disk, Kind::Calendar};
+  bool hasOptions = false;
+  for (int i = 0; i < 5; ++i) {
+    bool visible = is(optionKinds[i]);
+    show(1600 + i, visible, 3);
+    move(1600 + i, 27, 120, 777, 27);
+    hasOptions |= visible;
+  }
+  show(1622, is(Kind::System), 3);
+  move(1622, 27, 120, 777, 23);
+  for (int i = 0; i < 5; ++i) {
+    show(1610 + i, is(Kind::System), 3);
+    move(1610 + i, 27, 163 + i * 42, 777, 27);
+  }
+  hasOptions |= is(Kind::System);
+  show(1620, hasOptions, 3);
+  move(1620, 27, is(Kind::System) ? 393 : 176, 773, 31);
+  SetWindowTextW(control(1621), !w            ? L"위젯 탭에서 위젯을 선택하세요."
+                                : !hasOptions ? L"이 위젯의 표시 설정은 위젯 탭에서 변경할 수 있어요."
+                                              : (std::wstring(kindName(w->kind)) + L" 표시 옵션").c_str());
+}
+void App::findLocation() {
+  auto *w = find(selected_);
+  if (!w || w->kind != Kind::Weather || !locationTarget_.empty())
+    return;
+  locationTarget_ = selected_;
+  locationRegionChoice_ = choice(1314);
+  EnableWindow(control(1320), FALSE);
+  status(L"현재 위치를 한 번 찾고 있어요…");
+#ifdef TEMPOS_TEST_HOST
+  if (fixture_) {
+    LocationResult result{35.1796, 129.0756, {}};
+    try {
+      if (auto text = boundedRead(store_.root() / L"location-scenario.json")) {
+        auto scenario = Json::parse(*text);
+        result.latitude = scenario.value("latitude", result.latitude);
+        result.longitude = scenario.value("longitude", result.longitude);
+        result.error = wide(scenario.value("error", std::string{}));
+      }
+    } catch (...) {
+      result.error = L"테스트 위치를 읽을 수 없음";
+    }
+    applyLocation(std::move(result));
+    return;
+  }
+#endif
+  location_.start(main_, WM_LOCATION);
+}
+void App::applyLocation(LocationResult result) {
+  bool same = selected_ == locationTarget_ && choice(1314) == locationRegionChoice_;
+  locationTarget_.clear();
+  layoutWidgetFields();
+  if (!same || !find(selected_) || find(selected_)->kind != Kind::Weather) {
+    status(L"선택한 위젯이나 지역이 바뀌어 위치 결과를 적용하지 않았어요.");
+    return;
+  }
+  if (!result.error.empty()) {
+    status(std::move(result.error));
+    return;
+  }
+  auto index = nearestRegion(regions_, result.latitude, result.longitude);
+  if (!index) {
+    status(L"가까운 국내 날씨 지역이 없어요. 지역을 직접 선택하세요.");
+    return;
+  }
+  SendMessageW(control(1314), CB_SETCURSEL, *index, 0);
+  status(regions_[*index].name + L"을 선택했어요. 적용을 누르면 이 지역을 계속 사용합니다.");
 }
 void App::updateList() {
   if (!settingsBuilt_)
@@ -472,9 +597,10 @@ void App::updateList() {
 void App::loadControls() {
   loading_ = true;
   auto *w = find(selected_);
-  for (int id = 1300; id <= 1319; ++id)
+  for (int id = 1300; id <= 1320; ++id)
     EnableWindow(control(id), w != nullptr);
   if (!w) {
+    layoutWidgetFields();
     loading_ = false;
     return;
   }
@@ -522,7 +648,7 @@ void App::loadControls() {
   clear(1313);
   if (providers_ && (w->kind == Kind::Gpu || w->kind == Kind::Network || w->kind == Kind::Disk))
     devices_ = providers_->devices(w->kind);
-  item(1313, w->kind == Kind::Network ? L"장치를 선택하세요" : L"기본 장치");
+  item(1313, w->kind == Kind::Network ? L"전체 네트워크" : L"기본 장치");
   set(1313, 0);
   for (size_t i = 0; i < devices_.size(); ++i) {
     item(1313, devices_[i].name);
@@ -539,6 +665,7 @@ void App::loadControls() {
   EnableWindow(control(1315), w->kind == Kind::Clock || w->kind == Kind::Calendar);
   for (int id = 1317; id <= 1319; ++id)
     EnableWindow(control(id), w->kind == Kind::Calendar && (w->size == Size::L || w->size == Size::XL));
+  layoutWidgetFields();
   loading_ = false;
 }
 bool App::place(Widget &w, bool keep) {
@@ -830,7 +957,9 @@ void App::draw(WidgetWindow &window) {
 #ifdef TEMPOS_TEST_HOST
   // Visual fixtures are compiled only into the test host; production cannot enable them.
   if (fixture_ && designCase_ >= 0) {
-    auto sample = std::make_shared<Snapshot>(data ? *data : Snapshot{});
+    auto sample = std::make_shared<Snapshot>(providers_ ? *providers_->snapshot(*w)
+                                             : data     ? *data
+                                                        : Snapshot{});
     sample->status = Status::Ready;
     sample->title = w->kind == Kind::System ? L"TEMPOS-WORKSTATION"
                     : w->kind == Kind::Cpu  ? L"AMD Ryzen 9 9950X 16-Core Processor"
@@ -893,7 +1022,22 @@ void App::draw(WidgetWindow &window) {
       sample->status = Status::Error;
       sample->message = L"장치를 찾을 수 없음 · 설정에서 다시 선택하세요";
     }
+    if (w->kind == Kind::Disk && designCase_ >= 20) {
+      sample->disks.clear();
+      int count = designCase_ == 20 ? 8 : designCase_ == 21 ? 1 : designCase_ == 22 ? 0 : 6;
+      for (int i = 0; i < count; ++i)
+        sample->disks.push_back({std::to_wstring(i), std::wstring(1, wchar_t(L'C' + i)) + L": 작업 자료 볼륨",
+                                 4e12, 2e12, 1.8e12});
+      if (count > 1)
+        sample->disks[1].total = NAN;
+      if (!count) {
+        sample->status = Status::Unavailable;
+        sample->message = L"표시할 로컬 볼륨 없음";
+      }
+    }
     data = sample;
+    if (w->kind == Kind::Disk)
+      window.displayed = sample;
   }
 #endif
   if (renderer_.draw(window.hwnd, window.surface, *w, data.get(), settings_.theme, settings_.edit,
@@ -923,6 +1067,9 @@ void App::armTimer() {
       wait = std::min(wait, double(60 - unixTime % 60));
     else if (providers_) {
       auto s = providers_->snapshot(*w);
+      if (w->kind == Kind::Disk && w->size == Size::L && window->displayed &&
+          window->displayed->disks.size() > 6)
+        wait = std::min(wait, double(12 - unixTime % 12));
       if (s->sampledAt > (window->displayed ? window->displayed->sampledAt : 0))
         wait = std::min(wait, std::max(.02, window->renderedAt + w->interval - t));
     }
@@ -944,6 +1091,9 @@ void App::tick() {
     int period = w->kind == Kind::Clock && w->seconds ? 1 : 60;
     bool repaint = (w->kind == Kind::Clock || w->kind == Kind::Calendar) &&
                    window->contentTime / period != nowUnix() / period;
+    if (w->kind == Kind::Disk && w->size == Size::L && window->displayed &&
+        window->displayed->disks.size() > 6 && window->contentTime / 12 != nowUnix() / 12)
+      repaint = true;
     if (providers_ && w->kind != Kind::Clock) {
       auto data = providers_->snapshot(*w);
       bool fresh = data->sampledAt > (window->displayed ? window->displayed->sampledAt : 0);
@@ -1051,10 +1201,11 @@ void App::command(int id, int notification) {
     });
     return;
   }
-  if (fixture_ && id >= 1900 && id <= 1912) {
+  if (fixture_ && ((id >= 1900 && id <= 1912) || (id >= 1920 && id <= 1923))) {
     designCase_ = id == 1912 ? -1 : id - 1900;
     for (auto &window : windows_)
       draw(*window);
+    armTimer();
     return;
   }
 #endif
@@ -1074,6 +1225,8 @@ void App::command(int id, int notification) {
     removeSelected();
   else if (id == 1316)
     applyControls();
+  else if (id == 1320)
+    findLocation();
   else if (id == 1204 || id == 2002) {
     settings_.edit = !settings_.edit;
     rebuild();
@@ -1218,13 +1371,19 @@ void App::command(int id, int notification) {
     if (auto *current = find(selected_)) {
       auto next = settings_;
       auto *w = &next.widgets[size_t(current - settings_.widgets.data())];
-      w->twelveHour = checked(1600);
-      w->fahrenheit = checked(1601);
-      w->networkBytes = checked(1602);
-      w->binaryDisk = checked(1603);
-      w->weekStart = checked(1604) ? 1 : 0;
-      for (int i = 0; i < 5; ++i)
-        w->systemFields[i] = checked(1610 + i);
+      if (w->kind == Kind::Clock)
+        w->twelveHour = checked(1600);
+      if (w->kind == Kind::Weather)
+        w->fahrenheit = checked(1601);
+      if (w->kind == Kind::Network)
+        w->networkBytes = checked(1602);
+      if (w->kind == Kind::Disk)
+        w->binaryDisk = checked(1603);
+      if (w->kind == Kind::Calendar)
+        w->weekStart = checked(1604) ? 1 : 0;
+      if (w->kind == Kind::System)
+        for (int i = 0; i < 5; ++i)
+          w->systemFields[i] = checked(1610 + i);
       if (!commit(std::move(next)))
         return;
       rebuild();
@@ -1275,6 +1434,10 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
       selectTab(tab_);
       status(calendar_.account().status);
     }
+    return 0;
+  case WM_LOCATION:
+    if (auto result = location_.take())
+      applyLocation(std::move(*result));
     return 0;
   case WM_TRAY:
     switch (LOWORD(l)) {
@@ -1423,18 +1586,14 @@ LRESULT App::widgetMessage(WidgetWindow &window, UINT msg, WPARAM wp, LPARAM lp)
   case WM_MOUSEACTIVATE:
     return MA_NOACTIVATE;
   case WM_CONTEXTMENU:
-    selected_ = window.id;
-    menu(hwnd, true);
-    return 0;
-  case WM_TEMPOS_SETTINGS:
   case WM_LBUTTONDBLCLK:
-    openSettings(window.id);
-    return 0;
+  case WM_RBUTTONDOWN:
+  case WM_RBUTTONUP:
+  case WM_RBUTTONDBLCLK:
+  case WM_MBUTTONDOWN:
+  case WM_MBUTTONUP:
+  case WM_MBUTTONDBLCLK:
   case WM_KEYDOWN:
-    if (wp == VK_RETURN)
-      openSettings(window.id);
-    else if (w && w->kind == Kind::Calendar && (wp == VK_LEFT || wp == VK_RIGHT))
-      calendarMonth(*w, wp == VK_LEFT ? -1 : 1);
     return 0;
   case WM_LBUTTONDOWN:
     if (w && settings_.edit && !w->locked) {
@@ -1445,32 +1604,6 @@ LRESULT App::widgetMessage(WidgetWindow &window, UINT msg, WPARAM wp, LPARAM lp)
       SetCapture(hwnd);
       return 0;
     }
-    if (w && w->kind == Kind::Calendar && (w->size == Size::L || w->size == Size::XL)) {
-      float factor = window.dpi / 96.f * w->scale / 100;
-      float x = GET_X_LPARAM(lp) / factor, y = GET_Y_LPARAM(lp) / factor;
-      auto e = extent(w->size);
-      if (y < 61) {
-        if (x < 65)
-          calendarMonth(*w, -1);
-        else if (x > e.width - 65)
-          calendarMonth(*w, 1);
-        else if (w->size == Size::XL && x > e.width - 130)
-          calendarMonth(*w, 0);
-      } else {
-        using namespace std::chrono;
-        auto date = localDate(nowUnix(), w->timezone);
-        int yearValue = int(date.year()), monthValue = int(unsigned(date.month()));
-        if (!w->source.empty())
-          swscanf_s(w->source.c_str(), L"%d-%d", &yearValue, &monthValue);
-        auto grid = calendarGrid(yearValue, unsigned(monthValue), w->weekStart);
-        float pad = w->size == Size::XL ? 24.f : 20.f, top = w->size == Size::XL ? 110.f : 83.f;
-        float rowHeight = w->size == Size::XL ? (e.height - top - 24) / grid.weeks : 140.f / grid.weeks;
-        int col = int((x - pad) / ((e.width - pad * 2) / 7)), row = int((y - top) / rowHeight);
-        if (x >= pad && y >= top && col >= 0 && col < 7 && row >= 0 && row < grid.weeks)
-          details(*w, year_month_day{grid.first + days{row * 7 + col}});
-      }
-    } else if (w && !settings_.edit && (w->kind == Kind::Calendar || w->kind == Kind::Weather))
-      details(*w);
     return 0;
   case WM_MOUSEMOVE:
     if (window.dragging) {

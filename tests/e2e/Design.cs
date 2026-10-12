@@ -12,6 +12,7 @@ internal static partial class Program
             if (kind > 0) NativeButton(1203);
             NativeCombo(1201, kind); NativeButton(1202);
             Element(1305).AsTextBox().Text = "0";
+            Element(1309).AsCheckBox().IsChecked = true;
             for (int size = 0; size < (kind == 8 ? 5 : 4); size++)
             {
                 NativeCombo(1300, size); NativeCombo(1301, 0); NativeCombo(1302, kind + 1); NativeButton(1316);
@@ -26,6 +27,7 @@ internal static partial class Program
         }
         NativeButton(1203); NativeCombo(1201, 2); NativeButton(1202);
         NativeCombo(1300, 2); Element(1305).AsTextBox().Text = "0";
+        Element(1309).AsCheckBox().IsChecked = true;
         for (int theme = 0; theme < 9; theme++)
         {
             NativeCombo(1302, theme + 1); NativeButton(1316);
@@ -34,7 +36,7 @@ internal static partial class Program
         for (int tab = 0; tab < 4; tab++)
         {
             Tab(tab);
-            Screenshot("design-settings-" + tab, Window.BoundingRectangle);
+            CaptureSettings("design-settings-" + tab);
             Check(Element(1000).AsTab().SelectedTabItemIndex == tab, "Design settings tab " + tab + " reachable");
         }
         Tab(0);
@@ -43,6 +45,7 @@ internal static partial class Program
             NativeButton(1203); NativeCombo(1201, kind); NativeButton(1202);
             SendMessage(Window.Properties.NativeWindowHandle, 0x111, 1911, 0);
             Element(1305).AsTextBox().Text = "0";
+            Element(1309).AsCheckBox().IsChecked = true;
             NativeCombo(1300, kind == 8 ? 4 : 3); NativeButton(1316);
             foreach (int scenario in kind == 1 ? new[] {0, 1, 2, 3, 4, 5, 6, 7, 8} : kind == 8 ? new[] {9, 10} : new[] {9, 10, 11})
             {

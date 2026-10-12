@@ -49,8 +49,11 @@ private:
   void dot(float x, float y, float radius, uint32_t color, float alpha = 1);
   void bar(float x, float y, float width, float height, uint32_t color, float alpha = 1, float radius = 4);
   void graph(const History &, float x, float y, float width, float height, uint32_t color, double max = 100);
-  void analog(const Widget &, int64_t now, float x, float y, float radius);
+  void icon(Kind, float x, float y, float size = 20);
+  void heading(const Widget &, const std::wstring &title);
+  void content(const Widget &, const Snapshot *, Extent);
   void weatherIcon(WeatherState state, bool night, float x, float y, float scale = 1);
+  void weatherBackdrop(const WeatherData &, Extent, bool sunset);
   void calendar(const Widget &, const Snapshot *, Extent);
   void weather(const Widget &, const Snapshot *, Extent);
   ComPtr<ID3D11Device> d3d_;

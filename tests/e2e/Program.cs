@@ -108,6 +108,7 @@ internal static partial class Program
             app = Start(exe);
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
+            if (args.Contains("--ui-review")) { UiReview(ref app, exe); return 0; }
             if (args.Contains("--design")) { DesignAudit(ref app); return 0; }
             if (args.Contains("--weather")) { WeatherOptions(ref app, exe); return 0; }
             if (args.Contains("--startup")) { StartupOptions(ref app, exe); return 0; }
@@ -121,7 +122,7 @@ internal static partial class Program
             if (args.Contains("--layout")) { Tab(2); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI"); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 5, "Layout import through UI"); Quit(app); app = null; return 0; }
             if (args.Contains("--smoke"))
             {
-                Check(SendMessage(Element(1314).Properties.NativeWindowHandle, 0x146, 0, 0) == 3837, "All 3837 packaged weather regions loaded");
+                Check(SendMessage(GetDlgItem(Window.Properties.NativeWindowHandle, 1314), 0x146, 0, 0) == 3837, "All 3837 packaged weather regions loaded");
                 var state = Diagnostic(); Check(File.Exists(Path.Combine(Data, "diagnostics.json")), "Diagnostic file created");
                 if (exeArg >= 0) { Check(!state["fixture"]!.GetValue<bool>(), "Packaged executable uses production providers"); Check(!File.Exists(Path.Combine(Path.GetDirectoryName(exe)!, "Tempos.TestHost.exe")), "Package excludes test host"); }
                 Quit(app); app = null; return 0;
@@ -219,9 +220,7 @@ internal static partial class Program
                 SendMessage(handle, 0x201, 1, (nint)((60 << 16) | 40)); Thread.Sleep(300);
                 var detailsHandle = OwnedWindow("Tempos.Details");
                 var details = detailsHandle == 0 ? null : Automation.FromHandle(detailsHandle).AsWindow();
-                Check(details != null, "Calendar detail opens from widget");
-                var content = details!.FindFirstDescendant(c => c.ByAutomationId("1800"))!;
-                Check(content.Patterns.Value.Pattern.IsReadOnly, "Calendar detail is strictly read-only"); PostMessage(details.Properties.NativeWindowHandle, 0x10, 0, 0);
+                Check(details == null, "Calendar widget click has no action");
                 PostMessage(Window.Properties.NativeWindowHandle, RegisterWindowMessage("TaskbarCreated"), 0, 0); Thread.Sleep(300);
                 state = Diagnostic(); Check(state["trayRegistered"]!.GetValue<bool>(), "Tray re-registration message handled");
                 Quit(app); app = null; return 0;

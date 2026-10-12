@@ -202,24 +202,94 @@ static std::wstring dateLabel(year_month_day d) {
 static std::wstring eventLabel(const Event &e, const Widget &w) {
   return e.allDay ? L"종일  " + e.title : timeLabel(e.start, w) + L"  " + e.title;
 }
-void Renderer::analog(const Widget &w, int64_t now, float cx, float cy, float radius) {
-  dot(cx, cy, radius, 0xffffff, .08f);
-  for (int i = 0; i < 12; ++i) {
-    float a = float(i) * 6.2831853f / 12;
-    line(cx + std::cos(a) * radius * .82f, cy + std::sin(a) * radius * .82f, cx + std::cos(a) * radius * .94f,
-         cy + std::sin(a) * radius * .94f, 0xffffff, .8f, 1.5f);
-  }
-  auto t = localTime(now, w.timezone);
-  hh_mm_ss tod{t - floor<days>(t)};
-  float minute = float(tod.minutes().count()), hour = float(tod.hours().count() % 12) + minute / 60;
-  auto hand = [&](float angle, float length, float stroke) {
-    angle = angle * 6.2831853f - 1.5707963f;
-    line(cx, cy, cx + std::cos(angle) * radius * length, cy + std::sin(angle) * radius * length, 0xffffff, 1,
-         stroke);
+void Renderer::icon(Kind kind, float x, float y, float size) {
+  const float scale = size / 24;
+  auto stroke = [&](float a, float b, float c, float d) {
+    line(x + a * scale, y + b * scale, x + c * scale, y + d * scale, highContrast_ ? foreground_ : 0xffffff,
+         1, design::iconStroke);
   };
-  hand(hour / 12, .48f, 4);
-  hand(minute / 60, .73f, 2.5f);
-  dot(cx, cy, 3, 0xffffff);
+  auto rect = [&](float a, float b, float c, float d) {
+    stroke(a, b, c, b);
+    stroke(c, b, c, d);
+    stroke(c, d, a, d);
+    stroke(a, d, a, b);
+  };
+  switch (kind) {
+  case Kind::Clock:
+    rect(1, 5, 23, 19);
+    stroke(5, 9, 8, 9);
+    stroke(8, 9, 8, 15);
+    stroke(5, 15, 8, 15);
+    stroke(16, 9, 19, 9);
+    stroke(19, 9, 19, 15);
+    stroke(16, 15, 19, 15);
+    stroke(12, 10, 12, 11);
+    stroke(12, 13, 12, 14);
+    break;
+  case Kind::Cpu:
+    rect(5, 5, 19, 19);
+    rect(9, 9, 15, 15);
+    for (float a : {8.f, 12.f, 16.f}) {
+      stroke(a, 1, a, 5);
+      stroke(a, 19, a, 23);
+      stroke(1, a, 5, a);
+      stroke(19, a, 23, a);
+    }
+    break;
+  case Kind::Gpu:
+    rect(3, 5, 22, 18);
+    stroke(1, 3, 1, 21);
+    stroke(7, 18, 7, 21);
+    stroke(17, 18, 17, 21);
+    rect(7, 9, 12, 14);
+    stroke(16, 9, 19, 9);
+    stroke(16, 13, 19, 13);
+    break;
+  case Kind::Memory:
+    rect(1, 6, 23, 18);
+    rect(5, 9, 9, 14);
+    rect(14, 9, 18, 14);
+    for (float a : {5.f, 9.f, 15.f, 19.f})
+      stroke(a, 18, a, 22);
+    break;
+  case Kind::System:
+    rect(1, 3, 23, 18);
+    stroke(12, 18, 12, 22);
+    stroke(7, 22, 17, 22);
+    break;
+  case Kind::Network:
+    stroke(12, 2, 12, 7);
+    stroke(5, 7, 19, 7);
+    stroke(5, 7, 5, 15);
+    stroke(19, 7, 19, 15);
+    rect(1, 15, 9, 21);
+    rect(15, 15, 23, 21);
+    break;
+  case Kind::Disk:
+    stroke(5, 3, 19, 3);
+    stroke(5, 3, 1, 14);
+    stroke(19, 3, 23, 14);
+    rect(1, 14, 23, 21);
+    stroke(17, 17, 19, 17);
+    break;
+  case Kind::Calendar:
+    rect(2, 4, 22, 22);
+    stroke(2, 10, 22, 10);
+    stroke(7, 1, 7, 7);
+    stroke(17, 1, 17, 7);
+    stroke(7, 15, 10, 15);
+    stroke(14, 15, 17, 15);
+    break;
+  default:
+    break;
+  }
+}
+void Renderer::heading(const Widget &w, const std::wstring &title) {
+  const bool slim = w.size == Size::Slim;
+  icon(w.kind, slim ? 17.f : 20.f, slim ? 26.f : 20.f, design::iconSize);
+  text(title, slim ? 47.f : design::headerTextX, slim ? 12.f : design::headerY,
+       slim ? 113.f : extent(w.size).width - design::headerTextX - 20, 25,
+       slim || w.size == Size::S ? design::compactTitleSize : design::titleSize, true);
 }
 void Renderer::weatherIcon(WeatherState state, bool night, float x, float y, float scale) {
   int sky = state == WeatherState::Clear     ? 1
@@ -288,6 +358,99 @@ void Renderer::weatherIcon(WeatherState state, bool night, float x, float y, flo
     }
   }
 }
+void Renderer::weatherBackdrop(const WeatherData &weather, Extent e, bool sunset) {
+  const auto state = weather.state;
+  if (state == WeatherState::Unknown)
+    return;
+  // Static vector scenery; the enclosing card layer supplies clipping and user opacity.
+  auto ellipse = [&](float x, float y, float rx, float ry, uint32_t rgb, float opacity) {
+    brush_->SetColor(color(rgb, opacity));
+    context_->FillEllipse(D2D1::Ellipse({x * e.width, y * e.height}, rx * e.width, ry * e.height),
+                          brush_.Get());
+  };
+  auto bank = [&](float x, float y, float scale, uint32_t rgb, float opacity) {
+    ComPtr<ID2D1PathGeometry> shape;
+    if (FAILED(d2d_->CreatePathGeometry(&shape)))
+      return;
+    ComPtr<ID2D1GeometrySink> sink;
+    if (FAILED(shape->Open(&sink)))
+      return;
+    auto p = [&](float dx, float dy) {
+      return D2D1::Point2F((x + dx * scale) * e.width, (y + dy * scale) * e.height);
+    };
+    sink->BeginFigure(p(-.42f, .2f), D2D1_FIGURE_BEGIN_FILLED);
+    sink->AddBezier({p(-.48f, -.02f), p(-.26f, -.14f), p(-.18f, -.04f)});
+    sink->AddBezier({p(-.14f, -.3f), p(.12f, -.3f), p(.2f, -.09f)});
+    sink->AddBezier({p(.39f, -.22f), p(.53f, .04f), p(.43f, .2f)});
+    sink->EndFigure(D2D1_FIGURE_END_CLOSED);
+    if (SUCCEEDED(sink->Close())) {
+      brush_->SetColor(color(rgb, opacity));
+      context_->FillGeometry(shape.Get(), brush_.Get());
+    }
+  };
+  auto ribbon = [&](float y, float slope, uint32_t rgb, float opacity) {
+    ComPtr<ID2D1PathGeometry> shape;
+    if (FAILED(d2d_->CreatePathGeometry(&shape)))
+      return;
+    ComPtr<ID2D1GeometrySink> sink;
+    if (FAILED(shape->Open(&sink)))
+      return;
+    sink->BeginFigure({0, e.height * y}, D2D1_FIGURE_BEGIN_FILLED);
+    sink->AddBezier({{e.width * .35f, e.height * (y + .1f)},
+                     {e.width * .65f, e.height * (y - slope)},
+                     {e.width, e.height * (y - slope)}});
+    sink->AddLine({e.width, e.height * (y - slope + .06f)});
+    sink->AddBezier({{e.width * .65f, e.height * (y - slope + .03f)},
+                     {e.width * .35f, e.height * (y + .14f)},
+                     {0, e.height * (y + .07f)}});
+    sink->EndFigure(D2D1_FIGURE_END_CLOSED);
+    if (SUCCEEDED(sink->Close())) {
+      brush_->SetColor(color(rgb, opacity));
+      context_->FillGeometry(shape.Get(), brush_.Get());
+    }
+  };
+  if (sunset) {
+    ellipse(.86f, .8f, .16f, .2f, 0xffcb83, .22f);
+    ribbon(.92f, .16f, 0xbab8e1, .15f);
+    ribbon(1.03f, .1f, 0x252952, .3f);
+  } else if (state == WeatherState::Clear) {
+    if (weather.night) {
+      for (auto p : {D2D1::Point2F(.62f, .19f), D2D1::Point2F(.89f, .26f), D2D1::Point2F(.7f, .43f),
+                     D2D1::Point2F(.94f, .54f)}) {
+        float x = p.x * e.width, y = p.y * e.height;
+        line(x - 2, y, x + 2, y, 0xffffff, .55f);
+        line(x, y - 2, x, y + 2, 0xffffff, .55f);
+      }
+      bank(.8f, 1.06f, .9f, 0xa8bfea, .1f);
+    } else {
+      ribbon(.98f, .24f, 0xbbddf4, .16f);
+      ribbon(.88f, .31f, 0xd8edfc, .09f);
+    }
+  } else if (state == WeatherState::Fog) {
+    for (int i = 0; i < 4; ++i)
+      bar(e.width * (.57f + float(i % 2) * .08f), e.height * (.22f + float(i) * .19f),
+          e.width * (.34f - float(i % 2) * .07f), 5, 0xdce6ed, .18f, 3);
+    ribbon(.98f, .15f, 0xd4dee7, .15f);
+  } else {
+    bank(.93f, .26f, .8f, weather.night ? 0x16243e : 0xc4d9e9, .14f);
+    bank(.83f, .95f, 1.f, 0xabc6df, .15f);
+    bank(.13f, 1.12f, .8f, 0xc0d7ed, .08f);
+    const bool snow = state == WeatherState::Snow || state == WeatherState::Sleet;
+    const bool rain = state == WeatherState::Rain || state == WeatherState::Drizzle ||
+                      state == WeatherState::Showers || state == WeatherState::Sleet ||
+                      state == WeatherState::Thunder;
+    if (snow || rain)
+      for (int i = 0; i < 9; ++i) {
+        float x = e.width * (.53f + float(i % 3) * .17f),
+              y = e.height * (.36f + float(i / 3) * .26f + float(i % 2) * .05f);
+        if (snow && (!rain || i % 2 == 0)) {
+          line(x - 2, y, x + 2, y, 0xffffff, .24f);
+          line(x, y - 2, x, y + 2, 0xffffff, .24f);
+        } else
+          line(x, y, x - 4, y + 9, 0xc1e4ff, .2f, 1.5f);
+      }
+  }
+}
 std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
   std::wstring out = std::wstring(kindName(w.kind));
   if (w.kind == Kind::Clock)
@@ -302,7 +465,7 @@ std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
           continue;
         out += L" · " + eventLabel(e, w);
         if (++count == 10) {
-          out += L" · 날짜를 선택하여 전체 일정 보기";
+          out += L" · 추가 일정 있음";
           break;
         }
       }
@@ -312,11 +475,29 @@ std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
   if (!s)
     return out + L" 불러오는 중";
   if (w.kind == Kind::Weather) {
-    out += L" " + w.region + L" " + weatherSource(s->weatherProvider);
+    out += L" " + w.region;
     if (s->weather) {
       double temperature = w.fahrenheit ? s->weather->temperature * 1.8 + 32 : s->weather->temperature;
       out += L" " + number(temperature) + (w.fahrenheit ? L"°F " : L"°C ") + s->weather->condition;
     }
+  } else if (w.kind == Kind::Disk && w.size == Size::L) {
+    out += L" 전체 " + std::to_wstring(s->disks.size()) + L"개 드라이브";
+    for (const auto &volume : s->disks)
+      out += L" · " + volume.name + L" 사용 " + formatBytes(volume.total - volume.available, w.binaryDisk) +
+             L" 전체 " + formatBytes(volume.total, w.binaryDisk) + L" 여유 " +
+             formatBytes(volume.freeForUser, w.binaryDisk);
+  } else if (w.kind == Kind::System) {
+    if (w.systemFields[0])
+      out += L" " + s->title;
+    if (w.systemFields[1])
+      out += L" " + s->detail;
+    auto separator = s->extra.find(L'\n');
+    if (w.systemFields[2])
+      out += L" CPU " + s->extra.substr(0, separator);
+    if (w.systemFields[3] && separator != std::wstring::npos)
+      out += L" GPU " + s->extra.substr(separator + 1);
+    if (w.systemFields[4])
+      out += L" 가동 " + number(s->value) + L" 초";
   } else if (w.kind == Kind::Network && std::isfinite(s->value)) {
     auto rate = [&](double value) {
       return w.networkBytes ? formatBytes(value) + L"/s" : number(value * 8 / 1e6, 2) + L" Mbps";
@@ -335,7 +516,6 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   float pad = w.size == Size::Slim ? 16 : 20;
   bool stale = s && (s->status == Status::Stale ||
                      (d && nowUnix() - (d->observed > 0 ? d->observed : d->fetched) > 7200));
-  auto source = weatherSource(s ? s->weatherProvider : WeatherProvider::Kma);
   std::wstring place = w.region;
   if (auto p = place.find_last_of(L' '); p != std::wstring::npos)
     place = place.substr(p + 1);
@@ -344,7 +524,6 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   if (!d || !std::isfinite(d->temperature)) {
     text(s ? s->message : L"날씨 불러오는 중", pad, w.size == Size::Slim ? 28 : 57, e.width - 2 * pad,
          w.size == Size::Slim ? 24 : 68, w.size == Size::Slim ? 12 : 15);
-    text(source, pad, e.height - 21, e.width - 2 * pad, 18, 10);
     return;
   }
   double temperature = w.fahrenheit ? d->temperature * 1.8 + 32 : d->temperature;
@@ -384,19 +563,15 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
       }
     }
   }
-  text(source, pad, e.height - 22, e.width - 2 * pad, 18, 10);
   if (stale)
     text(L"갱신 지연", e.width - 77, w.size == Size::Slim ? 8 : 16, 66, 20, 10);
 }
 void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
   auto today = localDate(nowUnix(), w.timezone);
   auto d = s ? s->calendar : nullptr;
-  if (!d || !d->connected) {
-    text(L"캘린더", 20, w.size == Size::Slim ? 8.f : 18.f, e.width - 40, 25, 15, true);
-    text(!d ? L"일정 불러오는 중" : L"설정에서 캘린더 연결", 20, w.size == Size::Slim ? 34.f : 68.f,
-         e.width - 40, 27, w.size == Size::S ? 12.f : 14.f);
-    return;
-  }
+  auto emptyLabel = !d ? L"일정 불러오는 중" : !d->connected ? L"설정에서 일정 연결" : L"일정 없음";
+  if (w.size != Size::L && w.size != Size::XL)
+    heading(w, L"캘린더");
   std::vector<const Event *> events;
   if (d)
     for (auto &v : d->events)
@@ -434,39 +609,36 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
     text(label, x + 16, y - 2, width - 16, size * 1.6f, size);
   };
   if (w.size == Size::Slim) {
-    text(std::to_wstring(unsigned(today.month())) + L"/" + std::to_wstring(unsigned(today.day())), 20, 18, 84,
-         36, 26, true);
-    line(106, 16, 106, 56);
+    text(std::to_wstring(unsigned(today.month())) + L"/" + std::to_wstring(unsigned(today.day())), 47, 31,
+         119, 34, 26, true);
+    line(176, 19, 176, 53);
     if (events.empty())
-      text(L"예정된 일정 없음", 123, 24, 190, 24, 15);
+      text(emptyLabel, 193, 26, 123, 24, 12);
     else
-      eventText(0, 124, 24, 190, 14);
+      eventText(0, 193, 26, 123, 12);
     return;
   }
   if (w.size == Size::S) {
+    text(std::to_wstring(unsigned(today.day())), 20, 49, 120, 59, 42, true);
     text(std::to_wstring(int(today.year())) + L"년 " + std::to_wstring(unsigned(today.month())) + L"월", 20,
-         17, 120, 23, 14, true);
-    text(std::to_wstring(unsigned(today.day())), 20, 40, 120, 64, 50, true, 0xffffff,
-         DWRITE_TEXT_ALIGNMENT_CENTER);
-    line(20, 109, 140, 109);
+         108, 120, 21, 12);
     if (events.empty())
-      text(L"일정 없음", 20, 119, 120, 24, 13);
+      text(emptyLabel, 20, 133, 120, 22, 11);
     else
-      eventText(0, 20, 118, 120, 13);
+      eventText(0, 20, 135, 120, 11);
     return;
   }
   if (w.size == Size::M) {
-    text(L"캘린더", 20, 18, 115, 28, 17, true);
-    text(std::to_wstring(unsigned(today.day())), 20, 47, 110, 68, 55, true);
+    text(std::to_wstring(unsigned(today.day())), 20, 49, 146, 59, 42, true);
     text(std::to_wstring(unsigned(today.month())) + L"월", 22, 118, 106, 23, 14);
-    line(140, 20, 140, 140);
-    text(L"오늘 일정", 159, 20, 158, 24, 15, true);
+    line(176, 56, 176, 140);
+    text(L"오늘 일정", 192, 55, 124, 23, 12, true);
     if (events.empty())
-      text(L"일정 없음", 159, 59, 158, 28, 14);
+      text(emptyLabel, 192, 87, 124, 25, 12);
     else {
-      eventText(0, 159, 62, 157, 14);
+      eventText(0, 192, 89, 124, 12);
       if (events.size() > 1)
-        eventText(1, 159, 107, 157, 14);
+        eventText(1, 192, 121, 124, 12);
     }
     return;
   }
@@ -504,12 +676,7 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
         if (total > rowsAvailable || lanes + timed > rowsAvailable)
           barLimits[row] = std::max(0, rowsAvailable - 1);
       }
-  text(std::to_wstring(y) + L"년 " + std::to_wstring(month) + L"월", pad + 35, 19, e.width - 2 * pad - 70, 45,
-       xl ? 28.f : 22, true, 0xffffff, DWRITE_TEXT_ALIGNMENT_CENTER);
-  text(L"‹", pad, 14, 35, 39, 30);
-  text(L"›", e.width - pad - 32, 14, 32, 39, 30);
-  if (xl)
-    text(L"오늘", e.width - pad - 92, 24, 54, 30, 16);
+  heading(w, std::to_wstring(y) + L"년 " + std::to_wstring(month) + L"월");
   const wchar_t *days[]{L"일", L"월", L"화", L"수", L"목", L"금", L"토"};
   for (int col = 0; col < 7; ++col)
     text(days[(col + w.weekStart) % 7], pad + col * cellW, top - header, cellW, 25, xl ? 16.f : 13, false,
@@ -577,7 +744,7 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
     line(pad, 237, e.width - pad, 237);
     text(L"오늘 일정", pad, 246, e.width - 2 * pad, 23, 14, true);
     if (events.empty())
-      text(L"일정 없음", pad, 280, e.width - 2 * pad, 22, 14);
+      text(emptyLabel, pad, 280, e.width - 2 * pad, 22, 14);
     else {
       eventText(0, pad, 273, e.width - 2 * pad, 14);
       if (events.size() > 1)
@@ -585,6 +752,246 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
     }
   }
 }
+void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
+  const bool slim = w.size == Size::Slim, compact = w.size == Size::S, medium = w.size == Size::M;
+  const float pad = 20, width = e.width - 40;
+  std::wstring title(kindName(w.kind));
+  if (w.kind == Kind::Disk) {
+    if (w.size == Size::L)
+      title = L"전체 디스크";
+    else if (data && !data->title.empty()) {
+      auto drive = data->title;
+      if (drive.size() == 3 && drive.back() == L'\\')
+        drive.pop_back();
+      title = slim ? drive : L"디스크 " + drive;
+    }
+  }
+  heading(w, title);
+  if (w.kind == Kind::Clock) {
+    auto now = nowUnix();
+    auto date = localDate(now, w.timezone);
+    const wchar_t *weekdays[]{L"일요일", L"월요일", L"화요일", L"수요일", L"목요일", L"금요일", L"토요일"};
+    std::wstring weekday = weekdays[std::chrono::weekday{sys_days{date}}.c_encoding()];
+    auto shortDate =
+        std::to_wstring(unsigned(date.month())) + L"월 " + std::to_wstring(unsigned(date.day())) + L"일";
+    auto value = timeLabel(now, w, w.seconds, false);
+    auto period = w.twelveHour ? timeLabel(now, w).substr(0, 2) : L"";
+    if (slim) {
+      text(value, 47, 31, 119, 34, w.seconds ? 21.f : 26.f, true);
+      line(176, 19, 176, 53);
+      text(shortDate, 193, 15, 126, 24, 14);
+      text(period.empty() ? weekday : period + L" · " + weekday, 193, 39, 126, 22, 12);
+    } else if (compact) {
+      text(period, 20, 46, 120, 17, 11);
+      text(value, 20, period.empty() ? 53.f : 63.f, 120, 49, w.seconds ? 25.f : 37.f, true);
+      text(shortDate, 20, 109, 120, 22, 13);
+      text(weekday, 20, 131, 120, 20, 12);
+    } else if (medium) {
+      text(period, 20, 47, 175, 20, 12);
+      text(value, 20, period.empty() ? 53.f : 67.f, 175, 61, w.seconds ? 35.f : 51.f, true);
+      line(197, 56, 197, 140);
+      text(std::to_wstring(int(date.year())) + L"년", 214, 61, 102, 22, 13);
+      text(shortDate, 214, 88, 102, 24, 16, true);
+      text(weekday, 214, 118, 102, 22, 13);
+    } else {
+      text(period, 20, 65, width, 24, 15);
+      text(value, 20, 91, width, 100, w.seconds ? 60.f : 86.f, true);
+      text(dateLabel(date), 20, 208, width, 32, 22);
+      line(20, 253, 316, 253);
+      text(weekday, 20, 268, width, 25, 16);
+      if (!w.timezone.empty())
+        text(w.timezone, 20, 301, width, 22, 12);
+    }
+    return;
+  }
+  if (!data || (data->status != Status::Ready && data->status != Status::Stale)) {
+    text(data && !data->message.empty() ? data->message : L"불러오는 중", slim ? 47.f : pad,
+         slim ? 36.f : 65.f, slim ? 272.f : width, slim ? 23.f : 60.f, slim ? 12.f : 14.f, false, 0xffffff,
+         DWRITE_TEXT_ALIGNMENT_LEADING, !slim);
+    return;
+  }
+  auto usage = [&](float x, float y, float length, double percent) {
+    bar(x, y, length, 5, 0xffffff, .2f, 2);
+    if (std::isfinite(percent))
+      bar(x, y, length * float(std::clamp(percent, 0., 100.) / 100), 5, 0xffffff, .9f, 2);
+  };
+  if (w.kind == Kind::Cpu || w.kind == Kind::Gpu || w.kind == Kind::Memory) {
+    text(number(data->value) + L"%", slim ? 47.f : pad, slim ? 31.f : 49.f,
+         slim     ? 119.f
+         : medium ? 146.f
+                  : width,
+         slim ? 34.f : 59.f, slim ? 26.f : 42.f, true);
+    if (!slim)
+      text(w.kind == Kind::Memory
+               ? formatBytes(data->total - data->available) + L" / " + formatBytes(data->total)
+               : data->title,
+           pad, 111, medium ? 146.f : width, 23, compact ? 11.f : 12.f);
+    if (w.graph && !compact) {
+      if (slim)
+        graph(data->history, 184, 22, 132, 30, 0xffffff);
+      else if (medium) {
+        line(176, 56, 176, 140);
+        graph(data->history, 192, 58, 124, 53, 0xffffff);
+        text(L"최근 60초", 192, 123, 124, 22, 12);
+      } else {
+        graph(data->history, pad, 164, width, 98, 0xffffff);
+        text(L"최근 60초", pad, 272, width, 20, 12);
+        text(L"평균 " + number(data->history.average(monotonic()).value_or(NAN)) + L"%", pad, 301, 143, 24,
+             15);
+        text(L"최대 " + number(data->history.maximum(monotonic()).value_or(NAN)) + L"%", 173, 301, 143, 24,
+             15);
+      }
+    } else
+      usage(slim ? 184.f : pad, slim ? 43.f : 139.f, slim ? 132.f : width, data->value);
+  } else if (w.kind == Kind::System) {
+    auto uptime = int64_t(std::max(0., std::isfinite(data->value) ? data->value : 0.));
+    auto duration = std::to_wstring(uptime / 86400) + L"일 " + std::to_wstring(uptime / 3600 % 24) + L"시간";
+    auto separator = data->extra.find(L'\n');
+    auto cpu = data->extra.substr(0, separator);
+    auto gpu = separator == std::wstring::npos ? L"" : data->extra.substr(separator + 1);
+    auto os = data->detail.substr(0, data->detail.find(L" · "));
+    if (slim) {
+      if (w.systemFields[0])
+        text(data->title, 47, 34, 119, 26, 17, true);
+      line(176, 19, 176, 53);
+      if (w.systemFields[1])
+        text(os, 193, 14, 126, 25, 14);
+      if (w.systemFields[4])
+        text(duration, 193, 40, 126, 22, 12);
+    } else if (compact) {
+      if (w.systemFields[0])
+        text(data->title, pad, 55, width, 34, 24, true);
+      if (w.systemFields[1])
+        text(os, pad, 94, width, 23, 12);
+      line(pad, 120, e.width - pad, 120);
+      if (w.systemFields[4])
+        text(L"가동 " + duration, pad, 129, width, 22, 12);
+    } else {
+      if (w.systemFields[0])
+        text(data->title, pad, 53, width, medium ? 31.f : 50.f,
+             medium                    ? 24.f
+             : data->title.size() > 16 ? 24.f
+                                       : 32.f,
+             true);
+      std::vector<std::pair<std::wstring, std::wstring>> rows;
+      if (!medium && w.systemFields[1])
+        rows.push_back({L"OS", data->detail});
+      if (w.systemFields[2])
+        rows.push_back({L"CPU", cpu});
+      if (w.systemFields[3])
+        rows.push_back({L"GPU", gpu});
+      if (!medium && w.systemFields[4])
+        rows.push_back({L"가동 시간", duration});
+      if (!medium)
+        line(pad, 113, e.width - pad, 113);
+      for (size_t i = 0; i < rows.size(); ++i) {
+        float y = (medium ? 87.f : 127.f) + float(i) * (medium ? 23.f : 49.f);
+        float label = medium ? 39.f : 76.f;
+        text(rows[i].first, pad, y, label, 22, 12);
+        text(rows[i].second, pad + label, y, width - label, medium ? 22.f : 40.f, medium ? 12.f : 14.f, false,
+             0xffffff, DWRITE_TEXT_ALIGNMENT_LEADING, !medium);
+        if (!medium && i + 1 < rows.size())
+          line(pad, y + 39, e.width - pad, y + 39);
+      }
+      if (medium) {
+        std::wstring footer = w.systemFields[1] ? os : L"";
+        if (w.systemFields[4])
+          footer += (footer.empty() ? L"" : L" · ") + std::wstring(L"가동 ") + duration;
+        text(footer, pad, 137, width, 19, 11);
+      }
+    }
+    if (std::none_of(w.systemFields.begin(), w.systemFields.end(), [](bool value) { return value; }))
+      text(L"표시 항목 없음", slim ? 47.f : pad, slim ? 36.f : 64.f, width, 24, 12);
+  } else if (w.kind == Kind::Network) {
+    auto speed = [&](double value) {
+      return w.networkBytes ? formatBytes(value) + L"/s" : number(value * 8 / 1e6, 2) + L" Mbps";
+    };
+    const auto incoming = L"↓ " + speed(data->value), outgoing = L"↑ " + speed(data->secondary);
+    double maximum = std::max(data->history.maximum(monotonic()).value_or(1),
+                              data->history2.maximum(monotonic()).value_or(1));
+    if (slim) {
+      text(incoming, 47, 36, 129, 24, 14, true);
+      line(184, 19, 184, 53);
+      text(L"송신", 200, 12, 116, 24, 14);
+      text(outgoing, 200, 36, 116, 24, 14, true, 0xc3ffe9);
+    } else {
+      const float summary = medium ? 146.f : width;
+      text(incoming, pad, 57, summary, 36, compact ? 17.f : medium ? 19.f : 27.f, true);
+      text(outgoing, pad, 99, summary, 30, compact ? 15.f : medium ? 17.f : 22.f, false, 0xc3ffe9);
+      if (w.graph && !compact) {
+        float x = medium ? 192.f : pad, y = medium ? 58.f : 164.f, gw = medium ? 124.f : width,
+              gh = medium ? 53.f : 98.f;
+        if (medium)
+          line(176, 56, 176, 140);
+        graph(data->history, x, y, gw, gh, 0xffffff, maximum);
+        graph(data->history2, x, y, gw, gh, 0xc3ffe9, maximum);
+        text(L"최근 60초", x, medium ? 123.f : 272.f, gw, 22, 12);
+      }
+      if (w.size == Size::L)
+        text(w.source.empty() ? L"전체 네트워크 · ↓ 수신 / ↑ 송신" : data->title, pad, 301, width, 23, 12);
+    }
+  } else if (w.kind == Kind::Disk) {
+    if (w.size == Size::L) {
+      const size_t count = data->disks.size(), pages = (count + 5) / 6;
+      const size_t first = pages > 1 ? size_t(nowUnix() / 12) % pages * 6 : 0;
+      const size_t shown = std::min<size_t>(6, count - first);
+      auto summary = std::to_wstring(count) + L"개 드라이브";
+      if (pages > 1)
+        summary += L" · " + std::to_wstring(first + 1) + L"–" + std::to_wstring(first + shown) + L" / " +
+                   std::to_wstring(count);
+      text(summary, pad, 53, width, 24, 14);
+      if (!count)
+        text(L"표시할 로컬 볼륨 없음", pad, 100, width, 30, 14);
+      const bool dense = shown > 3;
+      const float row = dense ? 37.f : 74.f;
+      for (size_t i = 0; i < shown; ++i) {
+        const auto &volume = data->disks[first + i];
+        const float y = 92 + float(i) * row;
+        text(volume.name, pad, y, dense ? 100.f : 127.f, 24, dense ? 12.f : 16.f, true);
+        if (std::isfinite(volume.total) && volume.total > 0 && std::isfinite(volume.available)) {
+          const auto total = formatBytes(volume.total, w.binaryDisk);
+          const auto used = formatBytes(volume.total - volume.available, w.binaryDisk);
+          text(used + L" / " + total, dense ? 124.f : 151.f, y + (dense ? 0 : 2), dense ? 192.f : 165.f, 22,
+               dense ? 11.f : 12.f, false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
+          usage(pad, y + (dense ? 26.f : 33.f), 152.f,
+                (volume.total - volume.available) / volume.total * 100);
+          text(formatBytes(volume.freeForUser, w.binaryDisk) + L" 여유", 184, y + (dense ? 18.f : 28.f), 132,
+               dense ? 18.f : 24.f, dense ? 10.f : 12.f, false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
+        } else
+          text(L"조회 불가 · 잠김 또는 제거됨", 124, y + 2, 192, 22, 11, false, 0xffffff,
+               DWRITE_TEXT_ALIGNMENT_TRAILING);
+        if (!dense && i + 1 < shown)
+          line(pad, y + 61, e.width - pad, y + 61);
+      }
+      if (dense)
+        text(L"사용 중 / 전체 용량" + std::wstring(pages > 1 ? L" · 12초마다 다음 목록" : L""), pad, 315,
+             width, 18, 10);
+      return;
+    }
+    auto available = formatBytes(data->secondary, w.binaryDisk);
+    if (slim) {
+      text(L"디스크", 47, 37, 85, 22, 12);
+      line(126, 19, 126, 53);
+      text(L"여유 " + available, 143, 13, 173, 28, 17, true);
+      usage(143, 48, 173, data->value);
+    } else if (compact) {
+      text(number(data->value) + L"%", pad, 49, width, 58, 42, true);
+      text(L"사용", pad, 101, width, 23, 13);
+      text(available + L" 여유", pad, 121, width, 20, 11);
+      usage(pad, 144, width, data->value);
+    } else {
+      text(available, pad, 55, 165, 52, 34, true);
+      text(L"사용 가능", pad, 117, 165, 23, 14);
+      line(187, 56, 187, 140);
+      text(formatBytes(data->total - data->available, w.binaryDisk) + L" / " +
+               formatBytes(data->total, w.binaryDisk),
+           204, 61, 112, 23, 12);
+      usage(204, 96, 112, data->value);
+      text(number(data->value) + L"% 사용", 204, 117, 112, 23, 14);
+    }
+  }
+}
+
 bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot *data, int theme, bool edit,
                     UINT dpi) {
   if (!ready() || !surface(hwnd, s))
@@ -636,21 +1043,47 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
     palette.top = readable(palette.top);
     palette.bottom = readable(palette.bottom);
   }
+  bool scene =
+      w.kind == Kind::Weather && w.weatherAuto && !highContrast_ && data && data->weather &&
+      data->weather->fetched && data->weather->state != WeatherState::Unknown &&
+      nowUnix() - (data->weather->observed > 0 ? data->weather->observed : data->weather->fetched) < 7200;
+  bool sunset = false;
+  if (scene && data->weather->state == WeatherState::Clear) {
+    auto local = localTime(nowUnix(), L"Asia/Seoul");
+    auto sun = sunriseSunset(localDate(nowUnix(), L"Asia/Seoul"), w.latitude, w.longitude);
+    double hour = duration<double, std::ratio<3600>>(local - floor<days>(local)).count();
+    sunset = std::isfinite(sun.second) && std::abs(hour - sun.second) < .55;
+    if (sunset) {
+      palette.top = design::readableSurface(0x63518c);
+      palette.bottom = design::readableSurface(0xb5758f);
+    }
+  }
   float alpha = highContrast_ ? 1.f : 1 - w.backgroundTransparency / 100.f;
   if (edit)
     alpha = std::max(.3f, alpha);
-  D2D1_GRADIENT_STOP stops[]{{0, color(palette.top, alpha)}, {1, color(palette.bottom, alpha)}};
+  ComPtr<ID2D1RoundedRectangleGeometry> mask;
+  auto card = D2D1::RoundedRect(D2D1::RectF(1, 1, e.width - 1, e.height - 1), design::radius, design::radius);
+  if (scene && FAILED(d2d_->CreateRoundedRectangleGeometry(card, &mask)))
+    scene = false;
+  D2D1_GRADIENT_STOP stops[]{{0, color(palette.top, scene ? 1.f : alpha)},
+                             {1, color(palette.bottom, scene ? 1.f : alpha)}};
   ComPtr<ID2D1GradientStopCollection> collection;
   ComPtr<ID2D1LinearGradientBrush> gradient;
   context_->CreateGradientStopCollection(stops, 2, &collection);
   if (collection)
     context_->CreateLinearGradientBrush(
         D2D1::LinearGradientBrushProperties({0, 0}, {e.width * .7f, e.height}), collection.Get(), &gradient);
-  auto card = D2D1::RoundedRect(D2D1::RectF(1, 1, e.width - 1, e.height - 1),
-                                w.size == Size::Slim ? design::slimRadius : design::radius,
-                                w.size == Size::Slim ? design::slimRadius : design::radius);
+  if (scene)
+    context_->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(), mask.Get(),
+                                              D2D1_ANTIALIAS_MODE_PER_PRIMITIVE, D2D1::Matrix3x2F::Identity(),
+                                              alpha),
+                        nullptr);
   if (gradient)
     context_->FillRoundedRectangle(card, gradient.Get());
+  if (scene) {
+    weatherBackdrop(*data->weather, e, sunset);
+    context_->PopLayer();
+  }
   if (edit) {
     brush_->SetColor(color(0xffffff, .85f));
     context_->DrawRoundedRectangle(card, brush_.Get(), 2);
@@ -659,192 +1092,8 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
     calendar(w, data, e);
   else if (w.kind == Kind::Weather)
     weather(w, data, e);
-  else if (w.kind == Kind::Clock) {
-    auto now = nowUnix();
-    auto date = localDate(now, w.timezone);
-    auto shortDate =
-        std::to_wstring(unsigned(date.month())) + L"월 " + std::to_wstring(unsigned(date.day())) + L"일";
-    if (w.size == Size::Slim) {
-      text(timeLabel(now, w, w.seconds), 17, 15, 194, 43, w.twelveHour ? 22.f : 30.f, true);
-      line(210, 21, 210, 51);
-      text(shortDate, 223, 26, 96, 25, 14);
-    } else if (w.size == Size::L) {
-      analog(w, now, 168, 106, 84);
-      line(20, 207, 316, 207);
-      text(timeLabel(now, w, w.seconds), 20, 215, 296, 58,
-           w.twelveHour ? (w.seconds ? 32.f : 40.f) : (w.seconds ? 43.f : 52.f), true, 0xffffff,
-           DWRITE_TEXT_ALIGNMENT_CENTER);
-      text(dateLabel(date), 20, 278, 296, 24, 16, false, 0xffffff, DWRITE_TEXT_ALIGNMENT_CENTER);
-      text(w.timezone.empty() ? L"Windows 시간대" : w.timezone, 20, 309, 296, 20, 12);
-    } else if (w.size == Size::M) {
-      text(w.timezone.empty() ? L"시계" : w.timezone, 20, 17, 174, 24, 14);
-      if (w.twelveHour)
-        text(timeLabel(now, w).substr(0, 2), 20, 45, 174, 20, 12);
-      text(timeLabel(now, w, w.seconds, false), 20, w.twelveHour ? 65.f : 53.f, 174, 54,
-           w.seconds ? 32.f : 46.f, true);
-      text(dateLabel(date), 20, 125, 174, 23, 12);
-      line(207, 20, 207, 140);
-      analog(w, now, 264, 80, 45);
-    } else {
-      text(w.timezone.empty() ? L"시계" : w.timezone, 20, 17, 120, 25, 14);
-      if (w.twelveHour)
-        text(timeLabel(now, w).substr(0, 2), 20, 43, 120, 20, 12);
-      text(timeLabel(now, w, w.seconds, false), 20, w.twelveHour ? 64.f : 58.f, 120, 54,
-           w.seconds ? 23.f : 36.f, true);
-      text(dateLabel(date), 20, 125, 120, 24, 11);
-    }
-  } else {
-    const bool slim = w.size == Size::Slim, compact = w.size == Size::S, medium = w.size == Size::M;
-    float pad = slim ? design::slimPadding : design::padding;
-    float width = e.width - 2 * pad;
-    std::wstring title = std::wstring(kindName(w.kind));
-    if (w.kind == Kind::Disk && data && !data->title.empty())
-      title += L" " + data->title;
-    text(title, pad, slim ? 8.f : 16, width, 25, slim ? 12.f : 16, true);
-    auto usage = [&](float x, float y, float length) {
-      bar(x, y, length, 5, 0xffffff, .2f, 2);
-      if (data && std::isfinite(data->value))
-        bar(x, y, length * float(std::clamp(data->value, 0., 100.) / 100), 5, 0xffffff, .9f, 2);
-    };
-    if (!data || (data->status != Status::Ready && data->status != Status::Stale)) {
-      text(data && !data->message.empty() ? data->message : L"불러오는 중", pad, slim ? 33.f : 65, width,
-           slim ? 24.f : 50.f, slim ? 12.f : 14);
-    } else if (w.kind == Kind::System) {
-      auto uptime = int64_t(data->value);
-      auto duration =
-          L"가동 " + std::to_wstring(uptime / 86400) + L"일 " + std::to_wstring(uptime / 3600 % 24) + L"시간";
-      auto separator = data->extra.find(L'\n');
-      std::wstring cpu = data->extra.substr(0, separator),
-                   gpu = separator == std::wstring::npos ? L"" : data->extra.substr(separator + 1);
-      if (slim) {
-        if (w.systemFields[0])
-          text(data->title, pad, 30, 156, 25, 16, true);
-        if (w.systemFields[4])
-          text(duration, 185, 33, 134, 22, 12);
-      } else if (compact) {
-        if (w.systemFields[0])
-          text(data->title, pad, 48, width, 26, 17, true);
-        if (w.systemFields[1])
-          text(data->detail, pad, 84, width, 23, 12);
-        line(pad, 117, e.width - pad, 117);
-        if (w.systemFields[4])
-          text(duration, pad, 126, width, 22, 12);
-      } else {
-        if (w.systemFields[0])
-          text(data->title, pad, 47, width, 29, medium ? 18.f : 22.f, true);
-        std::vector<std::pair<std::wstring, std::wstring>> rows;
-        if (w.systemFields[1])
-          rows.push_back({L"OS", data->detail});
-        if (w.systemFields[2])
-          rows.push_back({L"CPU", cpu});
-        if (w.systemFields[3])
-          rows.push_back({L"GPU", gpu});
-        if (!medium && w.systemFields[4])
-          rows.push_back({L"가동", duration.substr(3)});
-        for (size_t i = 0; i < rows.size(); ++i) {
-          float y = (medium ? 83.f : 96.f) + float(i) * (medium ? 23.f : 52.f);
-          text(rows[i].first, pad, y, 38, 22, 12);
-          text(rows[i].second, pad + 46, y, width - 46, medium ? 22.f : 45.f, medium ? 12.f : 14, false,
-               0xffffff, DWRITE_TEXT_ALIGNMENT_LEADING, !medium);
-          if (!medium)
-            line(pad, y + 42, e.width - pad, y + 42);
-        }
-      }
-      if (std::none_of(w.systemFields.begin(), w.systemFields.end(), [](bool v) { return v; }))
-        text(L"표시 항목 없음", pad, slim ? 32.f : 64.f, width, 24, 12);
-    } else if (w.kind == Kind::Network) {
-      auto speed = [&](double v) {
-        return w.networkBytes ? formatBytes(v) + L"/s" : number(v * 8 / 1e6, 2) + L" Mbps";
-      };
-      double maximum = std::max(data->history.maximum(monotonic()).value_or(1),
-                                data->history2.maximum(monotonic()).value_or(1));
-      if (slim) {
-        text(L"↓ " + speed(data->value), pad, 32, 144, 26, 15, true);
-        text(L"↑ " + speed(data->secondary), 174, 32, 145, 26, 15, true, 0xc3ffe9);
-      } else {
-        float summaryWidth = medium ? 153.f : width;
-        text(L"↓ " + speed(data->value), pad, 53, summaryWidth, 33,
-             compact  ? 17.f
-             : medium ? 19.f
-                      : 27.f,
-             true);
-        text(L"↑ " + speed(data->secondary), pad, 97, summaryWidth, 30,
-             compact  ? 15.f
-             : medium ? 17.f
-                      : 22.f,
-             false, 0xc3ffe9);
-        if (w.graph && (medium || w.size == Size::L)) {
-          float x = medium ? 191.f : pad, y = medium ? 49.f : 174.f, gw = medium ? 125.f : width,
-                gh = medium ? 65.f : 92.f;
-          text(L"최근 60초", x, medium ? 23.f : 147.f, gw, 22, 12);
-          graph(data->history, x, y, gw, gh, 0xffffff, maximum);
-          graph(data->history2, x, y, gw, gh, 0xc3ffe9, maximum);
-          text(L"↓ 수신  ↑ 송신", x, y + gh + 8, gw, 22, 12);
-        }
-        if (w.size == Size::L)
-          text(data->title, pad, 307, width, 22, 12);
-      }
-    } else if (w.kind == Kind::Cpu || w.kind == Kind::Gpu) {
-      text(number(data->value) + L"%", slim ? 76.f : pad, slim ? 20.f : 46.f,
-           slim     ? 105.f
-           : medium ? 139.f
-                    : width,
-           slim ? 42.f : 60.f, slim ? 31.f : 42.f, true);
-      if (!slim)
-        text(data->title, pad, 110, medium ? 139.f : width, 24, compact ? 11.f : 12.f);
-      if (w.graph && !compact) {
-        if (slim)
-          graph(data->history, 196, 22, 121, 30, 0xffffff);
-        else if (medium) {
-          line(173, 24, 173, 139);
-          graph(data->history, 190, 40, 126, 72, 0xffffff);
-          text(L"최근 60초", 190, 123, 126, 22, 12);
-        } else {
-          graph(data->history, pad, 164, width, 98, 0xffffff);
-          text(L"최근 60초", pad, 272, width, 20, 12);
-          text(L"평균 " + number(data->history.average(monotonic()).value_or(NAN)) + L"%", pad, 301, 143, 24,
-               15);
-          text(L"최대 " + number(data->history.maximum(monotonic()).value_or(NAN)) + L"%", 173, 301, 143, 24,
-               15);
-        }
-      } else
-        usage(slim ? 197.f : pad, slim ? 43.f : 139.f, slim ? 120.f : width);
-    } else if (w.kind == Kind::Memory || w.kind == Kind::Disk) {
-      bool disk = w.kind == Kind::Disk, binary = !disk || w.binaryDisk;
-      auto used = formatBytes(data->total - data->available, binary);
-      auto total = formatBytes(data->total, binary);
-      auto available = formatBytes(disk ? data->secondary : data->available, binary);
-      if (slim) {
-        text(disk ? available : number(data->value) + L"%", pad, 30, disk ? 177.f : 87.f, 29,
-             disk ? 21.f : 25.f, true);
-        if (disk)
-          usage(210, 43, 106);
-        else
-          text(used + L" / " + total, 115, 35, 202, 24, 12);
-      } else {
-        text(disk && !compact ? available : number(data->value) + L"%", pad, 47, width, 60,
-             disk && !compact ? 39.f : 42.f, true);
-        text(disk ? (compact ? L"가용 " + available : L"사용자 가용 공간") : used + L" / " + total, pad, 110,
-             width, 24, compact ? 11.f : 14.f);
-        usage(pad, 140, width);
-        if (w.size == Size::L) {
-          std::vector<std::pair<std::wstring, std::wstring>> rows{{L"사용 중", used}, {L"전체", total}};
-          if (disk) {
-            if (std::abs(data->available - data->secondary) >= 1.)
-              rows.push_back({L"볼륨 여유", formatBytes(data->available, binary)});
-            rows.push_back({L"점유율", number(data->value) + L"%"});
-          } else
-            rows.push_back({L"사용 가능", available});
-          for (size_t i = 0; i < rows.size(); ++i) {
-            float y = 168 + float(i) * 39;
-            text(rows[i].first, pad, y, 103, 25, 14);
-            text(rows[i].second, 129, y, 187, 25, 16, true, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
-            line(pad, y + 29, e.width - pad, y + 29);
-          }
-        }
-      }
-    }
-  }
+  else
+    content(w, data, e);
 
   HRESULT hr = context_->EndDraw();
   if (!raster_)

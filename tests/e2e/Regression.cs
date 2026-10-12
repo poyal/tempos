@@ -19,6 +19,53 @@ internal static partial class Program
         return JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "diagnostics.json")))!.AsObject();
     }
     static string[] Ids(JsonNode settings) => settings["widgets"]!.AsArray().Select(w => w!["id"]!.GetValue<string>()).ToArray();
+    sealed class CaptureBackdrop : Form
+    {
+        protected override bool ShowWithoutActivation => true;
+    }
+    [DllImport("user32.dll")] static extern bool GetClientRect(nint window, out Rectangle rectangle);
+    [DllImport("user32.dll")] static extern bool ClientToScreen(nint window, ref Point point);
+    [DllImport("user32.dll")] static extern nint GetAncestor(nint window, uint flags);
+    static void CaptureSettings(string name)
+    {
+        var handle = Window.Properties.NativeWindowHandle.Value;
+        // Keep other topmost test widgets out of the settings capture. Capture the
+        // client area so invisible resize borders cannot expose the user's desktop.
+        SetWindowPos(handle, new nint(-1), 0, 0, 0, 0, 0x13);
+        try
+        {
+            Thread.Sleep(200);
+            if (!GetClientRect(handle, out var bounds)) throw new Exception("Settings client bounds unavailable");
+            var origin = Point.Empty;
+            if (!ClientToScreen(handle, ref origin)) throw new Exception("Settings client origin unavailable");
+            bounds.Location = origin;
+            bool clear = true;
+            for (int y = 1; y < 8; y++)
+                for (int x = 1; x < 8; x++)
+                    clear &= GetAncestor(WindowFromPoint(new Point(bounds.X + bounds.Width * x / 8,
+                        bounds.Y + bounds.Height * y / 8)), 2) == handle;
+            Check(clear, name + ": settings client is unobscured");
+            Screenshot(name, bounds);
+        }
+        finally { SetWindowPos(handle, new nint(-2), 0, 0, 0, 0, 0x13); }
+    }
+    static void CaptureWidget(string name, JsonNode widget)
+    {
+        var crop = new Rectangle(widget["x"]!.GetValue<int>(), widget["y"]!.GetValue<int>(),
+                                 widget["width"]!.GetValue<int>(), widget["height"]!.GetValue<int>());
+        using var backdrop = new CaptureBackdrop { FormBorderStyle = FormBorderStyle.None, StartPosition = FormStartPosition.Manual,
+            Bounds = crop, BackColor = Color.FromArgb(237, 244, 250), ShowInTaskbar = false, TopMost = true };
+        backdrop.Show();
+        SetWindowPos(backdrop.Handle, WidgetHandle(widget), crop.X, crop.Y, crop.Width, crop.Height, 0x10);
+        backdrop.Refresh(); System.Windows.Forms.Application.DoEvents(); Thread.Sleep(150);
+        Screenshot(name, crop);
+        using var captured = new Bitmap(Path.Combine(Data, name + ".png"));
+        int contentPixels = 0;
+        for (int y = 5; y < captured.Height; y += 5)
+            for (int x = 5; x < captured.Width; x += 5)
+                if (captured.GetPixel(x, y).ToArgb() != backdrop.BackColor.ToArgb()) contentPixels++;
+        Check(contentPixels > 20, name + ": captured widget pixels present");
+    }
     static void VisibleWidgets(string stage, int count, bool hitTest = false)
     {
         var state = State();
@@ -41,8 +88,8 @@ internal static partial class Program
                 Check(actual == WidgetHandle(w), stage + ": desktop hit test kind " + w["kind"] + " (hit " + cls + ")");
             }
             var first = windows.First();
-            Rectangle? crop = stage.StartsWith("clock-") || stage.StartsWith("design-") ? new Rectangle(first!["x"]!.GetValue<int>(), first["y"]!.GetValue<int>(), first["width"]!.GetValue<int>(), first["height"]!.GetValue<int>()) : null;
-            Screenshot(stage, crop);
+            if (stage.StartsWith("clock-") || stage.StartsWith("design-")) CaptureWidget(stage, first!);
+            else Screenshot(stage);
         }
         finally { ShowWindow(Window.Properties.NativeWindowHandle, 5); }
     }
@@ -253,11 +300,16 @@ internal static partial class Program
         Thread.Sleep(1500);
         Check(Automation.FromHandle(WidgetHandle(clock)).Name != summary, "Clock seconds change rendered accessible time");
         Element(1310).AsCheckBox().IsChecked = false; NativeButton(1316);
+        var desktopParent = State()["windows"]![0]!["parent"]!.GetValue<long>();
         Element(1309).AsCheckBox().IsChecked = true; NativeButton(1316);
         Check((State()["windows"]![0]!["extendedStyle"]!.GetValue<long>() & 8) != 0, "Always-on-top sets native topmost state");
         Element(1309).AsCheckBox().IsChecked = false; NativeButton(1316);
         Check((State()["windows"]![0]!["extendedStyle"]!.GetValue<long>() & 8) == 0, "Disabling always-on-top clears native topmost state");
-        VisibleWidgets("topmost-return", 9, true);
+        Check(desktopParent != 0 && State()["windows"]![0]!["parent"]!.GetValue<long>() == desktopParent,
+              "Disabling always-on-top restores the original desktop host");
+        // Ordinary desktop widgets correctly sit behind Explorer/application windows.
+        // WindowFromPoint tests foreground occlusion, not the restored parent/z-order.
+        VisibleWidgets("topmost-return", 9);
         var overrides = Settings()["widgets"]!.DeepClone(); Tab(2);
         for (int theme = 0; theme < 9; theme++)
         {
@@ -270,13 +322,18 @@ internal static partial class Program
         NativeButton(1318); Check(Settings()["widgets"]![8]!["source"]!.GetValue<string>() == "", "Calendar today clears month override");
         var saved = Settings().DeepClone(); Restart(ref app, exe);
         Check(JsonNode.DeepEquals(saved, Settings()), "All display, theme and scale options survive restart");
-        VisibleWidgets("options-restarted", 9, true);
+        VisibleWidgets("options-restarted", 9);
+        Check(State()["windows"]!.AsArray().All(w => w!["parent"]!.GetValue<long>() == desktopParent),
+              "Restart restores every normal widget to the desktop host");
         Quit(app!); app = null;
     }
     static void ClockLayout(ref App? app)
     {
         for (int i = 0; i < 5; i++) NativeButton(1203);
         NativeCombo(1201, 0); NativeButton(1202);
+        Element(1309).AsCheckBox().IsChecked = true;
+        Element(1305).AsTextBox().Text = "0";
+        NativeButton(1316);
         for (int period = 0; period < 2; period++)
         {
             Tab(3); Element(1600).AsCheckBox().IsChecked = period == 1; NativeButton(1620); Tab(0);

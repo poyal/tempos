@@ -4,7 +4,24 @@
 #include <pdh.h>
 #include <map>
 namespace tempos {
+inline constexpr auto allDisksSource = L"@all-local-volumes";
 std::wstring gpuEngineKey(std::wstring instance);
+struct NetworkSample {
+  std::wstring id;
+  uint64_t input{}, output{};
+};
+class NetworkTotal {
+public:
+  Snapshot read(const std::vector<NetworkSample> &, double time);
+  void reset() { previous_.clear(); }
+
+private:
+  struct Previous {
+    uint64_t input{}, output{};
+    double time{};
+  };
+  std::map<std::wstring, Previous> previous_;
+};
 class LocalMetrics {
 public:
   LocalMetrics();
@@ -33,6 +50,7 @@ private:
     double time{};
   };
   std::map<std::wstring, NetPrevious> previous_;
+  NetworkTotal networkTotal_;
   std::wstring cpuName_, osName_, pcName_;
 };
 std::wstring providerKey(const Widget &widget, WeatherProvider provider = WeatherProvider::Kma);

@@ -3,7 +3,7 @@
 #include <atomic>
 #include <uiautomation.h>
 namespace tempos {
-class WidgetAccessibility final : public IRawElementProviderSimple, public IInvokeProvider {
+class WidgetAccessibility final : public IRawElementProviderSimple {
 public:
   WidgetAccessibility(HWND hwnd, std::wstring id) : hwnd_(hwnd), id_(std::move(id)) {}
   void update(std::wstring name);
@@ -15,7 +15,6 @@ public:
   HRESULT STDMETHODCALLTYPE GetPatternProvider(PATTERNID, IUnknown **) override;
   HRESULT STDMETHODCALLTYPE GetPropertyValue(PROPERTYID, VARIANT *) override;
   HRESULT STDMETHODCALLTYPE get_HostRawElementProvider(IRawElementProviderSimple **) override;
-  HRESULT STDMETHODCALLTYPE Invoke() override;
 
 private:
   std::atomic<ULONG> refs_{1};
@@ -23,5 +22,4 @@ private:
   HWND hwnd_;
   std::wstring id_, name_;
 };
-constexpr UINT WM_TEMPOS_SETTINGS = WM_APP + 4;
 } // namespace tempos

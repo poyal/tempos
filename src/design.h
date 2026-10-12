@@ -5,8 +5,13 @@ namespace tempos::design {
 inline constexpr float padding = 20;
 inline constexpr float slimPadding = 17;
 inline constexpr float radius = 24;
-inline constexpr float slimRadius = 34;
 inline constexpr float graphStroke = 2;
+inline constexpr float iconSize = 20;
+inline constexpr float iconStroke = 1.7f;
+inline constexpr float headerTextX = 48;
+inline constexpr float headerY = 17;
+inline constexpr float titleSize = 16;
+inline constexpr float compactTitleSize = 14;
 inline constexpr float smallTextContrast = 4.5f;
 inline double whiteContrast(uint32_t rgb) {
   auto linear = [](int value) {

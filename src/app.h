@@ -5,6 +5,7 @@
 #include "calendar.h"
 #include "accessibility.h"
 #include "startup.h"
+#include "location.h"
 #include <shellapi.h>
 namespace tempos {
 class App;
@@ -27,11 +28,6 @@ struct WidgetWindow {
   UINT dpi = 96;
   ~WidgetWindow();
 };
-struct Region {
-  std::wstring name;
-  int nx{}, ny{};
-  double lat{}, lon{};
-};
 class App {
 public:
   App(HINSTANCE, std::filesystem::path root, bool fixture, bool visible);
@@ -50,6 +46,9 @@ private:
   void updateViewport();
   void selectTab(int);
   void loadControls();
+  void layoutWidgetFields();
+  void findLocation();
+  void applyLocation(LocationResult);
   void weatherControls();
   void applyControls();
   void command(int, int);
@@ -95,6 +94,9 @@ private:
   std::vector<HWND> grids_;
   std::vector<Monitor> monitors_;
   std::vector<Region> regions_;
+  LocationLookup location_;
+  std::wstring locationTarget_;
+  int locationRegionChoice_ = -1;
   std::vector<Device> devices_;
   std::vector<std::pair<HWND, int>> controls_;
   std::vector<int> refreshChoices_;

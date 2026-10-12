@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tempos · 최종 디자인 검수</title>
+<style>
+:root{color-scheme:light;--ink:#142d52;--muted:#596d87;--line:#d5e0ec;--blue:#245da3}
+*{box-sizing:border-box}body{margin:0;background:#eef4fa;color:var(--ink);font:15px/1.6 'Segoe UI','Malgun Gothic',sans-serif}button,select,textarea{font:inherit}a{color:var(--blue);text-underline-offset:3px}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #c38322;outline-offset:3px}button:disabled{opacity:.4;cursor:default}
+header{max-width:1800px;margin:auto;padding:30px 32px 22px;display:flex;justify-content:space-between;align-items:center;gap:24px}.eyebrow{font-size:11px;letter-spacing:2px;color:#627a9a;margin-bottom:5px}h1{font-size:29px;margin:0 0 5px;letter-spacing:-1px}p{margin:0;color:var(--muted)}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.button,.actions button{border:1px solid #bacce0;background:#fff;color:var(--ink);border-radius:8px;padding:8px 14px;text-decoration:none}.actions button.primary{background:var(--blue);color:white;border-color:var(--blue)}#progress{font-size:13px;white-space:nowrap}
+.layout{max-width:1800px;padding:0 32px;margin:auto;display:grid;grid-template-columns:210px minmax(0,1fr);gap:22px}aside{align-self:start;position:sticky;top:16px}nav{display:flex;flex-direction:column;gap:5px}nav button{background:transparent;border:1px solid transparent;border-radius:8px;color:var(--ink);padding:10px 12px;text-align:left;display:flex;justify-content:space-between;gap:8px;align-items:center}nav button:hover{background:#e0eaf5}nav button[aria-current=true]{background:#214d87;color:#fff}nav small{font-size:10px;white-space:nowrap;opacity:.75}.dot{font-size:12px}.legend{font-size:11px;padding:14px 10px;color:var(--muted)}
+main{min-width:0}.heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}.heading h2{margin:0;font-size:23px}.heading .tag{font-size:12px;color:#49698e;border:1px solid #c4d3e4;border-radius:5px;padding:3px 9px}.controls{display:flex;gap:8px;align-items:center}.controls button{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:7px 12px}#description{margin-bottom:16px;max-width:1100px}
+figure{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#eaf3fb}figure a{display:block}#preview{display:block;width:100%;max-height:77vh;object-fit:contain}figcaption{display:flex;justify-content:space-between;gap:16px;background:#fff;padding:10px 16px;color:var(--muted);font-size:12px}#load-error{display:none;color:#983f27;background:#fff4ed;padding:15px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px}.panel h3{font-size:15px;margin:0 0 10px}.panel ul{margin:0;padding-left:20px;color:#405a77}.panel li+li{margin-top:5px}.source{font-size:11px;color:#71839a;margin-top:12px;overflow-wrap:anywhere}.review-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.review-top h3{margin:0}.review-top select{border:1px solid #bfcedf;background:#f9fbfe;border-radius:6px;padding:5px 9px;color:var(--ink)}textarea{display:block;width:100%;min-height:103px;border:1px solid #c8d7e8;border-radius:6px;padding:9px 10px;color:var(--ink);resize:vertical}.save-state{font-size:11px;margin-top:7px;color:#69809b}.sizes{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.sizes span{border:1px solid #dbe4ef;border-radius:4px;padding:3px 8px;font-size:11px;color:#526d8d}
+details{margin:22px 0 0;border:1px solid var(--line);border-radius:10px;background:#f8fbfe;padding:15px 20px}summary{cursor:pointer;font-weight:600}table{border-collapse:collapse;width:100%;margin:12px 0 6px;font-size:13px}td,th{text-align:left;border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:top}th{color:#416286;width:135px}details p{font-size:12px;margin-top:12px}
+.contact{max-width:1800px;padding:32px;margin:auto}.contact h2{font-size:19px;margin:0 0 14px}.thumbnails{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.thumb{border:1px solid var(--line);border-radius:9px;padding:0;background:#fff;overflow:hidden;text-align:left;color:var(--ink)}.thumb img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#eaf3fb}.thumb span{display:block;padding:9px 12px;font-size:13px}.thumb:hover{border-color:#5384bb}
+footer{max-width:1800px;margin:auto;padding:0 32px 28px;font-size:12px;color:#6f8198;display:flex;justify-content:space-between;gap:20px}footer a{margin-left:15px}kbd{font:11px monospace;border:1px solid #c7d5e3;border-radius:3px;padding:1px 4px}
+@media(max-width:1000px){header{align-items:flex-start}.layout{grid-template-columns:160px minmax(0,1fr)}.detail-grid{grid-template-columns:1fr}.thumbnails{grid-template-columns:repeat(3,minmax(0,1fr))}nav small{display:none}}
+@media(max-width:700px){header{padding:22px 16px;display:block}.actions{margin-top:16px}h1{font-size:25px}.layout{display:block;padding:0 16px}aside{position:static;margin-bottom:20px}nav{flex-direction:row;overflow:auto;padding-bottom:8px}nav button{flex-shrink:0}.legend{display:none}.heading{align-items:flex-start}.heading h2{font-size:20px}.controls{gap:4px}.controls button{padding:5px 8px}.tag{display:none}figure img{max-height:none}.contact{padding:26px 16px}.thumbnails{grid-template-columns:repeat(2,minmax(0,1fr))}footer{padding:0 16px 22px;display:block}figcaption{display:block}.source{font-size:10px}}
+@media print{header .actions,aside,.controls,.detail-grid .panel:last-child,.contact,footer{display:none}.layout{display:block;padding:0}header{padding:0 0 15px}figure{border:0}#preview{max-height:none}.detail-grid{display:block}details{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header><div><div class="eyebrow">TEMPOS / FINAL DESIGN · 2026.10.13</div><h1>최종 디자인 검수</h1><p>기존 디자인과 선택한 구성을 공통 기준으로 정리한 15개 시안입니다. 날씨는 현행을 유지합니다.</p></div><div class="actions"><a class="button" href="app-review.html">앱 캡처 비교</a><span id="progress" aria-live="polite">0 / 15 확인</span><button id="export" type="button" class="primary">검수 메모 내보내기</button></div></header>
+<div class="layout">
+<aside><nav id="navigation" aria-label="디자인 목록"></nav><div class="legend">○ 미검토 · △ 수정 필요 · ✓ 확인 완료<br><kbd>←</kbd> <kbd>→</kbd> 이전·다음 시안</div></aside>
+<main>
+<div class="heading"><div class="actions"><h2 id="title"></h2><span class="tag" id="tag"></span></div><div class="controls"><button id="previous" type="button" aria-label="이전 시안">←</button><span id="position"></span><button id="next" type="button" aria-label="다음 시안">→</button></div></div>
+<p id="description"></p>
+<figure><a id="original" target="_blank" rel="noopener"><img id="preview" alt="선택한 위젯의 최종 디자인 시안"></a><div id="load-error">이미지를 불러오지 못했습니다. 같은 폴더의 파일을 확인하세요.</div><figcaption><span id="caption"></span><span>이미지를 누르면 원본 크기로 열립니다.</span></figcaption></figure>
+<div class="detail-grid">
+<section class="panel"><h3>확인할 내용</h3><ul id="checks"></ul><div class="sizes" id="sizes"></div><p class="source" id="source"></p></section>
+<section class="panel"><div class="review-top"><h3><label for="status">검수 메모</label></h3><select id="status"><option value="unreviewed">○ 미검토</option><option value="change">△ 수정 필요</option><option value="approved">✓ 확인 완료</option></select></div><textarea id="notes" aria-label="이 시안의 수정 요청 또는 확인 내용" placeholder="크기와 위치를 함께 적으면 비교하기 편합니다. 예: 디스크 L의 드라이브 간격"></textarea><p class="save-state" id="save-state">메모는 이 브라우저에 저장됩니다. 전달할 때는 내보내기를 사용하세요.</p></section>
+</div>
+<details><summary>공통 디자인 기준</summary>
+<table><tbody>
+<tr><th>크기</th><td>S 160×160 · Slim 336×72 · M 336×160 · L 336×336 · 캘린더 XL 1008×840 DIP</td></tr>
+<tr><th>모서리·여백</th><td>공통 모서리 24 DIP · 기본 여백 20 DIP · Slim 여백 17 DIP · 비율 고정</td></tr>
+<tr><th>아이콘</th><td>날씨 제외 20 DIP 윤곽선 아이콘. S/M/L 기준점 (20,20), 제목 (48,17). Slim은 별도 공통 행을 사용합니다. 시계는 디지털 아이콘, 날씨는 기존 아이콘을 유지합니다.</td></tr>
+<tr><th>글자·테마</th><td>기존 Segoe UI 계열, 핵심 숫자 SemiBold, 제목·수치·보조 정보 위계 유지. 기존 9개 공통 테마.</td></tr>
+<tr><th>날씨</th><td>크기별 시안과 상태별 배경 원본을 그대로 유지합니다. 원본의 아이콘·배경·구성을 이번 작업에서 변경하지 않았습니다.</td></tr>
+<tr><th>동작</th><td>위젯은 조회 전용. 출처 문구와 클릭 버튼 없음. 월 이동은 설정에서, 위치 이동은 정렬 모드에서 수행합니다.</td></tr>
+<tr><th>디스크 L</th><td>전체 로컬 드라이브 목록. 4~6개는 조밀한 행, 7개 이상은 6개씩 12초 자동 순환합니다. 잠긴 볼륨도 상태를 표시합니다.</td></tr>
+</tbody></table>
+<p>크기·반경은 위 DIP 규격을 기준으로 검수합니다. 이미지의 예시 값은 샘플 데이터이며, 이 폴더는 최종 구성 검토를 위한 디자인 자료입니다. 기존 원본은 별도 폴더에 보존했습니다.</p>
+</details>
+</main>
+</div>
+<section class="contact"><h2>전체 시안 한눈에 보기</h2><div class="thumbnails" id="thumbnails"></div></section>
+<footer><span>디자인 검수용 · 인터넷 연결 없이 열 수 있습니다.</span><span><a href="manifest.json" target="_blank">구성·규격 기록</a><a href="prompts.json" target="_blank">초기 생성 기록</a><a href="boards.html?board=rules">공통 구성 원본</a></span></footer>
+<script id="design-data" type="application/json">{"version":2,"title":"Tempos 최종 디자인 검수본","date":"2026-10-12","purpose":"공통 디자인 구성과 앱 구현 대조 검수. 사용자 최종 승인은 별도.","base":"design/galaxy-v1","rules":{"sizesDIP":{"S":[160,160],"Slim":[336,72],"M":[336,160],"L":[336,336],"XL":[1008,840]},"radiusDIP":24,"paddingDIP":20,"slimPaddingDIP":17,"iconStyle":"날씨 제외 전 크기에서 동일한 20 DIP 흰색 윤곽선 아이콘. 아이콘과 제목의 기준점 고정.","iconStrokeDIP":1.7,"font":"Segoe UI / 한글 시스템 대체 글꼴","palette":"9개 공통 테마. 개별 위젯 비교 시안은 블루 테마로 통일. 불투명 작은 글자 대비 4.5:1 이상.","behavior":"위젯은 조회 전용. 출처·클릭 버튼 없음. 정렬 모드 드래그와 설정의 월 이동 유지.","weather":"01-weather.png와16-weather-states.png는 원본 그대로 복사","header":{"standard":{"icon":[20,20],"title":[48,17]},"slim":{"icon":[17,26],"title":[47,12]},"iconSize":20,"titleSize":{"S":14,"Slim":14,"M":16,"L":16,"XL":16}},"diskOverflow":"1~3개는 넓은 행, 4~6개는 조밀한 행. 7개 이상은 6개씩 12초 자동 순환. 읽기 실패한 볼륨도 표시."},"boards":[{"id":"overview","file":"13-desktop-grid.png","name":"전체 배치","tag":"9종 통합","description":"개별 시안과 동일한 구성 요소를 재사용한 전체 배치입니다. 확정 날씨는 원본 이미지를 그대로 표시합니다.","checks":["9종의 아이콘 선과 글자 위계가 같은 계열인지","크기가 다른 카드도 같은 배율과 간격으로 배치되는지","날씨가 기존 디자인을 유지하는지"],"origin":"최종 개별 시안을 기준으로 전체 배치 갱신 → 공통 HTML/CSS/SVG 구성으로 최종 정리"},{"id":"weather","file":"01-weather.png","name":"날씨","tag":"현행 유지","description":"기존 날씨 시안을 그대로 사용합니다. 아이콘·크기별 구성·배경 표현은 이번 디자인 작업에서 변경하지 않았습니다.","checks":["현행 날씨 크기별 구성이 유지되는지","L의 시간별 예보와 강수 확률 표현"],"origin":"galaxy-v1/01-weather.png 원본 복사","sizes":["지역·기온·아이콘·상태","현재 날씨 요약","현재 날씨·최저/최고·큰 아이콘","현재 날씨·시간별 예보"]},{"id":"clock","file":"02-clock.png","name":"시계","tag":"디지털 전용","description":"모든 크기에서 아날로그 다이얼을 없앴습니다. 시간과 날짜를 중심으로 구성하고 작은 디지털 표시 아이콘을 사용합니다.","checks":["S·Slim·M·L 모두 아날로그가 없는지","시간이 날짜보다 먼저 읽히는지","초 표시·12시간제를 적용해도 숫자 영역이 확보되는지"],"origin":"galaxy-v1/02-clock.png 기반 디지털 구성 변경 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["시간·날짜·작은 디지털 아이콘","시간과 날짜 가로 분리","시간 / 연도·날짜·요일 두 영역","큰 시간 + 하단 날짜·요일"]},{"id":"cpu","file":"03-cpu.png","name":"CPU","tag":"기존 구성","description":"CPU·GPU·메모리의 제목·아이콘·사용률·그래프·통계 위치를 같은 크기별 기준으로 통일했습니다.","checks":["아이콘·핵심 숫자·모델명 위계","최근 60초 그래프와 L 평균/최대"],"origin":"galaxy-v1/03-cpu.png 구성 유지·모서리 정리 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["사용률·막대","사용률·작은 추이","사용률·모델·60초 그래프","모델·그래프·평균·최대"]},{"id":"gpu","file":"04-gpu.png","name":"GPU","tag":"기존 구성","description":"CPU·메모리와 같은 구성에 그래픽카드 윤곽선 아이콘을 사용합니다. 긴 장치명은 영역 안에서 말줄임합니다.","checks":["CPU·메모리와 핵심 숫자의 크기가 조화로운지","긴 모델명과 통계가 충돌하지 않는지"],"origin":"galaxy-v1/04-gpu.png 구성 유지·모서리 정리 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["사용률·모델·막대","사용률·작은 추이","사용률·모델·60초 그래프","모델·그래프·평균·최대"]},{"id":"memory","file":"05-memory.png","name":"메모리","tag":"CPU·GPU와 통일","description":"RAM 윤곽선 아이콘과 CPU/GPU 공통 사용률·60초 그래프·평균/최대 구성을 사용합니다. 색상은 모든 종류에서 공통 테마를 따릅니다.","checks":["CPU/GPU와 같은 그래프 중심 구성인지","사용량/전체 용량이 보조 정보로 읽히는지"],"origin":"galaxy-v1/05-memory.png + 03-cpu.png 그래프 구성 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["사용률·사용/전체·막대","사용률·작은 추이","사용률·사용/전체·60초 그래프","사용/전체·그래프·평균·최대"]},{"id":"system","file":"06-system.png","name":"시스템 정보","tag":"선택한 A안","description":"선택한 사양 목록 A안의 PC·OS·CPU·GPU·가동 시간 구성을 유지하고 제목과 아이콘을 공통 기준점에 맞췄습니다.","checks":["선택한 사양 목록과 공통 제목·아이콘 기준이 유지되는지","L의 항목명과 사양 값 정렬","GPU 모델이 중복 표시되지 않는지"],"origin":"review-2026-10-12/system-a.png 원본 복사 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["아이콘·PC·OS·가동 시간","아이콘·PC / OS·가동 시간","PC 헤더·CPU/GPU 행·OS/가동 시간","PC·아이콘·OS/CPU/GPU/가동 시간 목록"]},{"id":"network","file":"07-network.png","name":"네트워크","tag":"전체 집계","description":"기존 수신·송신 배치와 네트워크 아이콘을 유지하고 집계 대상은 전체 네트워크로 표시합니다.","checks":["수신·송신 숫자와 색 구분","전체 네트워크 표기","두 방향 그래프의 공통 시간축"],"origin":"galaxy-v1/07-network.png + 전체 네트워크 표기 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["수신·송신 속도","양방향 속도","양방향 속도·60초 그래프","전체 집계·양방향 그래프·범례"]},{"id":"disk","file":"08-disk.png","name":"디스크","tag":"기존 + A안 L","description":"원래 S·Slim·M의 사용률/여유 공간 구성을 유지하고 L은 전체 드라이브 목록 A안으로 합쳤습니다. 제목과 아이콘은 공통 기준을 사용합니다.","checks":["S·Slim·M이 기존 구성인지","L의 모든 드라이브·잠긴 볼륨·많은 드라이브 자동 순환","사용률 막대의 의미가 크기별로 동일한지"],"origin":"galaxy-v1/08-disk.png의 S/Slim/M + review-2026-10-12/disk-a.png의 L → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["디스크 아이콘·사용률·여유 공간·막대","아이콘·드라이브·여유 공간·막대","여유 공간 / 사용·전체·점유율","전체 드라이브별 이름·사용/전체·여유·막대"]},{"id":"calendar","file":"10-calendar.png","name":"캘린더","tag":"기존 구성","description":"오늘 날짜와 일정, L 월간 격자는 유지하고 공통 제목·아이콘을 적용했습니다. 카드 클릭 동작은 없고 월 이동은 설정에서 합니다.","checks":["S·Slim·M의 일정 표현","L의 월간 격자와 오늘 일정","클릭을 유도하는 버튼이 없는지"],"origin":"galaxy-v1/10-calendar.png + 클릭 버튼 제거 → 공통 HTML/CSS/SVG 구성으로 최종 정리","sizes":["오늘 날짜·다음 일정","날짜·다음 일정","오늘 날짜·일정 목록","월간 격자·오늘 일정"]},{"id":"monthly","file":"15-calendar-monthly.png","name":"캘린더 XL","tag":"월간 전체","description":"XL 월간 격자에 공통 제목·아이콘을 적용했습니다. 앱은 여러 날 일정과 초과 건수도 표시합니다. 카드의 월 이동 버튼은 없습니다.","checks":["XL 1008×840 DIP의 6:5 비율","7열의 날짜·종일·여러 날 일정","월 이동은 설정에서 수행"],"origin":"galaxy-v1/15-calendar-monthly.png + 클릭 버튼 제거 → 공통 HTML/CSS/SVG 구성으로 최종 정리"},{"id":"settings","file":"14-widget-settings.png","name":"위젯 설정","tag":"선택별 항목","description":"설정 항목 구조를 비교하는 시안입니다. 실제 앱은 Win32 네이티브 컨트롤을 사용하며, 공통 항목과 선택한 종류·크기에 필요한 항목만 표시합니다.","checks":["선택한 종류와 무관한 항목이 없는지","날씨 위치는 한 번 찾고 적용 후 유지","네트워크 집계 대상을 전체로 선택 가능"],"origin":"galaxy-v1/14-widget-settings.png의 디자인 언어 + 선택별 설정 → 공통 HTML/CSS/SVG 구성으로 최종 정리"},{"id":"weather-states","file":"16-weather-states.png","name":"날씨 상태","tag":"현행 유지","description":"날씨와 시간대별 배경 원본을 그대로 유지했습니다.","checks":["맑음·흐림·비·눈·밤·뇌우·안개·해 질 무렵","기존 아이콘과 배경 표현"],"origin":"galaxy-v1/16-weather-states.png 원본 복사"},{"id":"themes","file":"17-theme-palettes.png","name":"공통 테마","tag":"기존 유지","description":"기존 9개 테마를 그대로 유지합니다. 위젯 종류와 테마 색상은 별개이며, 날씨 자동 배경은 현행 규칙을 따릅니다.","checks":["스카이·블루·코발트·인디고·틸·슬레이트·오션·스틸·라벤더","위젯별 구성은 테마를 바꿔도 유지"],"origin":"galaxy-v1/17-theme-palettes.png 원본 복사"},{"id":"rules","file":"18-common-rules.png","name":"공통 배치 규칙","tag":"일관성 기준","description":"날씨를 제외한 8종을 같은 크기에서 비교하고 제목·아이콘 기준점과 크기를 확인합니다.","checks":["8종 모두 동일한 아이콘 위치·크기","같은 크기의 제목 기준점","24 DIP 모서리와 본문 영역"],"origin":"components.js 공통 heading / src/design.h 및 Renderer::heading"}],"updated":"2026-10-13","production":{"mode":"native-html-css-svg","source":["boards.html","components.js"],"render":"node scripts/render-design.cjs","note":"초기 생성 이미지의 배치 불일치를 해결하기 위해 공통 구성 요소로 재제작. 앱 캡처와 독립된 기준이며, 확정 날씨와 테마 원본은 보존."},"lockedAssets":{"01-weather.png":"33e5fd7ba68357bf747671b8ff371362e0bb7ba5aaeb9e7b8ab761bd9b8bafa5","16-weather-states.png":"45d93af19e9ce905a5717ed1d8d620fa7d8ccc9b3e6ca1db7c008ab4ee883d2f","17-theme-palettes.png":"669d35584da4f10d00ad88dd110a3abb2201cb6448eb3ac03b7eef8de999c148"}}</script>
+<script>
+'use strict';
+const data=JSON.parse(document.querySelector('#design-data').textContent),boards=data.boards;
+const key='tempos-final-review-2026-10-12-v1';
+let review={},index=0,storageOK=true;
+try{review=JSON.parse(localStorage.getItem(key)||'{}');if(!review||Array.isArray(review)||typeof review!=='object')review={};}catch{review={};storageOK=false;}
+const el=id=>document.getElementById(id);
+const symbols={unreviewed:'○',change:'△',approved:'✓'};
+function item(id){const v=review[id];return v&&typeof v==='object'?v:{status:'unreviewed',notes:''};}
+function refresh(){
+  boards.forEach((b,i)=>{const status=item(b.id).status;const button=el('navigation').children[i];button.setAttribute('aria-current',String(index===i));button.querySelector('.dot').textContent=symbols[status]||'○';});
+  el('progress').textContent=boards.filter(b=>item(b.id).status==='approved').length+' / '+boards.length+' 확인';
+}
+function persist(){
+  const b=boards[index];review[b.id]={status:el('status').value,notes:el('notes').value};
+  try{localStorage.setItem(key,JSON.stringify(review));storageOK=true;}catch{storageOK=false;}
+  el('save-state').textContent=storageOK?'메모가 이 브라우저에 저장됐습니다. 전달할 때는 내보내기를 사용하세요.':'브라우저 저장을 사용할 수 없습니다. 내보내기로 메모를 보관하세요.';
+  refresh();
+}
+function select(i,scroll=false){
+  index=Math.max(0,Math.min(boards.length-1,i));const b=boards[index];
+  el('title').textContent=b.name;el('tag').textContent=b.tag;el('description').textContent=b.description;
+  el('preview').alt=b.name+' 최종 디자인 시안';el('load-error').style.display='none';el('preview').src=b.file;el('original').href=b.file;
+  el('position').textContent=(index+1)+' / '+boards.length;el('previous').disabled=index===0;el('next').disabled=index===boards.length-1;
+  el('caption').textContent=b.sizes?'S · Slim · M · L / 크기별 구성':b.id==='monthly'?'XL · 1008×840 DIP':b.tag;
+  el('checks').replaceChildren(...b.checks.map(text=>{const li=document.createElement('li');li.textContent=text;return li;}));
+  el('sizes').replaceChildren(...(b.sizes||[]).map((text,j)=>{const span=document.createElement('span');span.textContent=['S','Slim','M','L'][j]+' · '+text;return span;}));
+  el('source').textContent='기준: '+b.origin;
+  const saved=item(b.id);el('status').value=Object.hasOwn(symbols,saved.status)?saved.status:'unreviewed';el('notes').value=typeof saved.notes==='string'?saved.notes:'';
+  el('save-state').textContent=storageOK?'메모는 이 브라우저에 저장됩니다. 전달할 때는 내보내기를 사용하세요.':'브라우저 저장을 사용할 수 없습니다. 내보내기로 메모를 보관하세요.';
+  try{history.replaceState(null,'','#'+b.id);}catch{}
+  refresh();if(scroll)window.scrollTo({top:0,behavior:'smooth'});
+}
+boards.forEach((b,i)=>{
+  const button=document.createElement('button');button.type='button';button.innerHTML='<span></span><span class="dot" aria-hidden="true">○</span>';button.firstChild.textContent=b.name;button.addEventListener('click',()=>select(i));el('navigation').append(button);
+  const thumb=document.createElement('button');thumb.type='button';thumb.className='thumb';const img=document.createElement('img');img.src=b.file;img.alt=b.name+' 시안';img.loading='lazy';const label=document.createElement('span');label.textContent=b.name+' · '+b.tag;thumb.append(img,label);thumb.addEventListener('click',()=>select(i,true));el('thumbnails').append(thumb);
+});
+el('status').addEventListener('change',persist);el('notes').addEventListener('input',persist);
+el('previous').addEventListener('click',()=>select(index-1));el('next').addEventListener('click',()=>select(index+1));
+el('preview').addEventListener('error',()=>{el('load-error').style.display='block';});
+document.addEventListener('keydown',event=>{if(['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement?.tagName))return;if(event.key==='ArrowLeft'){event.preventDefault();select(index-1);}if(event.key==='ArrowRight'){event.preventDefault();select(index+1);}});
+el('export').addEventListener('click',()=>{
+ const payload={design:'Tempos final-2026-10-12',exportedAt:new Date().toISOString(),reviews:boards.map(b=>({id:b.id,name:b.name,file:b.file,...item(b.id)}))};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}));
+ const link=document.createElement('a');link.href=url;link.download='tempos-design-review-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+select(Math.max(0,boards.findIndex(b=>b.id===location.hash.slice(1))));
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-12",
+  "originalsPreserved": true,
+  "unchangedCopies": [
+    {
+      "source": "galaxy-v1/01-weather.png",
+      "output": "01-weather.png"
+    },
+    {
+      "source": "galaxy-v1/16-weather-states.png",
+      "output": "16-weather-states.png"
+    },
+    {
+      "source": "galaxy-v1/17-theme-palettes.png",
+      "output": "17-theme-palettes.png"
+    },
+    {
+      "source": "review-2026-10-12/system-a.png",
+      "output": "06-system.png"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "02-clock",
+      "references": [
+        "galaxy-v1/02-clock.png",
+        "galaxy-v1/03-cpu.png"
+      ],
+      "prompt": "Use case: ui-mockup / precise-object-edit.\nImage 1 is the EDIT TARGET, the existing Tempos clock size board. Image 2 is a supporting reference for the existing line-icon/typography scale. Create the FINAL DIGITAL-ONLY clock board by editing Image 1. Preserve its pale background, navy headings, blue card gradients, four-card positions and proportions. Title \"시계 · 디지털\", small header \"TEMPOS / FINAL DESIGN\". Labels S · 160 × 160, Slim · 336 × 72, M · 336 × 160, L · 336 × 336.\nCRITICAL: remove EVERY analog dial, clock hand, tick mark, circular clock icon. No analog clock anywhere, even as a tiny icon. Use a small white outlined rounded DIGITAL display icon containing \"12:00\" instead, same thin ~2 DIP stroke and 28 DIP visual box as CPU chip icon; never a large decorative icon.\nAll cards show time \"22:47\", date Monday October12 2026. S: small digital icon and \"시계\" header; big \"22:47\"; below \"10월 12일 월요일\". Slim: time \"22:47\" on left, fine vertical separator, \"10월 12일 월요일\" on right, no icon needed. M: header \"시계\" top-left with small digital icon; time \"22:47\" large on left; fine vertical separator, date \"2026년\" then \"10월 12일\" then \"월요일\" on right. L: header \"시계\" top-left and small digital icon top-right; one very prominent \"22:47\" centered in upper middle; thin horizontal separator below; below a balanced date block with \"2026년 10월\" small above a large \"12\", \"월요일\" aligned on its right. Time is larger/more prominent than day number. This is the final composition, no A/B/C options.\nStrict four sizes at common scale: squares S and L, M wide rectangle, Slim 336:72. ALL cards 24 DIP corner radius including Slim (not capsule). Internal padding20 DIP, Slim17. Match existing type sizes: label16 DIP, secondary12–14, main42; large clock time may be64. Keep white text, flat existing gradients. No new palette, source/footer inside cards, extra controls, graph, calendar grid, progress bar, world clock, timezone labels, slogans. Outside footer \"최종 디자인 · 샘플 데이터 · 크기는 DIP 기준\"."
+    },
+    {
+      "id": "08-disk",
+      "references": [
+        "galaxy-v1/08-disk.png",
+        "review-2026-10-12/disk-a.png"
+      ],
+      "prompt": "Use case: compositing / ui-mockup.\nImage1 is the BASE EDIT TARGET. Image2 supplies ONLY the RIGHTMOST L card. Create one FINAL disk board by preserving Image1's S, Slim, M compositions and replacing ONLY its L content with Image2's L \"전체 디스크\" three-drive list. Preserve the original pale background, navy text, steel blue gradient, thin white outline disk icons, type sizes and all card placements. The original disk icons MUST remain on S and Slim at their original visual size and stroke. Do not use Image2 S/Slim/M.\nTitle \"디스크\", header \"TEMPOS / FINAL DESIGN\". S from Image1: disk icon, \"디스크 C:\", large \"62%\", \"사용\", \"380 GB 여유\", horizontal usage bar 62%. Slim from Image1: disk icon, \"C:\", fine divider, \"여유 380 GB\", usage bar 62%. M from Image1: left \"디스크 C:\", big \"380 GB\", \"사용 가능\"; vertical divider; right \"620 GB / 1 TB\", usage bar62%, \"62% 사용\". Keep exactly those internal layouts.\nL copies Image2's list composition. Header \"전체 디스크\", subheader \"3개 드라이브\"; small existing white outline disk icon top-right, no giant numeral summary. Three equal rows separated by thin white hairlines: row1 \"C: 시스템\", \"620 / 1,000 GB\", \"380 GB 여유\", bar62%; row2 \"D: 데이터\", \"720 / 2,000 GB\", \"1,280 GB 여유\", bar36%; row3 \"E: 작업\", \"210 / 500 GB\", \"290 GB 여유\", bar42%. Values align on right; drive name left. Sample C data must agree across all FOUR cards.\nOutside size labels remain S160x160 Slim336x72 M336x160 L336x336. ALL cards common corner24 DIP; change only Slim outer corners from capsule to rounded rectangle. No style drift or layout variation. Footer \"S · Slim · M 선택 드라이브 / L 전체 드라이브\". No buttons, arrows, logos, source attribution. Crisp Korean text."
+    },
+    {
+      "id": "05-memory",
+      "references": [
+        "galaxy-v1/05-memory.png",
+        "galaxy-v1/03-cpu.png"
+      ],
+      "prompt": "Use case: ui-mockup / precise-object-edit.\nImage1 is the EDIT TARGET. Image2 supplies the CPU metric layout. Edit memory board to use CPU/GPU's usage-and-history composition while preserving Image1's teal gradient, white thin outline RAM icon, pale outer background, navy Korean heading and four card positions. Title \"메모리\", header \"TEMPOS / FINAL DESIGN\". Preserve RAM glyph exactly in shape and relative size, use thin2 DIP icon stroke and visual size28 DIP in headers, never CPU icon.\nS: header \"메모리\" and existing RAM glyph, big \"39%\", small \"12.4 / 31.7 GiB\", horizontal bar39%.\nSlim: RAM glyph + small \"메모리\" on left, \"39%\" middle, small white60-second sparkline right, thin divider same asCPU. NOT used/total text replacing graph.\nM: left header \"메모리\", large \"39%\", small \"12.4 / 31.7 GiB\"; vertical hairline; right white usage history ending39% with peak46%, label \"최근 60초\".\nL: header \"메모리\", RAM glyph top-right, large \"39%\", subline \"12.4 / 31.7 GiB\". Main white usage history for60seconds ending39%, peak46%, subtle translucent fill. Bottom separated statistics aligned like CPU: \"평균\" with \"38%\", \"최대\" with \"46%\". No capacity table, no available-space list.\nALL four cards use same24 DIP corner radius, including Slim rounded rectangle notcapsule. S160x160, Slim336x72, M336x160,L336x336 at the SAMEscale. Typical20DIPpadding, Slim17, header16, secondary12-14, main42. Preserve original color/design language. No new shadow, glow, buttons, source labels, icons outside RAM. Footer \"최종 디자인 · 샘플 데이터 · 크기는 DIP 기준\"."
+    },
+    {
+      "id": "03-cpu",
+      "references": [
+        "galaxy-v1/03-cpu.png"
+      ],
+      "prompt": "Use case: precise-object-edit / ui-mockup. Image1 is the EDIT TARGET. Preserve the entire CPU widget board and ALL internal content exactly: icons, icon sizes, thin white strokes, gradients, typography, numbers, graphs, labels and all card positions. Make ONLY these two changes: change header \"TEMPOS / CONCEPT 01\" to \"TEMPOS / FINAL DESIGN\"; change the Slim336x72 card's outer corners from capsule shape to the SAME24 DIP corner radius as the other cards. At this image's common display scale, the Slim corner curve should match M's corner curve. Keep Slim dimensions336x72 and all other S160x160 M336x160 L336x336 sizes. Do not alter internal arrangement, icon style, line weight, values, dates, colors, any other card or add anything. This is a consistency edit, not a redesign."
+    },
+    {
+      "id": "04-gpu",
+      "references": [
+        "galaxy-v1/04-gpu.png"
+      ],
+      "prompt": "Use case: precise-object-edit / ui-mockup. Image1 is the EDIT TARGET. Preserve the entire GPU widget board and ALL internal content exactly: icons, icon sizes, thin white strokes, gradients, typography, numbers, graphs, labels and all card positions. Make ONLY these two changes: change header \"TEMPOS / CONCEPT 01\" to \"TEMPOS / FINAL DESIGN\"; change the Slim336x72 card's outer corners from capsule shape to the SAME24 DIP corner radius as the other cards. At this image's common display scale, the Slim corner curve should match M's corner curve. Keep Slim dimensions336x72 and all other S160x160 M336x160 L336x336 sizes. Do not alter internal arrangement, icon style, line weight, values, dates, colors, any other card or add anything. This is a consistency edit, not a redesign."
+    },
+    {
+      "id": "07-network",
+      "references": [
+        "galaxy-v1/07-network.png"
+      ],
+      "prompt": "Use case: precise-object-edit / ui-mockup. Image1 is the EDIT TARGET. Preserve this existing Tempos network board's exact four-card compositions, ocean gradient, pale backdrop, thin white network icons and their size, upload/download colors, all graphs and numeric values, type sizes, outside size labels. ONLY changes: header \"TEMPOS / FINAL DESIGN\"; every subtitle \"Wi-Fi\" becomes \"전체 네트워크\" within same text zone and same small supporting type. Slim card rounded corners24DIP instead of capsule, matching othercards. Preserve S160x160 Slim336x72 M336x160 L336x336. No new icons, controls, sources, extra fields, layout rearrangement or visual effects. Crisp exact Korean."
+    },
+    {
+      "id": "10-calendar",
+      "references": [
+        "galaxy-v1/10-calendar.png"
+      ],
+      "prompt": "Use case: precise-object-edit / ui-mockup. Edit Image1 keeping all purple calendar cards, dates, icons, colors, typography, schedule rows, exact monthgrid and highlightedday exactly as they are. Only remove the previous/next chevrons at top-left/top-right INSIDE L card, fill their areas with matching gradient, and keep centered \"2026년 10월\". No interactive buttons/arrows anywhere on widget. Change header to \"TEMPOS / FINAL DESIGN\". Slim336x72 card corners should be24 DIP rounded rectangle, same radius as M, not capsule. Other card geometry and positions unchanged. Do not change dates, events, icons or text. Preserve S160x160 Slim336x72 M336x160 L336x336. Outside footer \"최종 디자인 · 샘플 데이터 · 월 이동은 설정에서\"."
+    },
+    {
+      "id": "15-calendar-monthly",
+      "references": [
+        "galaxy-v1/15-calendar-monthly.png"
+      ],
+      "prompt": "Use case: precise-object-edit / ui-mockup. Edit Image1. Keep this Tempos XL monthly calendar image IDENTICAL except remove the three navigation buttons (left chevron, 오늘, right chevron) from inside top-right of the large purple card. Cleanly fill only their old area with the continuous lavender gradient. Keep monthheading, card size, cornerrounding, every gridline/date/event/dot/bar/todayhighlight, all typography and exact geometry unchanged. Preserve XL1008×840DIP aspect6:5, seven equal columns and five weekrows. Keep October2026 dates and October7 highlighted. Replace small outside header \"TEMPOS / CONCEPT 01\" with \"TEMPOS / FINAL DESIGN\". Outsidefooter \"최종 디자인 · 샘플 일정 · 월 이동은 설정에서\". No calendar controls or new elements."
+    },
+    {
+      "id": "02-clock-refine",
+      "target": "02-clock",
+      "references": [
+        "final-2026-10-12/02-clock.png"
+      ],
+      "prompt": "Precise edit of Image1. Keep EVERY text, font size, icon shape, card fill and card layout unchanged except these two corrections. (1) Slim top-middle card is too capsule-rounded. Give it rounded RECTANGLE corners matching the visual radius of the M card immediately below. In this1672x941 image, each corner must be about42 image pixels radius, NOT65; the short vertical left/right sides must each include a visible straight section about46pixels tall between corner arcs. Preserve Slim's current bounding box and all its content. (2) Inside the three tiny outlined digital icons ONLY, replace the glyph text \"12:00\" with \"22:47\". Do not alter the large time labels, dates or any other element. No analog dials/hands anywhere. Exact same board composition and colors."
+    },
+    {
+      "id": "05-memory-refine",
+      "target": "05-memory",
+      "references": [
+        "final-2026-10-12/05-memory.png"
+      ],
+      "prompt": "Precise edit of Image1. Keep its RAM icons, all numbers, text, graphs, teal gradient, boardlayout and all card bounding boxes unchanged. Fix ONLY: (1) Slim336x72 outer shape currently capsule-like; corners must visually match M's radius: about42 image pixels in this1672px wide board. This leaves a visible straight vertical section at left/right ends about46pixels tall. No reshaping or repositioning of internal content. (2) Add small white label \"최근 60초\" directly below the L card graph at left, above the existing separator line. Keep all other content exactly. No new decoration."
+    },
+    {
+      "id": "08-disk-refine",
+      "target": "08-disk",
+      "references": [
+        "final-2026-10-12/08-disk.png"
+      ],
+      "prompt": "Precise edit of Image1. Keep this finalized disk board IDENTICAL including every word, number, icon, chart bar, gradient, all positions and all card bounding boxes. Correct ONLY Slim top-middle card outer corner radius: its corners currently too square. Use the SAME visual corner radius as M directly below, approximately42 image pixels on this1672px wide board, equivalent24DIP at thisscale. Rounded rectangle with a straight vertical middle segment on left/right ends, not capsule. No other changes."
+    },
+    {
+      "id": "14-widget-settings",
+      "references": [
+        "galaxy-v1/14-widget-settings.png"
+      ],
+      "prompt": "Use case: ui-mockup. Image1 is the existing Tempos SETTINGS visual style reference. Make a FINAL design board showing three example selected-widget settings panels, preserving its pale icy background, navy titles, white softly rounded panels, subtle dividers, calm blue selected controls, Segoe UI/Malgun Korean type sizes. Header \"TEMPOS / FINAL DESIGN\", title \"위젯 설정 · 선택한 항목만\". Landscape about1800x1100.\nA single slim white common-settings band below title with label \"공통 설정\" and two neat rows of controls: \"크기 M\", \"확대 100%\", \"테마 전체 테마 따르기\", \"새로고침 위젯별\", \"모니터 1\", \"배경 투명도 10%\", \"전체 투명도 0%\", then small checkboxes \"클릭 통과\", \"위치 잠금\", \"항상 위\". Below the band place THREE equally sized white panels side by side; each is a different example, not simultaneous settings within the app.\nLEFT panel title \"시계 선택\". Only clock fields: unchecked \"초 표시\", unchecked \"12시간 표시\", field label \"시간대\", input placeholder \"Windows 설정 사용\". Bottom aligned button \"적용\".\nMIDDLE panel title \"날씨 선택\". Only weather fields: checked \"날씨 배경 자동\"; label \"날씨 지역\", dropdown \"서울특별시 종로구\"; button \"현재 위치 찾기\"; small help \"한 번 찾은 지역을 유지합니다.\"; unchecked \"화씨 표시\". Bottom aligned button \"적용\".\nRIGHT panel title \"네트워크 선택\". Only network fields: label \"집계 대상\", dropdown \"전체 네트워크\"; checked \"그래프\"; label \"표시 단위\", dropdown \"Mbps\". Small help \"유선·무선 수신과 송신을 합산합니다.\" Bottom aligned button \"적용\".\nFooter \"최종 디자인 · 위젯 선택에 따라 필요한 항목만 표시\". Exact Korean clean text, no fake widgets, no preview pane, no analog clock icon, no source labels, no extra buttons. Do not redesign weather widget imagery: show only setting controls. Keep a single clear hierarchy and realistic readable type, no giant form labels or marketing prose."
+    },
+    {
+      "id": "13-desktop-grid",
+      "references": [
+        "final-2026-10-12/02-clock.png",
+        "final-2026-10-12/08-disk.png",
+        "final-2026-10-12/06-system.png",
+        "final-2026-10-12/05-memory.png",
+        "galaxy-v1/01-weather.png"
+      ],
+      "prompt": "Use case: compositing / ui-mockup. Create one FINAL Tempos all-nine-widget desktop composition board using the supplied finalized individual widget sheets as authoritative design references.\nInput1 clock; input2 disk; input3 system; input4 memory; input5 weather. These FIVE sheets are supporting STYLE/COMPOSITION references for a NEW overview illustration, not edit targets. Add four existing-family widgets from these written specifications: CPU S is cobalt-blue, white outline square chip icon, CPU heading,27% usage and bar; GPU S is indigo, small white outline dual-fan graphics card, GPU heading,32%,modelRTX4070Ti,bar; network M is ocean-blue, whiteWiFi-outline icon, heading네트워크, subtitle전체 네트워크, down24.8Mbps and mintup3.2Mbps onleft,white/mint60secondgraphs onright; calendar L islavender-purple,October2026 monthgrid plus2todayevents14:00팀미팅 and18:30운동, no arrows. Exactly nine widgets total, one of each type. Reproduce their chosen card layouts, thin white outline icon shapes and relative sizes, exact color gradients, typography hierarchy. Do not reinvent icon system or weather. Weather MUST match input5's M layout including large soft yellow sun and blue gradient.\nA restrained deep navy desktop background with a faint16DIP grid. Flat front-facing, no perspective/monitorframe. Header \"TEMPOS / FINAL DESIGN\", large title \"전체 위젯 배치\". No edit side panel, buttons, selection handles or cursor.\nPrecise all-at-one-scale modular layout: four columns of336DIP width,16DIP gaps. Row0 is y0, row1 y176,row2 y352.\nColumn1 row0 CLOCK M336x160 (digital22:47 left, date right, NO analog). Column2 row0 WEATHER M336x160, as input5.\nColumn3 row0 CALENDAR L336x336 (monthgrid October2026 and todaylist, no navigation arrows).\nColumn4 row0 SYSTEM L336x336 using chosen A list, PCnamePOYAL and monitor icon, OS/CPU/GPU/uptime.\nColumn1 row1 NETWORK M336x160, two directions +60sec graph, \"전체 네트워크\".\nColumn2 row1 DISK L336x336 \"전체 디스크\" three-drive list exactly input2 L: C620/1000GB free380GB, D720/2000GB free1280GB, E210/500GB free290GB.\nColumn1 row2 two squares side-by-side: CPU S160x160 and GPU S160x160 with16DIP gap. CPU27%, GPU32%, keep their exact icons.\nColumn3 row2 MEMORY M336x160 usage39%,12.4/31.7GiB left,60sec graph right.\nColumn4 row2 empty desktop, no extra card.\nCard width336 is ALWAYS equal across all M and L. Lheight336 exactly2*Sheight+16. S is square half-width of M minusgap. No Slim in overview. Common24DIP corners. Titles and metric sizes scaled consistently from references, iconstrokesconsistent.\nExactly nine widgets, no duplicate. No analog clocks even tiny icons. No source labels, providerlogos, invented UI or interaction. Footer \"최종 디자인 · 샘플 데이터 · 위젯 간격 16 DIP\". Preserve weather unchanged in visual appearance. Existing white card typography and muted blues/teal/lavender, no new palette, gloss, blur or dramatic shadow."
+    }
+  ],
+  "finalProduction": {
+    "mode": "native-html-css-svg",
+    "source": [
+      "boards.html",
+      "components.js"
+    ],
+    "render": "node scripts/render-design.cjs",
+    "note": "초기 생성 이미지의 배치 불일치를 해결하기 위해 공통 구성 요소로 재제작. 앱 캡처와 독립된 기준이며, 확정 날씨와 테마 원본은 보존."
+  },
+  "note": "이 프롬프트는 초기 비교 시안 제작 기록이다. 최종 비날씨 이미지는 일관성을 위해 HTML/CSS/SVG 구성으로 교체되었으며 현재 결과물은 manifest.json을 따른다."
+}

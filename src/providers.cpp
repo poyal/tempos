@@ -10,6 +10,43 @@
 #include <set>
 using Microsoft::WRL::ComPtr;
 namespace tempos {
+Snapshot NetworkTotal::read(const std::vector<NetworkSample> &samples, double time) {
+  Snapshot result;
+  result.title = L"전체 네트워크";
+  result.sampledAt = time;
+  double input = 0, output = 0;
+  bool measured = false;
+  std::map<std::wstring, Previous> next;
+  for (const auto &sample : samples) {
+    if (next.contains(sample.id))
+      continue;
+    if (auto old = previous_.find(sample.id); old != previous_.end() && time > old->second.time &&
+                                              sample.input >= old->second.input &&
+                                              sample.output >= old->second.output) {
+      input += double(sample.input - old->second.input) / (time - old->second.time);
+      output += double(sample.output - old->second.output) / (time - old->second.time);
+      measured = true;
+    }
+    next[sample.id] = {sample.input, sample.output, time};
+  }
+  previous_ = std::move(next);
+  if (samples.empty()) {
+    result.status = Status::Unavailable;
+    result.message = L"연결된 유선·무선 네트워크 없음";
+  } else if (measured) {
+    result.status = Status::Ready;
+    result.value = input;
+    result.secondary = output;
+  } else
+    result.message = L"측정 중";
+  return result;
+}
+static bool physicalNetwork(const MIB_IF_ROW2 &row) {
+  return row.InterfaceAndOperStatusFlags.HardwareInterface &&
+         !row.InterfaceAndOperStatusFlags.FilterInterface &&
+         !row.InterfaceAndOperStatusFlags.EndPointInterface && row.Type != IF_TYPE_SOFTWARE_LOOPBACK &&
+         row.Type != IF_TYPE_TUNNEL;
+}
 std::wstring gpuEngineKey(std::wstring instance) {
   // PDH emits uppercase LUID hex digits while DXGI keys use lowercase.
   std::transform(instance.begin(), instance.end(), instance.begin(),
@@ -35,7 +72,11 @@ LocalMetrics::LocalMetrics() {
     pcName_ = name;
   auto build = registryString(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",
                               L"CurrentBuildNumber");
-  osName_ = L"Windows · 빌드 " + build;
+  auto product =
+      registryString(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"ProductName");
+  if (product.find(L"Server") == std::wstring::npos)
+    product = _wtoi(build.c_str()) >= 22000 ? L"Windows 11" : L"Windows 10";
+  osName_ = product + L" · 빌드 " + build;
 }
 LocalMetrics::~LocalMetrics() {
   if (cpuQuery_)
@@ -46,6 +87,7 @@ LocalMetrics::~LocalMetrics() {
 void LocalMetrics::reset() {
   cpuPrimed_ = gpuPrimed_ = false;
   previous_.clear();
+  networkTotal_.reset();
   gpuUsage_.clear();
   gpuTime_ = 0;
 }
@@ -65,8 +107,10 @@ void LocalMetrics::retain(bool cpu, bool gpu, bool network) {
     gpuBuffer_.clear();
     gpuBuffer_.shrink_to_fit();
   }
-  if (!network)
+  if (!network) {
     previous_.clear();
+    networkTotal_.reset();
+  }
 }
 std::vector<Device> LocalMetrics::devices(Kind k) {
   std::vector<Device> out;
@@ -91,6 +135,8 @@ std::vector<Device> LocalMetrics::devices(Kind k) {
         else
           id = L"device:" + std::to_wstring(d.VendorId) + L":" + std::to_wstring(d.DeviceId) + L":" +
                d.Description;
+        if (std::any_of(gpus_.begin(), gpus_.end(), [&](const auto &gpu) { return gpu.device.id == id; }))
+          continue;
         gpus_.push_back({{id, d.Description}, d.AdapterLuid});
         out.push_back({id, d.Description});
       }
@@ -99,7 +145,7 @@ std::vector<Device> LocalMetrics::devices(Kind k) {
     if (GetIfTable2(&table) == NO_ERROR) {
       for (ULONG i = 0; i < table->NumEntries; ++i) {
         auto &r = table->Table[i];
-        if (r.Type == IF_TYPE_SOFTWARE_LOOPBACK)
+        if (!physicalNetwork(r))
           continue;
         wchar_t id[40]{};
         StringFromGUID2(r.InterfaceGuid, id, 40);
@@ -277,15 +323,38 @@ Snapshot LocalMetrics::system() {
   s.title = pcName_;
   s.detail = osName_;
   s.extra = cpuName_;
+  std::map<std::wstring, size_t> models;
   for (auto &g : gpus_)
-    s.extra += L"\n" + g.device.name;
+    ++models[g.device.name];
+  for (auto &[name, count] : models)
+    s.extra += L"\n" + name + (count > 1 ? L" × " + std::to_wstring(count) : L"");
   s.value = double(GetTickCount64() / 1000);
   return s;
 }
 Snapshot LocalMetrics::network(const std::wstring &source) {
   Snapshot s;
+  if (source.empty()) {
+    PMIB_IF_TABLE2 table = nullptr;
+    if (GetIfTable2(&table) != NO_ERROR) {
+      networkTotal_.reset();
+      s.status = Status::Unavailable;
+      s.message = L"네트워크 사용량을 읽을 수 없음";
+      return s;
+    }
+    std::vector<NetworkSample> samples;
+    for (ULONG i = 0; i < table->NumEntries; ++i) {
+      const auto &row = table->Table[i];
+      if (!physicalNetwork(row) || row.OperStatus != IfOperStatusUp)
+        continue;
+      wchar_t id[40]{};
+      StringFromGUID2(row.InterfaceGuid, id, 40);
+      samples.push_back({id, row.InOctets, row.OutOctets});
+    }
+    FreeMibTable(table);
+    return networkTotal_.read(samples, monotonic());
+  }
   GUID guid{};
-  if (source.empty() || FAILED(CLSIDFromString(source.c_str(), &guid))) {
+  if (FAILED(CLSIDFromString(source.c_str(), &guid))) {
     s.status = Status::Unavailable;
     s.message = L"네트워크 어댑터를 선택하세요";
     return s;
@@ -319,6 +388,18 @@ Snapshot LocalMetrics::network(const std::wstring &source) {
 }
 Snapshot LocalMetrics::disk(const std::wstring &source) {
   Snapshot s;
+  if (source == allDisksSource) {
+    for (auto &device : devices(Kind::Disk)) {
+      auto volume = disk(device.id);
+      s.disks.push_back({device.id, device.name, volume.total, volume.available, volume.secondary});
+    }
+    std::sort(s.disks.begin(), s.disks.end(), [](const auto &a, const auto &b) { return a.name < b.name; });
+    s.title = L"전체 디스크";
+    s.status = s.disks.empty() ? Status::Unavailable : Status::Ready;
+    if (s.disks.empty())
+      s.message = L"표시할 로컬 볼륨 없음";
+    return s;
+  }
   std::wstring volume = source;
   if (volume.empty()) {
     wchar_t win[MAX_PATH]{}, mount[MAX_PATH]{}, id[MAX_PATH]{};
@@ -355,7 +436,8 @@ Snapshot LocalMetrics::disk(const std::wstring &source) {
   return s;
 }
 std::wstring providerKey(const Widget &w, WeatherProvider provider) {
-  std::wstring key = std::to_wstring(int(w.kind)) + L":" + w.source;
+  std::wstring key = std::to_wstring(int(w.kind)) + L":" +
+                     (w.kind == Kind::Disk && w.size == Size::L ? allDisksSource : w.source);
   if (w.kind == Kind::Weather)
     key += provider == WeatherProvider::Kma
                ? L":kma:" + std::to_wstring(w.nx) + L":" + std::to_wstring(w.ny)
@@ -537,11 +619,15 @@ void ProviderService::run(std::stop_token token) {
                 s.secondary = 512e9;
                 s.total = 1e12;
                 s.available = 512e9;
+                if (w.kind == Kind::Disk && w.size == Size::L)
+                  s.disks = {{L"C", L"C: 시스템", 1e12, 380e9, 380e9},
+                             {L"D", L"D: 데이터", 2e12, 1280e9, 1280e9},
+                             {L"E", L"E: 작업", 500e9, 290e9, 290e9}};
                 if (w.kind != Kind::Disk)
                   s = remote_(w, st, provider);
               } else if (w.kind == Kind::Disk) {
                 LocalMetrics diskReader;
-                s = diskReader.read(w.kind, w.source);
+                s = diskReader.read(w.kind, w.size == Size::L ? allDisksSource : w.source);
               } else
                 s = remote_(w, st, provider);
             } catch (...) {

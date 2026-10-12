@@ -1,9 +1,10 @@
 #include "app.h"
 #include <commctrl.h>
 #include <shellapi.h>
+#include <roapi.h>
 int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-  CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+  RoInitialize(RO_INIT_SINGLETHREADED);
   INITCOMMONCONTROLSEX controls{sizeof controls, ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_BAR_CLASSES};
   InitCommonControlsEx(&controls);
   std::filesystem::path root;
@@ -40,7 +41,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
     }
     if (single)
       CloseHandle(single);
-    CoUninitialize();
+    RoUninitialize();
     return 0;
   }
   int result = 1;
@@ -53,6 +54,6 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   }
   if (single)
     CloseHandle(single);
-  CoUninitialize();
+  RoUninitialize();
   return result;
 }

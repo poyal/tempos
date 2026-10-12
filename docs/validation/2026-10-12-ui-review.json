@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-12",
+  "productionExecutable": "artifacts/Tempos-review-20261012-win-x64/Tempos.exe",
+  "productionSha256": "A739AD1CD5F247BB64520D3676CE4C3A6048C6D3754271E150343809BAD6FC8C",
+  "core": {
+    "executableSha256": "303D50ADD451849B7E2D8BC84354938E7F6D06373F3935EDA4918967B91EDF5C",
+    "log": "artifacts/ui-review-core.log",
+    "passed": 184
+  },
+  "runs": [
+    {
+      "file": "test-results/e2e-20261012-232059-215/results.json",
+      "mode": "--ui-review",
+      "started": "2026-10-12T23:20:59.2113911+09:00",
+      "completed": "2026-10-12T23:23:20.7983167+09:00",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "sha256": "1B140AD3FD97B871A5D50C5A674F5E024842E5114C31377C3E7B48580BB0668E",
+      "passed": 374,
+      "failed": 0
+    },
+    {
+      "file": "test-results/e2e-20261012-231610-029/results.json",
+      "mode": "--interaction",
+      "started": "2026-10-12T23:16:10.025421+09:00",
+      "completed": "2026-10-12T23:17:11.9623518+09:00",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "sha256": "1852FADF936556EC41F40FBFFA0F9132C41A3017933E4A1DCB562A5C56B4E5B2",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "file": "test-results/e2e-20261012-231712-044/results.json",
+      "mode": "--weather",
+      "started": "2026-10-12T23:17:12.0409843+09:00",
+      "completed": "2026-10-12T23:19:02.6332351+09:00",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "sha256": "1852FADF936556EC41F40FBFFA0F9132C41A3017933E4A1DCB562A5C56B4E5B2",
+      "passed": 56,
+      "failed": 0
+    },
+    {
+      "file": "test-results/e2e-20261012-232346-151/results.json",
+      "mode": "--smoke",
+      "started": "2026-10-12T23:23:46.1479346+09:00",
+      "completed": "2026-10-12T23:24:00.4155992+09:00",
+      "executable": "artifacts\\Tempos-review-20261012-win-x64\\Tempos.exe",
+      "sha256": "A739AD1CD5F247BB64520D3676CE4C3A6048C6D3754271E150343809BAD6FC8C",
+      "passed": 6,
+      "failed": 0
+    }
+  ],
+  "limitations": [
+    "Real Windows location permission and position acquisition were not automated.",
+    "Interaction uses owned-window native messages, not physical input.",
+    "Location and weather scenario tests use fixtures.",
+    "Clock, system, and disk revised layouts are image concepts only."
+  ]
+}

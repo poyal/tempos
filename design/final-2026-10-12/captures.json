@@ -1,0 +1,800 @@
+{
+  "date": "2026-10-13",
+  "mode": "TestHost actual Win32/Direct2D renderer, fixture data",
+  "background": "Neutral capture window behind test widget. No desktop wallpaper replacement.",
+  "note": "Screenshots are actual app rendering, distinct from the independent HTML design reference. Values and clock/date may differ.",
+  "runs": [
+    {
+      "mode": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "started": "2026-10-13T01:03:48.8757336+09:00",
+      "completed": "2026-10-13T01:07:03.8667025+09:00",
+      "executableSha256": "A85C6FD16CA9579F03205F8BD66A3051399061C898B7D2C3C04FFB6ABB623032",
+      "passed": 467,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "started": "2026-10-13T01:07:03.9917825+09:00",
+      "completed": "2026-10-13T01:10:18.5975623+09:00",
+      "executableSha256": "A85C6FD16CA9579F03205F8BD66A3051399061C898B7D2C3C04FFB6ABB623032",
+      "passed": 573,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "weather",
+      "source": "test-results/e2e-20261013-002410-155",
+      "started": "2026-10-13T00:24:10.1515511+09:00",
+      "completed": "2026-10-13T00:26:20.3945666+09:00",
+      "executableSha256": "A85C6FD16CA9579F03205F8BD66A3051399061C898B7D2C3C04FFB6ABB623032",
+      "passed": 56,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "interaction",
+      "source": "test-results/e2e-20261013-002620-482",
+      "started": "2026-10-13T00:26:20.4787796+09:00",
+      "completed": "2026-10-13T00:27:22.3638294+09:00",
+      "executableSha256": "A85C6FD16CA9579F03205F8BD66A3051399061C898B7D2C3C04FFB6ABB623032",
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "options",
+      "source": "test-results/e2e-20261013-004756-181",
+      "started": "2026-10-13T00:47:56.1776199+09:00",
+      "completed": "2026-10-13T00:48:25.3827396+09:00",
+      "executableSha256": "A85C6FD16CA9579F03205F8BD66A3051399061C898B7D2C3C04FFB6ABB623032",
+      "passed": 79,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "started": "2026-10-13T00:49:44.7084499+09:00",
+      "completed": "2026-10-13T00:49:59.1758716+09:00",
+      "executableSha256": "A85C6FD16CA9579F03205F8BD66A3051399061C898B7D2C3C04FFB6ABB623032",
+      "passed": 114,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "smoke",
+      "source": "test-results/e2e-20261013-005819-955",
+      "started": "2026-10-13T00:58:19.952038+09:00",
+      "completed": "2026-10-13T00:58:34.2056944+09:00",
+      "executableSha256": "4DB9504C57EAB3BCAC55C8C49AE252B221004F099D5F7824DC19935DBB9C6C60",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "captures": [
+    {
+      "file": "captures/design-disk-next-page.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "632a4da009e0bb22d7b1e58b88fb036077940b0f869ef6ffa1991dbf040f4774"
+    },
+    {
+      "file": "captures/design-disk-scenario-20.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "d0e93e1b8237988787dd0587e2d76480fe6709243b67973b2870cb0e602fd723"
+    },
+    {
+      "file": "captures/design-disk-scenario-21.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "995b813b70beb51544dbf37f5b884055c582915ac8bae37ae9539e6503e36bbe"
+    },
+    {
+      "file": "captures/design-disk-scenario-22.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "00dc95f016f774e8bd41191ea04169927580bb917c9a25620e4f0063e77e77b7"
+    },
+    {
+      "file": "captures/design-disk-scenario-23.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "22420e9f50d08bff07b6683db07defff4dc6a7c5211ff44dfa20552091e62380"
+    },
+    {
+      "file": "captures/design-kind-0-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "9fe925848913b7fa462238b7eaac2af78c7a2f13c9133c3092ddf53eabc9e3ae"
+    },
+    {
+      "file": "captures/design-kind-0-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "711e3370861458fb20f16c6489630bc79f420fea24a08edf702e9094eb5d56af"
+    },
+    {
+      "file": "captures/design-kind-0-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "de5556e91a70f5318fc1745bb6241ee0ef61e9ddc67e0976c619da69fbb809b9"
+    },
+    {
+      "file": "captures/design-kind-0-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "9d6a46c59738270f1636879b68a028292a447e42336074c0e84890650df01020"
+    },
+    {
+      "file": "captures/design-kind-1-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "1bd017e88ef56367a15b8b2fcf35859136b6737ca274d68b4c570b0c679e0078"
+    },
+    {
+      "file": "captures/design-kind-1-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "9d375b0e05c75a4dfdb35d2946468f3bb7d8d751f7dbcacb47fe0f05b7485183"
+    },
+    {
+      "file": "captures/design-kind-1-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "7f8985a85a2b62df00318baa3534ae76769647715f4f249c83bb8117973866c8"
+    },
+    {
+      "file": "captures/design-kind-1-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "be1e0f0f9f31e23930faac5970b9e6b643d5d29803049236d6e4b60b12c0569d"
+    },
+    {
+      "file": "captures/design-kind-2-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "39c6299c407bc0d0acb756da6fc5099a14c3ad8271203756c483c3030dbb2887"
+    },
+    {
+      "file": "captures/design-kind-2-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "b475a08695da8758cdde030da158b7a65d907dd9368307d9915a4391f45d1a1c"
+    },
+    {
+      "file": "captures/design-kind-2-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "8335ec824f91354f08b0613fef946147a12ae541f1f205ae47e29c28ecae0b32"
+    },
+    {
+      "file": "captures/design-kind-2-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "d9267c9bc25448486612b3b9ee45684d4c3b29ee09a139379594bc8bc3e5f57f"
+    },
+    {
+      "file": "captures/design-kind-3-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "81cead45455865d7a7e301e6d3a880a909e97c3e0bdd87fe5b589839da71d214"
+    },
+    {
+      "file": "captures/design-kind-3-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "26b285fe4efbae8de1106ee34ebf8926ccf3425556a6674681cea664121b4401"
+    },
+    {
+      "file": "captures/design-kind-3-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "fc6dcd6fd79266a5f09cc240a56ffedaa34f502da663998c2229cfac57661b22"
+    },
+    {
+      "file": "captures/design-kind-3-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "f703289bfdec89e19f00b30393e209561ce553e681d5c03d0e8f58b1454a2fa9"
+    },
+    {
+      "file": "captures/design-kind-4-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "0882ca965bfa3009e02f9f8061d1f35767204021802367135a745da754054198"
+    },
+    {
+      "file": "captures/design-kind-4-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "e2df5356961051e90a6324e807d439e28121413f069dde4893768512d314cda7"
+    },
+    {
+      "file": "captures/design-kind-4-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "69948ca0d7b5a90365334a4a3ac85526663924826f43a384d81239b582f450b8"
+    },
+    {
+      "file": "captures/design-kind-4-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "9dfaaee3629edce8b9a0445394f67fa5ae2de00678105b4fe2bceecb9d8af15b"
+    },
+    {
+      "file": "captures/design-kind-5-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "5f2ff3df83ef0bb1c3bcd45adfe37b3cfa8b6cf674724155c34b9c0e148ddbe9"
+    },
+    {
+      "file": "captures/design-kind-5-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "289d445a84f2de4bf69d07e60f497ae9a5fbe276bb75288818b7ffea2053288a"
+    },
+    {
+      "file": "captures/design-kind-5-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "b6845d3ea500aaf0f0011419fb12c2e6284860d06e58cfe2c668b9e5561ffb74"
+    },
+    {
+      "file": "captures/design-kind-5-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "b81d4d2ec0892a6d0a3cc1164f861f3d00b4502f4ae54b9b9a961c65a90f8465"
+    },
+    {
+      "file": "captures/design-kind-6-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "439ca04d16168b0a665397634eae90641510356f23d1ab6301bc4175cbb23be9"
+    },
+    {
+      "file": "captures/design-kind-6-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "c1490916815b35efd68f0b4fba91324f3c634ac2933a81d5431aff7afed93728"
+    },
+    {
+      "file": "captures/design-kind-6-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "d1b417e3e5a2de73b35a6d798f2dffa751e139c235da8bb7a0fc396c23ef9aed"
+    },
+    {
+      "file": "captures/design-kind-6-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "dbd315fc7f0a11c85d47ed1354002e6bce4e2e1e0bdeed7c8e541c2b0c3b273e"
+    },
+    {
+      "file": "captures/design-kind-7-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "8224f3aa4bea688276479b71ad668c54e0acdd72a84b476eed65734cbc19e299"
+    },
+    {
+      "file": "captures/design-kind-7-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "c9b058163d803c876f050bc98a3e32b0a9323cb1f25525ed4baa97c3af2ebdda"
+    },
+    {
+      "file": "captures/design-kind-7-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "c843fa1f65f1e10c02f4f7188c68ea7c1bdd059ef592dc2036c2dbb645eed858"
+    },
+    {
+      "file": "captures/design-kind-7-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "b9d666cca9d470a27f484005e5560213d4b3a8af8b4aee7c1bcefd2a9a0d2058"
+    },
+    {
+      "file": "captures/design-kind-8-size-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "2b35fbcbae2285dc488eb7aac1a5a470e69d415e1500b16454e744932c8cc9b4"
+    },
+    {
+      "file": "captures/design-kind-8-size-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "c633fdba6cbed7c770cf95ec1ab84c4c8f36c3d1c762b4ecd7bf2ccd31618885"
+    },
+    {
+      "file": "captures/design-kind-8-size-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "6bfa3c30514113e4e8763be1dd8821898cc40fbe1d7e02c9604210ba30adf5be"
+    },
+    {
+      "file": "captures/design-kind-8-size-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "3dd2872f5239b63958044636aaff1b3ec37f10412062ece4a627ae4431b4eee6"
+    },
+    {
+      "file": "captures/design-kind-8-size-4.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "92e7394fd39cd01cd6c380b148b11c98172fddcd9db389020ddfdaaa16517292"
+    },
+    {
+      "file": "captures/design-weather-fixed.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "09a5f9092afd33d3525ad31f21c66a4d4ffa2aba9011a5b31630922f4271a1e7"
+    },
+    {
+      "file": "captures/design-weather-scene-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "7f8985a85a2b62df00318baa3534ae76769647715f4f249c83bb8117973866c8"
+    },
+    {
+      "file": "captures/design-weather-scene-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "b4b6bc3421fc0076a37461b371a9abb4395a290a866149bfbb97bb9c1c1e3c0d"
+    },
+    {
+      "file": "captures/design-weather-scene-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "9f1180d885863f549e8170e095750c425a86c7d220d7fa0464d32f43b990aa4e"
+    },
+    {
+      "file": "captures/design-weather-scene-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "60608362c17a4c289609094ad9e07a736822accadd8a14110223cfff76b93c69"
+    },
+    {
+      "file": "captures/design-weather-scene-4.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "43d17189aad4bfa0d1cf7155131ee64678a780fa5663266410a7e5fd455654fa"
+    },
+    {
+      "file": "captures/design-weather-scene-5.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "06eed4da84f4d45587f8179a0f11654a7dfd189a593f01d1bb7fab500269cc60"
+    },
+    {
+      "file": "captures/design-weather-scene-6.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "82ac8b78e5bc2fab91fefc447dc8469c45e14e485a8f369ca04009b86c16fff3"
+    },
+    {
+      "file": "captures/design-weather-scene-7.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "ff474432d45a8ad0178ecabaadf29cb32e071704b6c939507c1b6a43697c71f3"
+    },
+    {
+      "file": "captures/design-weather-scene-8.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "09a5f9092afd33d3525ad31f21c66a4d4ffa2aba9011a5b31630922f4271a1e7"
+    },
+    {
+      "file": "captures/design-weather-transparent.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "316bee021b5d8f9c357362c6745998e58cf0331fc3c99868ee39a1af3db7798a"
+    },
+    {
+      "file": "captures/settings-kind-0.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "96ce61435889e02b02bf9b74556b48fd163d453e3556f914428b833fd84727f8"
+    },
+    {
+      "file": "captures/settings-kind-1.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "2d0fb5b397b4bc199cd93d4cab558d19510239d14932e19640c6af365c2c8706"
+    },
+    {
+      "file": "captures/settings-kind-2.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "2582d949b12756f19dcaf885f3af70878757125f6261472c673bc80dfa0140db"
+    },
+    {
+      "file": "captures/settings-kind-3.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "94e90f77fd6079262413c6baa46bc936976fc1424f689cd51dea585978e871cd"
+    },
+    {
+      "file": "captures/settings-kind-4.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "fdd37e09a3c54c538639b04837013a2aec1123cbc260d0ba7ef3e29213757419"
+    },
+    {
+      "file": "captures/settings-kind-5.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "4280b973bb86f6e438e8c84f04c34c04d3e30f7a468a52df795cf49fed82ebcb"
+    },
+    {
+      "file": "captures/settings-kind-6.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "7239b46ca745aaa5380066e1a6eb0531dc237f8c4a249125a245253eb2e5556e"
+    },
+    {
+      "file": "captures/settings-kind-7.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "0dd016e9899839d7f8c4325c4f19737b191da1be7246371334799c7c934a672e"
+    },
+    {
+      "file": "captures/settings-kind-8.png",
+      "run": "ui-review",
+      "source": "test-results/e2e-20261013-010348-879",
+      "sha256": "9d8835897e16fa6f4d98af55b9e07b15dd66eb9808a8a4d31baac90998cd06e0"
+    },
+    {
+      "file": "captures/design-settings-0.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "cbbff0da516959ee183b711e560ab7e978286a0a22fba63c4b62ee1eb8c21243"
+    },
+    {
+      "file": "captures/design-settings-1.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "3b3f7679f0248988cfe9a3ea4c8be3a7f2cdf4953ddaf1a8fa0bbbeca396d32b"
+    },
+    {
+      "file": "captures/design-settings-2.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "dc111a3b1f6fc76db672d1de7747661766b9a1da772edc46c8cddc6840a2f8a9"
+    },
+    {
+      "file": "captures/design-settings-3.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "7b17af26e334459d1d6e6bb0ea1a5628300176086fbf2cd4b7fe8be87c9f980c"
+    },
+    {
+      "file": "captures/design-state-1-0.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "03bf4956b3b598ccdd214c237615f029289014b8ba4d7ac6e27b1ec0803fd02a"
+    },
+    {
+      "file": "captures/design-state-1-1.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "121451ce1a0c16934721c5bf2410d3626d82b029404c6c067b3f603b405b9206"
+    },
+    {
+      "file": "captures/design-state-1-2.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "49c313be9bd7fa05d2af2f585cc12cdb7f789442d213970aad1b0f3ecfcac4c2"
+    },
+    {
+      "file": "captures/design-state-1-3.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "7a712ecb7435486e7636a9e5e3af1ac103c8195f38317794521af3ba39c93bfc"
+    },
+    {
+      "file": "captures/design-state-1-4.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "6b032cd44ec6737f49b28da478554cc2325b92ab2d539f68ca3a949eb014ee80"
+    },
+    {
+      "file": "captures/design-state-1-5.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "31bf15ad72a9f5b667f4d43a74e2d003a1366acc1e46ecc52edd85af2999cae7"
+    },
+    {
+      "file": "captures/design-state-1-6.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "3911ebb8fa94560a2cd1965176d821800d33b8286459eb119b704f98f85366b3"
+    },
+    {
+      "file": "captures/design-state-1-7.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "6a1b7261e0a2583d8895859897dc2e7fa757bcdff8b88cd98462d056e0ddfb25"
+    },
+    {
+      "file": "captures/design-state-1-8.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "1c0b64e8ef63d1d8fdcb621938bad36f3a6d368a4ad703478f861dfd06792221"
+    },
+    {
+      "file": "captures/design-state-2-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "92f771de153ae34a61a21bb38a02235d8c6a2b5e938e069d55513d0047c76c20"
+    },
+    {
+      "file": "captures/design-state-2-11.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "eba054689a838a053bf6bc32dd321b213583505e2079fd2d3fcab66bfa644039"
+    },
+    {
+      "file": "captures/design-state-2-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "610b75b1b6a8ea54348ac24c003e16d5116c4b9948c0044f20b4f992c0b10112"
+    },
+    {
+      "file": "captures/design-state-3-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "b50eab4d08cb862753d6e1446c755a0f2e189a6b55e61f50e7524e27b35e0685"
+    },
+    {
+      "file": "captures/design-state-3-11.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "faee631efa12a5f3b864880e6cc0acacaeabd34721924c55d3019740c2bb1ad5"
+    },
+    {
+      "file": "captures/design-state-3-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "62cf5c773b99bc3321878ee117070d2204881085c1ebbff124751f24b5987d40"
+    },
+    {
+      "file": "captures/design-state-4-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "15c4b8f5fdc9acebd04a48890f6984f76baa0092c5786e9d1a9fdd446992ba48"
+    },
+    {
+      "file": "captures/design-state-4-11.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "4c4263eb71d44c94bb945f235c5e1b52f625f5e632660bbb66bd7527531d3a52"
+    },
+    {
+      "file": "captures/design-state-4-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "4dc1ac543c5e671ea24d33ec18dc125eba23876d6f8015f541cf22a0e3b774f4"
+    },
+    {
+      "file": "captures/design-state-5-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "3dfd902fc602ddea08a841d3f1a7425ffa5665e785e215b020f8e93bcb237ced"
+    },
+    {
+      "file": "captures/design-state-5-11.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "b81d4d2ec0892a6d0a3cc1164f861f3d00b4502f4ae54b9b9a961c65a90f8465"
+    },
+    {
+      "file": "captures/design-state-5-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "41d79040708a6c36ba95033b0f591ae419c9456c16ac7b7cdf7c10635cd227b9"
+    },
+    {
+      "file": "captures/design-state-6-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "e48acb0cf2260758b834d40b14d8fabf7f5fd5153292c85ae12775923d754772"
+    },
+    {
+      "file": "captures/design-state-6-11.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "4af4b987c1ef571e9609785435bbbe691a6440a6792586c09fe22efb0304396b"
+    },
+    {
+      "file": "captures/design-state-6-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "b2743ca0781ea2cc8be13e0099a5404a2c99707f0f56a11f87fa140992a87b06"
+    },
+    {
+      "file": "captures/design-state-7-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "1d7f1bc06ee2304c5d072cd57abef211ac5fa82ee8e98bf8b76b6cf748091b10"
+    },
+    {
+      "file": "captures/design-state-7-11.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "b9d666cca9d470a27f484005e5560213d4b3a8af8b4aee7c1bcefd2a9a0d2058"
+    },
+    {
+      "file": "captures/design-state-7-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "885499e4c71efe475f05df900e2f629e5760702b2369689deb7ba737d676e754"
+    },
+    {
+      "file": "captures/design-state-8-10.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "c3a055f229b30ceb350c6d187bf5a4782d9b0fdcfbc11e9eeaca1667cc11a70b"
+    },
+    {
+      "file": "captures/design-state-8-9.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "3086580ad294b0f26abb47d0b1ccfc1bbd9467934b4238c84b544d12c7fd0677"
+    },
+    {
+      "file": "captures/design-theme-0.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "8a3dfa22b5e5f815363787cd3c01abccff4f06f35e36002773f08dd29605093f"
+    },
+    {
+      "file": "captures/design-theme-1.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "2426c2941e17c52c43165c5eedf1a11cae19d1c6a6ee4794500067271dba4181"
+    },
+    {
+      "file": "captures/design-theme-2.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "1b734fe6edcb48aa58c6106ed3998eea37187f1b7b30811253bbbb4ad16c2e14"
+    },
+    {
+      "file": "captures/design-theme-3.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "59d0c97d7274a199e6328df495ce8eb3ba6c1ce9343c2190456eaf78425aad46"
+    },
+    {
+      "file": "captures/design-theme-4.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "f98a994c2f11a626c7b38d39c2b36575ad1605c2fbf6008e091c9a645d62512f"
+    },
+    {
+      "file": "captures/design-theme-5.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "44699a36a00ee19e823be29e63c416c450657cb3bda12d8103cd9b1d94c892eb"
+    },
+    {
+      "file": "captures/design-theme-6.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "32024c46285ea3df71eb5d2b55306140c6f8b9ab9cd9dd7da3a8fcc72d014ffa"
+    },
+    {
+      "file": "captures/design-theme-7.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "b47e138addc7db3e11d08dde31001a7bad37ce0845c0a12e5c09999e02eaf042"
+    },
+    {
+      "file": "captures/design-theme-8.png",
+      "run": "design",
+      "source": "test-results/e2e-20261013-010703-995",
+      "sha256": "89c6008322d012f2cc6b1e08583833c7ca354e01bcc9ef3d5c27a9ce927f1ab6"
+    },
+    {
+      "file": "captures/clock-size-0-period-0-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "ca6005f5c38052f2c1d1b955d1c99fb33c5e96bffff48ad853162904060becec"
+    },
+    {
+      "file": "captures/clock-size-0-period-0-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "fc60982baddcd3ea3fdacebe8976dbc3170192fc9af701586e289542ef8c8c0f"
+    },
+    {
+      "file": "captures/clock-size-0-period-1-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "b5818422a3ee93fa1da36c4f17ad1f1a2e08c498ef263454b8237c8a1b0fa2e8"
+    },
+    {
+      "file": "captures/clock-size-0-period-1-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "5a12d760352b44e9586f01a14c9ef568018c99c0c6378db6724fadfba6390404"
+    },
+    {
+      "file": "captures/clock-size-1-period-0-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "4a93d630c8030092b56e49df3fcac627f9ea1ce4373bfc105f5ca1dd6ce3e725"
+    },
+    {
+      "file": "captures/clock-size-1-period-0-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "ffb7724fee5842dc30ff512c5fdd5b19e09dd9823dd7d63cf37b669634697f3a"
+    },
+    {
+      "file": "captures/clock-size-1-period-1-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "2af2bd98fd76c18de706b6d18e98a1a6cbd2731c6fe2c8a2e0c3cf8f501c68ea"
+    },
+    {
+      "file": "captures/clock-size-1-period-1-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "20ddeb28d501660f9c257241fcf831b1b435007e1631cb5a2be348752c02a37f"
+    },
+    {
+      "file": "captures/clock-size-2-period-0-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "aade3e26de6a360747b8bf2e0730ab644f30bdd421ca7ec6f2bb39375a3cbe14"
+    },
+    {
+      "file": "captures/clock-size-2-period-0-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "9559d6aa94adcd77e5fb8476462704f865ce9bae4c8c02ef709759ad537ee586"
+    },
+    {
+      "file": "captures/clock-size-2-period-1-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "9d13965c59fbfc504d82d543225f9fe780dd434ccbc3e54ad46b2fe106b9680e"
+    },
+    {
+      "file": "captures/clock-size-2-period-1-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "cab51333429d963b0a96d2d02455f08abcb32c76360659030d2cdd918a013d4d"
+    },
+    {
+      "file": "captures/clock-size-3-period-0-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "6fc9b890a490d741f7005440987feee790a3cfd0f1857805274dd16be12176e9"
+    },
+    {
+      "file": "captures/clock-size-3-period-0-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "b604fe6729ff9d36f7e71f14c240d43c0571775b10359f98d46e2f466fd3af77"
+    },
+    {
+      "file": "captures/clock-size-3-period-1-seconds-0.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "f2a0595f35ac9007fa8ee6750a8b75a8cdaa87f6b21c9afb6402e59777ad7a53"
+    },
+    {
+      "file": "captures/clock-size-3-period-1-seconds-1.png",
+      "run": "clock-layout",
+      "source": "test-results/e2e-20261013-004944-712",
+      "sha256": "fbdb2cc8c4d5c631fcc6ca044606b3f91f6b13cad2600a4490ed904809e4a4d8"
+    }
+  ]
+}

@@ -106,7 +106,7 @@ internal static partial class Program
             ShowWindow(Window.Properties.NativeWindowHandle, 0); Thread.Sleep(200);
             Screenshot("weather-size-" + size, new Rectangle(item["x"]!.GetValue<int>(), item["y"]!.GetValue<int>(), item["width"]!.GetValue<int>(), item["height"]!.GetValue<int>()));
             ShowWindow(Window.Properties.NativeWindowHandle, 5);
-            Check(Automation.FromHandle(WidgetHandle(item)).Name.Contains("Open-Meteo"), "Weather accessibility attribution at size " + size);
+            Check(!Automation.FromHandle(WidgetHandle(item)).Name.Contains("Open-Meteo"), "Weather widget has no source label at size " + size);
         }
         Quit(app!); app = null;
         var old = Settings(); old.Remove("weatherProvider");

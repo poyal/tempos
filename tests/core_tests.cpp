@@ -1,5 +1,6 @@
 #include "model.h"
 #include "design.h"
+#include "location.h"
 #include "storage.h"
 #include "weather.h"
 #include "calendar.h"
@@ -31,6 +32,29 @@ int main(int argc, char **argv) {
   try {
     if (argc == 2 && std::string_view(argv[1]) == "--live-weather")
       return liveWeatherProbe();
+    Widget diskWidget;
+    diskWidget.kind = Kind::Disk;
+    diskWidget.source = L"volume-a";
+    auto individualDisk = providerKey(diskWidget);
+    diskWidget.size = Size::L;
+    auto allDisk = providerKey(diskWidget);
+    diskWidget.source = L"volume-b";
+    check(allDisk == providerKey(diskWidget) && allDisk != individualDisk,
+          "All-drive subscriptions ignore selected volume and stay separate from individual drives");
+    diskWidget.size = Size::S;
+    check(providerKey(diskWidget) != individualDisk,
+          "Individual drive subscriptions retain distinct volume identity");
+    LocalMetrics diskMetrics;
+    auto volumeDevices = diskMetrics.devices(Kind::Disk);
+    auto volumeSnapshot = diskMetrics.read(Kind::Disk, allDisksSource);
+    check(volumeSnapshot.disks.size() == volumeDevices.size(),
+          "All mounted local volumes are represented, including unavailable volumes");
+    for (const auto &volume : volumeSnapshot.disks) {
+      auto single = diskMetrics.read(Kind::Disk, volume.id);
+      check(single.status != Status::Ready ||
+                (volume.total == single.total && volume.available >= 0 && volume.available <= volume.total),
+            "All-drive capacity agrees with single-volume capacity");
+    }
     for (const auto &palette : palettes())
       check(design::whiteContrast(design::readableSurface(palette.top)) >= 4.5 &&
                 design::whiteContrast(design::readableSurface(palette.bottom)) >= 4.5,
@@ -40,6 +64,32 @@ int main(int argc, char **argv) {
           "GPU process instances share case-insensitive engine identity");
     check(gpuEngineKey(L"_Total").empty() && gpuEngineKey(L"pid_1_luid_0x0_Total").empty(),
           "GPU total counters excluded");
+    const std::array<Region, 3> regions{{{L"서울", 60, 127, 37.573, 126.979},
+                                         {L"부산", 98, 76, 35.1796, 129.0756},
+                                         {L"제주", 52, 38, 33.4996, 126.5312}}};
+    check(nearestRegion(regions, 35.18, 129.076) == 1, "One-time location selects nearest region");
+    check(nearestRegion(regions, 33.5, 126.53) == 2, "Island location selects local region");
+    check(!nearestRegion(regions, 35.68, 139.69), "Overseas location does not silently select Korea");
+    check(!nearestRegion(regions, NAN, 127) && !nearestRegion(regions, 91, 127), "Invalid location rejected");
+    NetworkTotal networkTotal;
+    check(networkTotal.read({{L"ethernet", 1000, 500}, {L"wifi", 4000, 2000}}, 10).status == Status::Loading,
+          "Aggregate network primes existing counters");
+    auto combined = networkTotal.read({{L"ethernet", 1400, 700}, {L"wifi", 5000, 2600}}, 12);
+    check(combined.status == Status::Ready && combined.value == 700 && combined.secondary == 400,
+          "Aggregate network sums receive and send rates independently");
+    combined =
+        networkTotal.read({{L"ethernet", 1600, 900}, {L"wifi", 5400, 2800}, {L"wifi", 5400, 2800}}, 14);
+    check(combined.value == 300 && combined.secondary == 200, "Duplicate adapter is not double counted");
+    combined = networkTotal.read(
+        {{L"ethernet", 1800, 1100}, {L"wifi", 5800, 3200}, {L"new", 1000000000, 1000000000}}, 16);
+    check(combined.value == 300 && combined.secondary == 300,
+          "New adapter does not create a lifetime-counter spike");
+    check(networkTotal.read({{L"ethernet", 1, 1}}, 18).status == Status::Loading,
+          "Counter reset primes a fresh baseline");
+    check(networkTotal.read({}, 20).status == Status::Unavailable,
+          "Disconnected total is unavailable rather than stale");
+    check(networkTotal.read({{L"ethernet", 50000, 50000}}, 22).status == Status::Loading,
+          "Reconnected adapter does not reuse disconnected baseline");
     check(extent(Size::M).width == 336 && extent(Size::M, 150).height == 240, "ratio scale");
     check(snap(17) == 16 && snap(-7) == -8, "grid negative snap");
     check(overlaps({0, 0, 160, 160}, {170, 0, 160, 160}), "gutter collision");
