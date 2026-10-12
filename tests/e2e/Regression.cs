@@ -285,7 +285,15 @@ internal static partial class Program
             var optionSummary = Automation.FromHandle(WidgetHandle(view)).Name;
             if (option.Item1 == 0) Check(optionSummary.Contains("오전") || optionSummary.Contains("오후"), "Clock accessible time uses selected twelve-hour format");
             if (option.Item1 == 1) Check(optionSummary.Contains("°F"), "Weather accessible temperature uses selected Fahrenheit unit");
-            if (option.Item1 == 6) Check(optionSummary.Contains("KiB/s") || optionSummary.Contains("MiB/s"), "Network accessible rates use selected byte units");
+            if (option.Item1 == 6)
+            {
+                // Live traffic may be zero or below 1 KiB/s. Validate both rates
+                // against the full unit range rather than fixture-sized traffic.
+                Console.WriteLine("NETWORK UNITS " + optionSummary);
+                Check(System.Text.RegularExpressions.Regex.Matches(optionSummary,
+                    @"\d+(?:\.\d+)? (?:B|KiB|MiB|GiB|TiB)/s").Count == 2,
+                    "Network accessible rates use selected byte units");
+            }
             if (option.Item1 == 7) Check(optionSummary.Contains("GiB") || optionSummary.Contains("TiB"), "Disk accessible space uses selected binary units");
             Tab(0); SelectWidget((option.Item1 + 1) % 9); Tab(3);
             Check(Element(option.Item2).AsCheckBox().IsChecked == false, "Display option isolated to selected widget: " + option.Item3);

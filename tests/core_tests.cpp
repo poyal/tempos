@@ -27,11 +27,33 @@ template <class F> void throws(F fn, const char *name) {
 }
 void weatherTests();
 int liveWeatherProbe();
+void memoryHistoryRegression() {
+  Widget memory;
+  memory.kind = Kind::Memory;
+  memory.interval = 2;
+  ProviderService providers(nullptr, [](const Widget &, std::stop_token, WeatherProvider) { return Snapshot{}; });
+  providers.configure({memory}, false);
+  auto deadline = Clock::now() + 8s;
+  auto data = providers.snapshot(memory);
+  while (Clock::now() < deadline && data->history.samples().size() < 2) {
+    std::this_thread::sleep_for(50ms);
+    data = providers.snapshot(memory);
+  }
+  providers.stop();
+  check(data->status == Status::Ready && data->history.samples().size() >= 2,
+        "Real memory collector retains consecutive samples for the graph");
+  auto average = data->history.average(monotonic()), maximum = data->history.maximum(monotonic());
+  check(average && maximum && *average >= 0 && *average <= *maximum && *maximum <= 100,
+        "Real memory history supplies valid average and maximum percentages");
+}
 int main(int argc, char **argv) {
   CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   try {
     if (argc == 2 && std::string_view(argv[1]) == "--live-weather")
       return liveWeatherProbe();
+    memoryHistoryRegression();
+    if (argc == 2 && std::string_view(argv[1]) == "--memory-history")
+      return 0;
     Widget diskWidget;
     diskWidget.kind = Kind::Disk;
     diskWidget.source = L"volume-a";

@@ -108,6 +108,7 @@ internal static partial class Program
             app = Start(exe);
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
+            if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, args.Contains("--allow-location-to-open-meteo")); return 0; }
             if (args.Contains("--ui-review")) { UiReview(ref app, exe); return 0; }
             if (args.Contains("--design")) { DesignAudit(ref app); return 0; }
             if (args.Contains("--weather")) { WeatherOptions(ref app, exe); return 0; }

@@ -8,6 +8,16 @@ Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 
 
 실제 앱의 위젯을 촬영용 예제 데이터로 실행한 화면입니다. 개인 계정·위치·실시간 측정값은 사용하지 않았습니다. 이미지를 누르면 크게 볼 수 있습니다. [크기별 화면과 촬영 조건](docs/screenshots.md).
 
+아래는 **배포 실행 파일에서 실제 Windows 메모리·네트워크 사용량을 수집한 화면**입니다. Windows 11에서 ZIP을 새로 풀어 검증했으며, 실제 수집에서 발견한 메모리 그래프 누락도 수정했습니다. [실행 결과와 전체 실측 화면](docs/validation/windows-2026-10-13/README.md).
+
+<table>
+  <tr><th>실제 메모리 사용량</th><th>실제 전체 네트워크</th></tr>
+  <tr>
+    <td><img src="docs/validation/windows-2026-10-13/windows-live-kind-4.png" alt="실제 메모리 사용률과 정상 표시된 최근 60초 그래프" width="400"></td>
+    <td><img src="docs/validation/windows-2026-10-13/windows-live-kind-6.png" alt="실제 전체 네트워크의 수신·송신 속도와 그래프" width="400"></td>
+  </tr>
+</table>
+
 [설치](#install) · [화면과 종료](#window) · [위젯 배치](#widgets) · [표시 설정](#appearance) · [날씨](#weather) · [캘린더](#calendar) · [자동 시작](#startup) · [백업·업데이트](#backup) · [문제 해결](#help)
 
 <a id="install"></a>

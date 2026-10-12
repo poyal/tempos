@@ -558,7 +558,8 @@ void ProviderService::publish(const std::wstring &key, uint64_t generation, Snap
   data.weatherProvider = e.provider;
   auto old = e.data;
   double t = monotonic();
-  if (e.widget.kind == Kind::Cpu || e.widget.kind == Kind::Gpu || e.widget.kind == Kind::Network) {
+  if (e.widget.kind == Kind::Cpu || e.widget.kind == Kind::Gpu || e.widget.kind == Kind::Memory ||
+      e.widget.kind == Kind::Network) {
     data.history = old->history;
     data.history2 = old->history2;
     if (old->sampledAt > 0 && t - old->sampledAt <= std::max(5, e.interval * 2)) {

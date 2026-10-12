@@ -23,6 +23,7 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 | 옵션 | 확인하는 동작 |
 | --- | --- |
 | 없음 | 기본 9종 추가·설정·저장·재시작 |
+| `--windows-real --exe <Tempos.exe>` | 실제 Windows 사용자 세션·배포 공급자 확인, CPU/GPU/메모리·전체 네트워크·로컬 디스크·Open-Meteo, 메모리 그래프 픽셀, OS 입력 시도, 저장·재시작. 실제 위치는 별도 승인 옵션 필요 |
 | `--weather` | 공급자 전환, 키 보존, 신규/구버전 기본값, 요청 공유, 저장 실패, 정상·강제 종료 복원, 레이아웃 가져오기, 오류 응답·WMO 상태·늦은 응답, 위젯 출처 문구 제거 |
 | `--ui-review` | 9종 선택별 설정, 클릭 무동작·읽기 전용 접근성, 현재 위치 한 번 선택·저장, 전체 네트워크, 37개 크기, 전체 디스크·자동 페이지 순환 |
 | `--startup` | 격리된 레지스트리 등록·해제, 재시작 체크 복원, 공백·한글 데이터 경로, 등록 명령 실행 |
@@ -39,6 +40,14 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 
 `--exe`로 `out/asan/Tempos.TestHost.exe`나 패키지 실행 파일을 지정할 수 있다. 공급자 응답 제어와 격리 레지스트리 진단이 필요한 `--weather`, `--startup`은 TestHost 전용이다.
 
+`--windows-real`은 압축을 새로 푼 **Tempos.exe**를 지정한다. 실제 공급자를 사용하며 TestHost나 fixture 상태이면 실패한다. 실행 중인 일반 Tempos를 먼저 종료해야 하며, 검사 데이터는 기존 프로파일과 분리한다. 날씨는 기본 지역인 서울 종로구를 사용한다. OS `SendInput`은 실제 포인터 이동과 저장 위치 변경까지 확인하며, 입력 데스크톱이 이를 허용하지 않으면 SKIP으로 남긴다. 메시지 기반 `--interaction`의 통과로 대체하지 않는다.
+
+현재 위치 조회는 기본적으로 건너뛴다. **Windows 위치 조회와 선택된 지역 좌표의 Open-Meteo 전송에 대한 사용자 승인 후에만** `--allow-location-to-open-meteo`를 추가한다. Windows 위치 서비스를 켜거나 전역 개인정보 설정을 바꾸지 않는다. 요청 성공 또는 권한·측위 실패를 구분하고, 선택한 지역이 적용 전 자동 저장되지 않는지 확인한다. 정확한 좌표와 지역명은 공개 결과에 기록하지 않는다.
+
+```powershell
+dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --windows-real --exe <압축푼폴더/Tempos.exe>
+```
+
 ## 데이터와 프로세스 수명
 
 실행마다 `test-results/e2e-<시각>/`을 만들고 `--data-dir`로 전달한다. 실제 사용자 설정은 초기화하지 않는다. `--saved-layout`도 원본을 복사한다. 종료·재시작 사례는 실제 PID 종료를 기다리고 새 앱을 실행한다. 강제 종료 검사는 테스트가 소유한 PID만 종료한다.
@@ -54,3 +63,5 @@ TestHost의 자동 시작은 `HKCU\Software\Tempos\Tests\<데이터 경로 식�
 디자인 검수용 위젯은 항상 위·배경 불투명 상태로 촬영하며, 뒤에 중립색 창을 배치한다. 설정창은 촬영할 때만 맨 앞으로 올리고 49개 내부 지점의 가림 여부를 검사한 뒤 클라이언트 영역만 캡처한다. 설정과 실제 배경 투명도 기본값을 바꾼 것이 아니라 촬영 조건이다. `scripts/collect-design-review.cjs`는 `artifacts/final-runs.json`의 `[{"mode":"ui-review","folder":"test-results/e2e-..."}, ...]` 목록에서 통과한 실행의 지정 PNG만 수집하며 프로파일·인증 정보는 복사하지 않는다.
 
 일반 E2E는 실제 기상청 인증이나 Open-Meteo 서버의 가용성을 증명하지 않는다. 실제 Open-Meteo는 `tempos_tests.exe --live-weather`, 실제 기상청 키·Google OAuth·Windows 로그인은 별도 실환경 검사로 구분한다. 물리 드래그와 Win+D를 Win32 메시지 테스트로 대신했다고 표시하지 않는다.
+
+배포 ZIP을 새로 풀어 실행한 [2026-10-13 실제 Windows 결과](validation/windows-2026-10-13/README.md)는 수정 전후 실행 파일 해시, 최초 실패, 최종 실행과 SKIP을 구분한다. `--windows-real`의 날씨 확인은 실제 기본 지역 요청이며, 실제 현재 위치 조회의 성공을 뜻하지 않는다. `scripts/collect-windows-e2e.cjs`는 로컬 실행 목록·빌드 해시·핵심 검사 로그를 검증하고 공개 가능한 7종 캡처와 메모리 수정 전 화면만 수집한다.
