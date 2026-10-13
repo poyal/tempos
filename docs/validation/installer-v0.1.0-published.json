@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-13T22:28:05.5303824+09:00",
+  "releaseUrl": "https://github.com/poyal/tempos/releases/tag/v0.1.0",
+  "releaseId": "RE_kwDOU_cYws4YiXhi",
+  "releaseTag": "v0.1.0",
+  "originalAnnotatedTag": "ba26cc25d4f0c946e5b950f4832baf66bd30bc84",
+  "originalTagCommit": "7e05b58938394cb58a2c15f565b8ebbca741b730",
+  "installerSourceTag": "v0.1.0-win-x64-installer",
+  "installerSourceCommit": "25494f25e317cadd06d7370de1e8b7c2a29ffb34",
+  "assets": [
+    {
+      "name": "Tempos-0.1.0-win-x64.exe",
+      "id": "RA_kwDOU_cYws4l-aFt",
+      "bytes": 6327126,
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.exe"
+    },
+    {
+      "name": "Tempos-0.1.0-win-x64.exe.sha256",
+      "id": "RA_kwDOU_cYws4l-aFu",
+      "bytes": 92,
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.exe.sha256"
+    },
+    {
+      "name": "Tempos-0.1.0-win-x64.zip",
+      "id": "RA_kwDOU_cYws4l9-Cr",
+      "bytes": 6838257,
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip"
+    },
+    {
+      "name": "Tempos-0.1.0-win-x64.zip.sha256",
+      "id": "RA_kwDOU_cYws4l9-Cn",
+      "bytes": 92,
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip.sha256"
+    }
+  ],
+  "download": {
+    "authentication": "none",
+    "file": "Tempos-0.1.0-win-x64.exe",
+    "url": "https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.exe",
+    "bytes": 6327126,
+    "sha256": "3EDEC8F82CE3E888562BFBFB9BC603CBFE3E2C23EDFADC5413222CD18B4A679F",
+    "checksumSha256": "3EDEC8F82CE3E888562BFBFB9BC603CBFE3E2C23EDFADC5413222CD18B4A679F",
+    "testedArtifactSha256": "3EDEC8F82CE3E888562BFBFB9BC603CBFE3E2C23EDFADC5413222CD18B4A679F",
+    "matches": true
+  },
+  "originalZipAssetsPreserved": true,
+  "repackagedAfterValidation": false,
+  "platform": "Windows x64 only",
+  "verificationNote": "Resolved the existing annotated tag object to its commit before comparison."
+}
