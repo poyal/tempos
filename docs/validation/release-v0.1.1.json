@@ -1,0 +1,1607 @@
+{
+  "sourceCommit": "a8f7706bae909c76a86208acf4b2a418ab4a3f8d",
+  "sourceDirtyAtPackaging": false,
+  "sourceTag": "v0.1.1",
+  "environment": {
+    "os": "Windows 11 Pro 10.0.26300 x64",
+    "primary": "3840x2160 150%",
+    "secondary": "1920x1080 125% below primary",
+    "installedAppUsedAsTestTarget": false,
+    "secondaryLayoutCopiedOnly": true
+  },
+  "core": [
+    {
+      "mode": "release",
+      "passed": 202,
+      "failed": 0,
+      "exitCode": 0,
+      "executableSha256": "0123A50DA519D0092C0D529EC9C5E6B784D388D1AC10536D3758D3FC26BB6EE4"
+    },
+    {
+      "mode": "asan",
+      "passed": 202,
+      "failed": 0,
+      "exitCode": 0,
+      "executableSha256": "9FE0AC90292EFDA4F09BCE354948280E38621C45FBE891ABE1650CCCD7EB4B0C"
+    }
+  ],
+  "e2e": [
+    {
+      "name": "profile-isolation",
+      "folder": "test-results/e2e-20261013-230830-073",
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "record": {
+        "started": "2026-10-13T23:08:30.0685678+09:00",
+        "completed": "2026-10-13T23:08:31.992003+09:00",
+        "mode": "--isolation",
+        "testClass": "e2e",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "executable": "out\\release\\Tempos.TestHost.exe",
+        "executableSha256": "616BBA07B3EC02EC93FCE57B99DC42FE7A699311D9718C8DF672EA0A623140C8",
+        "results": [
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "TestHost rejects missing or installed profile before app startup",
+            "passed": true
+          },
+          {
+            "name": "TestHost rejects missing or installed profile before app startup",
+            "passed": true
+          },
+          {
+            "name": "TestHost rejects missing or installed profile before app startup",
+            "passed": true
+          },
+          {
+            "name": "Concurrent test profiles have separate management window classes",
+            "passed": true
+          },
+          {
+            "name": "Duplicate test launch activates only its matching profile window",
+            "passed": true
+          },
+          {
+            "name": "Independent test profiles remain running",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "Installed layout, backup and startup registration remain unchanged",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "edit-primary",
+      "folder": "test-results/e2e-20261013-230832-069",
+      "passed": 150,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "record": {
+        "started": "2026-10-13T23:08:32.0655099+09:00",
+        "completed": "2026-10-13T23:08:59.2450611+09:00",
+        "mode": "--edit-mode",
+        "testClass": "e2e",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "executable": "out\\release\\Tempos.TestHost.exe",
+        "executableSha256": "616BBA07B3EC02EC93FCE57B99DC42FE7A699311D9718C8DF672EA0A623140C8",
+        "results": [
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Repeated edit toggles preserve complete test layout",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Test layout survives restart after repeated edit toggles",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 0",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 1",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 2",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 3",
+            "passed": true
+          },
+          {
+            "name": "Temporary edit layer does not persist always-on-top changes",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "Installed layout and backup remain byte-for-byte unchanged",
+            "passed": true
+          },
+          {
+            "name": "Installed user app remains running during isolated E2E",
+            "passed": true
+          },
+          {
+            "name": "Installed layout, backup and startup registration remain unchanged",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "startup",
+      "folder": "test-results/e2e-20261013-230859-324 시작 옵션",
+      "passed": 25,
+      "failed": 0,
+      "skipped": 1,
+      "exitCode": 0,
+      "record": {
+        "started": "2026-10-13T23:08:59.3199965+09:00",
+        "completed": "2026-10-13T23:09:41.995717+09:00",
+        "mode": "--startup",
+        "testClass": "e2e",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "executable": "out\\release\\Tempos.TestHost.exe",
+        "executableSha256": "616BBA07B3EC02EC93FCE57B99DC42FE7A699311D9718C8DF672EA0A623140C8",
+        "results": [
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Initial five widgets",
+            "passed": true
+          },
+          {
+            "name": "Startup test uses isolated registry path",
+            "passed": true
+          },
+          {
+            "name": "Startup command preserves executable and isolated Unicode/spaced data path",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Startup checkbox survives complete restart",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Registered command reopens same profile without --settings",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Disabled startup remains disabled after restart",
+            "passed": true
+          },
+          {
+            "name": "Startup registration failure restores checkbox and displays error",
+            "passed": true
+          },
+          {
+            "name": "Startup toggle does not change profile",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "Actual Windows logon",
+            "passed": null,
+            "skipped": true,
+            "reason": "Registered command tested; current user session was not logged out."
+          },
+          {
+            "name": "Installed layout, backup and startup registration remain unchanged",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "edit-secondary-copied-layout",
+      "folder": "test-results/e2e-20261013-230942-080",
+      "passed": 168,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "record": {
+        "started": "2026-10-13T23:09:42.07631+09:00",
+        "completed": "2026-10-13T23:09:57.3244412+09:00",
+        "mode": "--edit-mode",
+        "testClass": "e2e",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "executable": "out\\release\\Tempos.TestHost.exe",
+        "executableSha256": "616BBA07B3EC02EC93FCE57B99DC42FE7A699311D9718C8DF672EA0A623140C8",
+        "results": [
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 5 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 5",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-5: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 0: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-0-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 1: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 5 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 5",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-5: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 2: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-2-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 3: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 5 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 5",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-5: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 4: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-4-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 5: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 5 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 5",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-5: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 6: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-6-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 7: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 5 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 5",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-5: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 8: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-8-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 9: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: edit grid present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 0 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 1 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 2 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 3 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 5 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: widget 4 above grid",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 0",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-0: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 1",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-1: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 2",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-2: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 3",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-3: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 5",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-5: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 10: actual screen hit belongs to edited widget 4",
+            "passed": true
+          },
+          {
+            "name": "edit-toggle-10-kind-4: captured widget pixels present",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: widget identities retained",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: every widget visible",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: edit grid removed",
+            "passed": true
+          },
+          {
+            "name": "Toggle 11: saved always-on-top preference restored",
+            "passed": true
+          },
+          {
+            "name": "Repeated edit toggles preserve complete test layout",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "API boundary matches the requested test class",
+            "passed": true
+          },
+          {
+            "name": "TestHost uses only this run's isolated settings directory",
+            "passed": true
+          },
+          {
+            "name": "Test layout survives restart after repeated edit toggles",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 0",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 1",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 2",
+            "passed": true
+          },
+          {
+            "name": "Mixed always-on-top widgets retain their correct band after toggle 3",
+            "passed": true
+          },
+          {
+            "name": "Temporary edit layer does not persist always-on-top changes",
+            "passed": true
+          },
+          {
+            "name": "Clean process shutdown",
+            "passed": true
+          },
+          {
+            "name": "No unregistered API requests or live fallback in E2E",
+            "passed": true
+          },
+          {
+            "name": "Installed layout and backup remain byte-for-byte unchanged",
+            "passed": true
+          },
+          {
+            "name": "Installed user app remains running during isolated E2E",
+            "passed": true
+          },
+          {
+            "name": "Installed layout, backup and startup registration remain unchanged",
+            "passed": true
+          }
+        ]
+      }
+    }
+  ],
+  "totals": {
+    "passed": 354.0,
+    "failed": 0,
+    "skipped": 1.0
+  },
+  "app": {
+    "version": "0.1.1",
+    "sha256": "E1FBBC88C2D57EEA5B016EF1AA0E8E0A5B5090DBC33BE89A58A8A0D96F6CB486",
+    "testHostSha256": "616BBA07B3EC02EC93FCE57B99DC42FE7A699311D9718C8DF672EA0A623140C8",
+    "runnerSha256": "A42A0DA1727E0B6D90FFA8B49DCE7917B9227F7BBF2E0DB2EAEFD43EAACF9BF4"
+  },
+  "package": {
+    "installer": "Tempos-0.1.1-win-x64.exe",
+    "installerSha256": "D236767E5D31D8C2F88D490F6B670A5D623D122692345A832742A7AE580C7A13",
+    "installerBytes": 6337986,
+    "zip": "Tempos-0.1.1-win-x64.zip",
+    "zipSha256": "E4648BC847643F1B33BBFEB6A22E7A9E23F4019A6F3C29C4B7A3755145AAECFE",
+    "payloadFiles": 145,
+    "payloadAppMatches": true,
+    "compilerVersion": "v3.04",
+    "docs": "PASS 19 documents, 300 local references/anchors, 67 PNG hashes, 37 widget sizes, 17 usage captures, 2 installer captures"
+  },
+  "installerLifecycle": {
+    "status": "not-run",
+    "reason": "Existing installed user app preserved. Installer lifecycle requires no existing installation; v0.1.0 engine validation is historical evidence only."
+  },
+  "captures": [
+    {
+      "file": "after-eleventh-toggle.png",
+      "sha256": "EF8CD166C112A132E98FF347E2465D3FF3E7EDA3DCA69B8074AF794E2EAB979A",
+      "bytes": 21996
+    },
+    {
+      "file": "after-third-toggle.png",
+      "sha256": "EF8CD166C112A132E98FF347E2465D3FF3E7EDA3DCA69B8074AF794E2EAB979A",
+      "bytes": 21996
+    },
+    {
+      "file": "before-third-toggle.png",
+      "sha256": "115312E6CE76E6846CBEC32E1A9B3C5BF8D4C38CA37B4829B46C6456E0A0089A",
+      "bytes": 889
+    }
+  ],
+  "priorAttempts": [
+    {
+      "folder": "test-results/e2e-20261013-225444-813",
+      "result": "reproduced-failure",
+      "reason": "Third toggle: visible native window and hit target but blank layered pixels."
+    },
+    {
+      "folder": "test-results/e2e-20261013-224242-410",
+      "result": "failed",
+      "reason": "Pixel-only probe insufficient because other applications could cover the widget. Added owned-widget hit check."
+    },
+    {
+      "folder": "test-results/e2e-20261013-225053-401",
+      "result": "interrupted",
+      "reason": "Global UIA enumeration blocked; replaced with PID-specific native enumeration."
+    },
+    {
+      "folder": "test-results/e2e-20261013-225249-876",
+      "result": "failed",
+      "reason": "Hidden duplicate launch hid the target window; changed to ShowWindowAsync."
+    }
+  ],
+  "buildRetries": [
+    "E2E runner missing AsCheckBox namespace, corrected before final build",
+    "Output runner locked by an earlier completing run; final runner compiled to separate directory"
+  ],
+  "notExercised": [
+    "Live external APIs, Google web consent, actual geolocation",
+    "Actual Windows logon",
+    "v0.1.1 install/uninstall of an existing user installation"
+  ],
+  "publication": "Final artifact is not repackaged after validation. Public download receipt follows separately."
+}
