@@ -20,6 +20,7 @@ struct WidgetWindow {
   uint64_t redraws{};
   std::shared_ptr<const Snapshot> displayed;
   bool dragging = false;
+  bool positioning = false;
   POINT dragStart{};
   RECT original{};
   std::wstring currentMonitor;

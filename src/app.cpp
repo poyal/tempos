@@ -1,4 +1,5 @@
 #include "app.h"
+#include "test_isolation.h"
 #include <commctrl.h>
 #include <windowsx.h>
 #include <wtsapi32.h>
@@ -185,6 +186,7 @@ void App::status(std::wstring message) {
   SetWindowTextW(control(1999), status_.c_str());
 }
 int App::run() {
+  auto managementClass = managementWindowClass(store_.root());
   icon_ = LoadIconW(instance_, MAKEINTRESOURCEW(101));
   WNDCLASSEXW wc{sizeof wc};
   wc.hInstance = instance_;
@@ -193,7 +195,7 @@ int App::run() {
   wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
   wc.hbrBackground = GetSysColorBrush(COLOR_WINDOW);
   wc.lpfnWndProc = windowProc;
-  wc.lpszClassName = L"Tempos.Management";
+  wc.lpszClassName = managementClass.c_str();
   RegisterClassExW(&wc);
   wc.hbrBackground = nullptr;
   wc.lpfnWndProc = widgetProc;
@@ -209,7 +211,7 @@ int App::run() {
   wc.hbrBackground = GetSysColorBrush(COLOR_WINDOW);
   RegisterClassExW(&wc);
   taskbarCreated_ = RegisterWindowMessageW(L"TaskbarCreated");
-  main_ = CreateWindowExW(0, L"Tempos.Management", L"Tempos · 위젯 설정",
+  main_ = CreateWindowExW(0, managementClass.c_str(), L"Tempos · 위젯 설정",
                           WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_THICKFRAME |
                               WS_VSCROLL | WS_HSCROLL,
                           CW_USEDEFAULT, CW_USEDEFAULT, 880, 790, nullptr, nullptr, instance_, this);
@@ -843,11 +845,12 @@ void App::rebuild() {
   if (settings_.edit && !settings_.hidden)
     for (auto &m : monitors_) {
       auto hwnd =
-          CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE,
+          CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE |
+                              WS_EX_TOPMOST,
                           L"Tempos.Grid", L"", WS_POPUP, m.work.left, m.work.top, m.work.right - m.work.left,
                           m.work.bottom - m.work.top, nullptr, nullptr, instance_, nullptr);
       SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 95, LWA_COLORKEY | LWA_ALPHA);
-      SetWindowPos(hwnd, HWND_TOP, m.work.left, m.work.top, m.work.right - m.work.left,
+      SetWindowPos(hwnd, HWND_TOPMOST, m.work.left, m.work.top, m.work.right - m.work.left,
                    m.work.bottom - m.work.top, SWP_NOACTIVATE | SWP_SHOWWINDOW);
       grids_.push_back(hwnd);
     }
@@ -883,11 +886,21 @@ void App::rebuild() {
       draw(*window);
   updateList();
   armTimer();
+  // Keep the settings controls accessible above the temporary edit layer.
+  SetWindowPos(main_, settings_.edit && !settings_.hidden ? HWND_TOPMOST : HWND_NOTOPMOST,
+               0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 }
 void App::position(WidgetWindow &window) {
   auto *w = find(window.id);
-  if (!w || !window.hwnd || monitors_.empty())
+  if (!w || !window.hwnd || monitors_.empty() || window.positioning)
     return;
+  // SetParent can synchronously notify a DPI change on a secondary monitor.
+  // Do not reparent/paint again while this transition is only half complete.
+  window.positioning = true;
+  struct PositionGuard {
+    bool &active;
+    ~PositionGuard() { active = false; }
+  } guard{window.positioning};
   auto placements = arrangeWidgets(settings_.widgets, monitors_);
   auto placement = std::find_if(placements.begin(), placements.end(), [&](auto &p) { return p.id == w->id; });
   window.placed = placement != placements.end() && placement->visible;
@@ -911,9 +924,16 @@ void App::position(WidgetWindow &window) {
   }
   // Clear the native topmost state before returning a popup to the desktop.
   // Changing GWL_EXSTYLE alone does not update its position in the Z order.
-  if (!w->topmost && (GetWindowLongPtrW(window.hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST))
+  bool topmost = w->topmost || settings_.edit;
+  if (!topmost && (GetWindowLongPtrW(window.hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST))
     SetWindowPos(window.hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
   if (GetParent(window.hwnd) != parent) {
+    // Reparenting between Explorer's DPI and a different monitor can leave
+    // DWM displaying an empty layered surface on the next edit transition.
+    // Reset the native layer before attaching it to its new coordinate space.
+    if (renderer_.layered())
+      SetWindowLongPtrW(window.hwnd, GWL_EXSTYLE,
+                         GetWindowLongPtrW(window.hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
     auto style = GetWindowLongPtrW(window.hwnd, GWL_STYLE);
     if (parent)
       SetWindowLongPtrW(window.hwnd, GWL_STYLE, (style & ~WS_POPUP) | WS_CHILD);
@@ -923,6 +943,8 @@ void App::position(WidgetWindow &window) {
   }
   LONG_PTR ex =
       WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | (renderer_.layered() ? WS_EX_LAYERED : WS_EX_NOREDIRECTIONBITMAP);
+  // Preserve native topmost state here; SetWindowPos owns changes to the band.
+  ex |= GetWindowLongPtrW(window.hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST;
   if (w->clickThrough && !settings_.edit)
     ex |= WS_EX_TRANSPARENT;
   SetWindowLongPtrW(window.hwnd, GWL_EXSTYLE, ex);
@@ -931,8 +953,7 @@ void App::position(WidgetWindow &window) {
     ScreenToClient(parent, &origin);
   SetWindowPos(window.hwnd,
                parent           ? HWND_TOP
-               : w->topmost     ? HWND_TOPMOST
-               : settings_.edit ? HWND_TOP
+               : topmost        ? HWND_TOPMOST
                                 : HWND_BOTTOM,
                origin.x, origin.y, LONG(extentDip.width * factor), LONG(extentDip.height * factor),
                SWP_NOACTIVATE | SWP_FRAMECHANGED);
@@ -952,7 +973,7 @@ void App::configure() {
 }
 void App::draw(WidgetWindow &window) {
   auto *w = find(window.id);
-  if (!w || !window.hwnd || !window.placed)
+  if (!w || !window.hwnd || !window.placed || window.positioning)
     return;
   if (!window.displayed && providers_)
     window.displayed = providers_->snapshot(*w);
@@ -1657,7 +1678,7 @@ LRESULT App::widgetMessage(WidgetWindow &window, UINT msg, WPARAM wp, LPARAM lp)
     }
     return 0;
   case WM_DPICHANGED:
-    if (window.dragging)
+    if (window.dragging || window.positioning)
       return 0;
     position(window);
     draw(window);
@@ -1717,6 +1738,7 @@ void App::diagnose() {
   j["weatherProvider"] = settings_.weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
 #ifdef TEMPOS_TEST_HOST
   j["apiMode"] = "mock";
+  j["testDataDirectory"] = utf8(std::filesystem::absolute(store_.root()).wstring());
   j["locationMode"] = "mock";
   j["startupRegistryKey"] = utf8(startup_.key());
 #else

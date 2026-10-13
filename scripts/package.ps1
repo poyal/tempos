@@ -1,4 +1,4 @@
-param([switch]$SkipBuild,[ValidatePattern('^\d+\.\d+\.\d+(-[a-z0-9.]+)?$')][string]$Version='0.1.0')
+param([switch]$SkipBuild,[ValidatePattern('^\d+\.\d+\.\d+(-[a-z0-9.]+)?$')][string]$Version='0.1.1')
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 if(-not $SkipBuild){& (Join-Path $PSScriptRoot 'build.ps1') -Preset release -Clean -Test}

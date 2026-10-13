@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(Tempos VERSION 0.1.0 LANGUAGES CXX RC)
+project(Tempos VERSION 0.1.1 LANGUAGES CXX RC)
 if(NOT WIN32 OR NOT MSVC)
   message(FATAL_ERROR "Tempos requires Windows and MSVC")
 endif()

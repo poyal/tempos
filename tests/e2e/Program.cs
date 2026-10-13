@@ -41,6 +41,17 @@ internal static partial class Program
     static void ToggleDesktop() { dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application")!)!; try { shell.ToggleDesktop(); DesktopToggled = !DesktopToggled; Thread.Sleep(800); } finally { Marshal.FinalReleaseComObject(shell); } }
     static void Settle(int seconds, string phase) { for (int elapsed = 0; elapsed < seconds; elapsed += 30) { Thread.Sleep(Math.Min(30, seconds - elapsed) * 1000); Console.WriteLine($"STABILIZE {phase} {Math.Min(elapsed + 30, seconds)}/{seconds}s"); } }
     static nint OwnedWindow(string className) { nint handle = 0; while ((handle = FindWindowEx(0, handle, className, null)) != 0) { GetWindowThreadProcessId(handle, out uint owner); if (owner == ProcessId) return handle; } return 0; }
+    static nint OwnedManagementWindow(int processId)
+    {
+        for (nint handle = FindWindowEx(0,0,null!,null); handle != 0; handle = FindWindowEx(0,handle,null!,null))
+        {
+            GetWindowThreadProcessId(handle,out var owner);
+            if (owner != processId) continue;
+            var name = new System.Text.StringBuilder(256); GetClassName(handle,name,name.Capacity);
+            if (name.ToString() == "Tempos.Management" || name.ToString().StartsWith("Tempos.TestHost.Management.")) return handle;
+        }
+        return 0;
+    }
     static void Check(bool value, string name) { Results.Add(new { name, passed = value }); Console.WriteLine($"{(value ? "PASS" : "FAIL")} {name}"); if (!value) throw new Exception(name); }
     static void Skip(string name, string reason) { Results.Add(new { name, passed = (bool?)null, skipped = true, reason }); Console.WriteLine("SKIP " + name + ": " + reason); }
     static AutomationElement Element(int id) { if (Controls.TryGetValue(id, out var value)) return value; return Controls[id] = Window.FindFirstDescendant(c => c.ByAutomationId(id.ToString())) ?? throw new Exception($"Control {id} missing"); }
@@ -87,11 +98,18 @@ internal static partial class Program
         for (int i = 0; i < 100; i++)
         {
             Thread.Sleep(100);
-            var window = app.GetAllTopLevelWindows(Automation).FirstOrDefault(x => x.Title.Contains("위젯 설정"));
+            var handle = OwnedManagementWindow(app.ProcessId);
+            var window = handle != 0 ? Automation.FromHandle(handle).AsWindow() : null;
             if (window != null)
             {
                 Window = window;
-                try { Check(State()["apiMode"]?.GetValue<string>() == (LiveApis ? "live" : "mock"), "API boundary matches the requested test class"); }
+                try {
+                    var state = State();
+                    Check(state["apiMode"]?.GetValue<string>() == (LiveApis ? "live" : "mock"), "API boundary matches the requested test class");
+                    if (!LiveApis)
+                        Check(string.Equals(Path.GetFullPath(state["testDataDirectory"]!.GetValue<string>()), Path.GetFullPath(Data), StringComparison.OrdinalIgnoreCase),
+                              "TestHost uses only this run's isolated settings directory");
+                }
                 catch { PostMessage(window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); app.Dispose(); throw; }
                 return app;
             }
@@ -125,6 +143,7 @@ internal static partial class Program
         string exe = Path.Combine(Root, "out", "release", "Tempos.TestHost.exe");
         int exeArg = Array.IndexOf(args, "--exe"); if (exeArg >= 0 && exeArg + 1 < args.Length) exe = Path.GetFullPath(args[exeArg + 1]);
         App? app = null; Automation = new UIA3Automation();
+        var protectedProfile = new InstalledProfileSnapshot();
         try
         {
             if (args.Contains("--installer")) { InstallerLifecycle(exe); return 0; }
@@ -137,6 +156,8 @@ internal static partial class Program
             if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
                 throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
             app = Start(exe);
+            if (args.Contains("--isolation")) { Isolation(ref app, exe); return 0; }
+            if (args.Contains("--edit-mode")) { EditModeCycles(ref app, exe); return 0; }
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
             if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, !LiveApis || args.Contains("--allow-location-to-open-meteo")); return 0; }
@@ -323,7 +344,9 @@ internal static partial class Program
         {
             if (DesktopToggled) { try { ToggleDesktop(); } catch { } }
             if (app != null) { try { var dialog = OwnedWindow("#32770"); if (dialog != 0) { PostMessage(dialog, 0x10, 0, 0); Thread.Sleep(200); } PostMessage(Window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); } catch { } app.Dispose(); }
+            bool protectedProfileUnchanged = protectedProfile.Verify();
             Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", testClass = args.Contains("--installer") ? "installer-lifecycle" : LiveApis ? "live-api-integration" : "e2e", apiMode = args.Contains("--installer") ? "not-exercised" : LiveApis ? "live" : "mock", systemMode = args.Contains("--installer") ? "clock-only" : Live || LiveApis ? "real" : "fixture", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            if (!protectedProfileUnchanged) throw new InvalidOperationException("Installed profile changed during E2E; results recorded without restoring or overwriting user changes.");
         }
     }
 }

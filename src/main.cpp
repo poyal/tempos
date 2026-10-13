@@ -1,4 +1,5 @@
 #include "app.h"
+#include "test_isolation.h"
 #include <commctrl.h>
 #include <shellapi.h>
 #include <roapi.h>
@@ -31,13 +32,23 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
     LocalFree(argv);
   std::wstring mutexName = L"Local\\Tempos.Desktop";
 #ifdef TEMPOS_TEST_HOST
-  mutexName += L".Test." + std::to_wstring(std::hash<std::wstring>{}(root.wstring()));
+  // Test binaries must never fall back to the installed user's profile.
+  try {
+    if (!tempos::isolatedTestProfile(root)) {
+      RoUninitialize();
+      return 64;
+    }
+    mutexName += L".Test." + std::to_wstring(std::hash<std::wstring>{}(tempos::testProfileIdentity(root)));
+  } catch (...) {
+    RoUninitialize();
+    return 64;
+  }
 #endif
   HANDLE single = CreateMutexW(nullptr, FALSE, mutexName.c_str());
   if (GetLastError() == ERROR_ALREADY_EXISTS) {
-    auto existing = FindWindowW(L"Tempos.Management", nullptr);
+    auto existing = FindWindowW(tempos::managementWindowClass(root).c_str(), nullptr);
     if (existing) {
-      ShowWindow(existing, SW_SHOW);
+      ShowWindowAsync(existing, SW_SHOW);
       SetForegroundWindow(existing);
     }
     if (single)
