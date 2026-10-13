@@ -21,6 +21,8 @@ Tempos E2E는 FlaUI.UIA3로 실제 Win32 앱을 조작하고 저장 JSON·프로
 
 ## 실행 준비
 
+README 화면 재촬영에는 `--ui-review`(위젯 37개 크기)와 `--readme`(설정·연동·백업의 실제 조작)를 사용한다. `--readme`는 예제 수집기와 목업 API만 허용하며 시작 등록은 테스트 레지스트리에서 수행한다. 원본은 실행별 `test-results`에 저장한다. 검토한 앱 영역만 `scripts/release-screenshots.cjs`로 수집하고 `scripts/verify-docs.cjs`로 문서 링크·크기별 개수·해시를 확인한다. [촬영 조건](screenshots.md#release-010).
+
 Windows 사용자 세션, .NET 10 SDK, Release 빌드가 필요하다. ASan 앱 검사에는 MSVC ASan 런타임 DLL 경로도 필요하다. 먼저 [개발 안내](development.md)에 따라 빌드한다.
 
 ```powershell

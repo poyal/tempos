@@ -1,0 +1,750 @@
+{
+  "version": "0.1.0",
+  "composedAt": "2026-10-13T12:37:08.485Z",
+  "conditions": {
+    "platform": "Windows 11 x64",
+    "api": "mock",
+    "data": "sample",
+    "dpi": 144,
+    "scale": 100,
+    "widgetBackgroundTransparency": 0,
+    "backdrop": "#edf4fa",
+    "composition": "native screenshots uniformly scaled; widget contents unedited"
+  },
+  "captures": [
+    {
+      "file": "clock-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-0-size-0.png",
+      "sha256": "1620b791ff5724c98e40472d744ad0b8e1747f858f8f9c86fd21435310895756",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "clock-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-0-size-1.png",
+      "sha256": "8b3721d3c5f643cc60ea3a5fb39bfff92639f980fe94a440767af04079d22307",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "clock-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-0-size-2.png",
+      "sha256": "2197b3b321a2d0a69ded862d883f5993148742151a3749510103fcbb6c54a0c2",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "clock-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-0-size-3.png",
+      "sha256": "1a7bd4a603772044b846bd96bc8be2b1e1156dbc2edc0a1cc41646a6a3a12861",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-1-size-0.png",
+      "sha256": "1bd017e88ef56367a15b8b2fcf35859136b6737ca274d68b4c570b0c679e0078",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-1-size-1.png",
+      "sha256": "9d375b0e05c75a4dfdb35d2946468f3bb7d8d751f7dbcacb47fe0f05b7485183",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-1-size-2.png",
+      "sha256": "7f8985a85a2b62df00318baa3534ae76769647715f4f249c83bb8117973866c8",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-1-size-3.png",
+      "sha256": "8a60551f50f01c3c6270606267386b8b725affa357f77fa5d0ef80e0b1451fe5",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "cpu-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-2-size-0.png",
+      "sha256": "39c6299c407bc0d0acb756da6fc5099a14c3ad8271203756c483c3030dbb2887",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "cpu-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-2-size-1.png",
+      "sha256": "decad8ff961c58a784bff129b1680e04ddbd929512eb728c507b71959efc6280",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "cpu-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-2-size-2.png",
+      "sha256": "8335ec824f91354f08b0613fef946147a12ae541f1f205ae47e29c28ecae0b32",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "cpu-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-2-size-3.png",
+      "sha256": "eba054689a838a053bf6bc32dd321b213583505e2079fd2d3fcab66bfa644039",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "gpu-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-3-size-0.png",
+      "sha256": "81cead45455865d7a7e301e6d3a880a909e97c3e0bdd87fe5b589839da71d214",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "gpu-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-3-size-1.png",
+      "sha256": "26b285fe4efbae8de1106ee34ebf8926ccf3425556a6674681cea664121b4401",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "gpu-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-3-size-2.png",
+      "sha256": "fc6dcd6fd79266a5f09cc240a56ffedaa34f502da663998c2229cfac57661b22",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "gpu-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-3-size-3.png",
+      "sha256": "bb9f5f9c0167939309af28466fcbfd4afbae7bd7accd5178b03e4fd843500ce3",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "memory-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-4-size-0.png",
+      "sha256": "0882ca965bfa3009e02f9f8061d1f35767204021802367135a745da754054198",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "memory-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-4-size-1.png",
+      "sha256": "e2df5356961051e90a6324e807d439e28121413f069dde4893768512d314cda7",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "memory-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-4-size-2.png",
+      "sha256": "69948ca0d7b5a90365334a4a3ac85526663924826f43a384d81239b582f450b8",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "memory-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-4-size-3.png",
+      "sha256": "ba0590045f9c7be2b7f4e1d7e7f48af4ad24ba80e7f901adefc296fe2fb901ac",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "system-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-5-size-0.png",
+      "sha256": "5f2ff3df83ef0bb1c3bcd45adfe37b3cfa8b6cf674724155c34b9c0e148ddbe9",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "system-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-5-size-1.png",
+      "sha256": "289d445a84f2de4bf69d07e60f497ae9a5fbe276bb75288818b7ffea2053288a",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "system-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-5-size-2.png",
+      "sha256": "b6845d3ea500aaf0f0011419fb12c2e6284860d06e58cfe2c668b9e5561ffb74",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "system-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-5-size-3.png",
+      "sha256": "b81d4d2ec0892a6d0a3cc1164f861f3d00b4502f4ae54b9b9a961c65a90f8465",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "network-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-6-size-0.png",
+      "sha256": "439ca04d16168b0a665397634eae90641510356f23d1ab6301bc4175cbb23be9",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "network-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-6-size-1.png",
+      "sha256": "c1490916815b35efd68f0b4fba91324f3c634ac2933a81d5431aff7afed93728",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "network-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-6-size-2.png",
+      "sha256": "d74b293f542c2264263f6b777a8a261ab3951a4f59f298542a59cf892c924585",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "network-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-6-size-3.png",
+      "sha256": "d70365a29fc0ab1c69591a32fbd0d45aa85b37a49020f63588096caba9fd0bd6",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "disk-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-7-size-0.png",
+      "sha256": "8224f3aa4bea688276479b71ad668c54e0acdd72a84b476eed65734cbc19e299",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "disk-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-7-size-1.png",
+      "sha256": "c9b058163d803c876f050bc98a3e32b0a9323cb1f25525ed4baa97c3af2ebdda",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "disk-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-7-size-2.png",
+      "sha256": "c843fa1f65f1e10c02f4f7188c68ea7c1bdd059ef592dc2036c2dbb645eed858",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "disk-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-7-size-3.png",
+      "sha256": "b9d666cca9d470a27f484005e5560213d4b3a8af8b4aee7c1bcefd2a9a0d2058",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "calendar-s.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-8-size-0.png",
+      "sha256": "5ee40654086f5e268269e10c959995297589e645d8a506544bb9163f842a10ef",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "calendar-slim.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-8-size-1.png",
+      "sha256": "ef521f215f1caf22209e19dc463513b0ab415f61ee99a9b7a6da81e8dd0c76e4",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "calendar-m.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-8-size-2.png",
+      "sha256": "4ec2ab7e7d6285accd25075c84688d85ca71c50d29d495e1f2e2b4f053051036",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "calendar-l.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-8-size-3.png",
+      "sha256": "a95d65a7ee714418ac4102a842e0ca5ac822a2498ade551e4741f934e62a1358",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "calendar-xl.png",
+      "source": "test-results/e2e-20261013-212118-249/design-kind-8-size-4.png",
+      "sha256": "92e7394fd39cd01cd6c380b148b11c98172fddcd9db389020ddfdaaa16517292",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-add-apply.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-add-apply.png",
+      "sha256": "9409ad509f3c52cd770922867ac2ec424f0123aadac3b63eee65894052844129",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-app-startup.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-app-startup.png",
+      "sha256": "ed9e39a9bb1b237009536d75e882440942da31aa63cf5c863ee3384ed612513c",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-arrange.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-arrange.png",
+      "sha256": "ba6bc4f4e2166b6289d4c9874315d5f4f159c9565019fd09952dd7b7f10def17",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-backup-exported.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-backup-exported.png",
+      "sha256": "92f29c182f5f77a9c6f0de000a2c39be4124e18b6a7555606e0867500f283dc6",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-backup-restored.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-backup-restored.png",
+      "sha256": "8bd9ef8d0a0b9cb1703758a7e50cfb0e27c07c4b817c3cdd6b87594c55314ba0",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-calendar-connected.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-calendar-connected.png",
+      "sha256": "41245e5704c4e82ae77944e61bc01b4c9bc0a21d665f397c83e8d6be968c9fdd",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-calendar-month.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-calendar-month.png",
+      "sha256": "0dc34d678d204e74bd5a919828eb4a06842c2e42190821a07c8e5063cd438c39",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-clock-options.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-clock-options.png",
+      "sha256": "92e7067a03b53c21ca7639b1ea85e9130dd9c084b8b263b40533d80e16b84ea9",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-diagnostics.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-diagnostics.png",
+      "sha256": "b457a15c15771d772eb8e9466f9d92a7a0023bdb1c4067c224eb30c182cecb2c",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-first-launch.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-first-launch.png",
+      "sha256": "c89f13ab662ff2eadb079488a3aebf2faa29a6781fa04f5e7d43c843ec41dbb4",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-location-applied.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-location-applied.png",
+      "sha256": "c7629490bba2d1a40e887d2560c6c30a9b5bd2b859b0d052ced89edfa0da9c78",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-network.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-network.png",
+      "sha256": "d55d9ee453332581210913bd89c234c83d7ecd031f4426e35c509d89dedfab15",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-system-options.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-system-options.png",
+      "sha256": "04f32d86b48414244985227590f7d0c32dc109788b74f1c93266ecebd094661c",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-weather-kma.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-weather-kma.png",
+      "sha256": "ac1f58ba477e495b976b4168c878d0c9fda0ee262594c470903cabc5c232db4f",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-weather-open-meteo.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-weather-open-meteo.png",
+      "sha256": "bf34aa8880b5b261c958cf0e883ad69f4db631dc248333accb8de2bbe8194cb9",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-weather-region.png",
+      "source": "test-results/e2e-20261013-213503-601/usage-weather-region.png",
+      "sha256": "0611e0a26dfc4fc6a64fc12806f7a152f6c86b5232a8d84bd6816f0088aa0a73",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "usage-arrange-widget.png",
+      "source": "test-results/e2e-20261013-213503-601/design-usage-arrange-widget.png",
+      "sha256": "79b1d0ddc20d37aab4380d78d9e085e63d5540082641304d0113ab454be74880",
+      "started": "2026-10-13T21:35:03.5962215+09:00",
+      "completed": "2026-10-13T21:36:33.5008557+09:00",
+      "mode": "--readme",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-clear.png",
+      "source": "test-results/e2e-20261013-212118-249/design-weather-scene-0.png",
+      "sha256": "7f8985a85a2b62df00318baa3534ae76769647715f4f249c83bb8117973866c8",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-rain.png",
+      "source": "test-results/e2e-20261013-212118-249/design-weather-scene-2.png",
+      "sha256": "9f1180d885863f549e8170e095750c425a86c7d220d7fa0464d32f43b990aa4e",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    },
+    {
+      "file": "weather-night.png",
+      "source": "test-results/e2e-20261013-212118-249/design-weather-scene-4.png",
+      "sha256": "43d17189aad4bfa0d1cf7155131ee64678a780fa5663266410a7e5fd455654fa",
+      "started": "2026-10-13T21:21:18.2449928+09:00",
+      "completed": "2026-10-13T21:24:05.2382847+09:00",
+      "mode": "--ui-review",
+      "apiMode": "mock",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A"
+    }
+  ],
+  "boards": [
+    {
+      "file": "overview.png",
+      "sha256": "2914fbf0fa9fbf21c4e2d15a53ee51e3469257175dd92de485b23d4fe31023ee",
+      "inputs": [
+        "clock-m.png",
+        "weather-m.png",
+        "cpu-m.png",
+        "gpu-m.png",
+        "memory-m.png",
+        "system-m.png",
+        "network-m.png",
+        "disk-m.png",
+        "calendar-m.png"
+      ]
+    },
+    {
+      "file": "clock-sizes.png",
+      "sha256": "19ac2feff40a157bb81aa417cde4da43fc2b174a65120bd4be5a31d0d04bf704",
+      "inputs": [
+        "clock-s.png",
+        "clock-slim.png",
+        "clock-m.png",
+        "clock-l.png"
+      ]
+    },
+    {
+      "file": "weather-sizes.png",
+      "sha256": "40c12597b9214ca8e067d447b187ab7826ea957d27f6075ebda743444ab68815",
+      "inputs": [
+        "weather-s.png",
+        "weather-slim.png",
+        "weather-m.png",
+        "weather-l.png"
+      ]
+    },
+    {
+      "file": "cpu-sizes.png",
+      "sha256": "8e818f20614b22a4e321c6d7b9fcaa4a244167af6c352e4554de2619e93e5707",
+      "inputs": [
+        "cpu-s.png",
+        "cpu-slim.png",
+        "cpu-m.png",
+        "cpu-l.png"
+      ]
+    },
+    {
+      "file": "gpu-sizes.png",
+      "sha256": "336659fe1bb3c0b321c11e41b1bd457527bd0547d821ed5d62b1f0165f4a3370",
+      "inputs": [
+        "gpu-s.png",
+        "gpu-slim.png",
+        "gpu-m.png",
+        "gpu-l.png"
+      ]
+    },
+    {
+      "file": "memory-sizes.png",
+      "sha256": "0f9cf3647e2e5b54b0e12ec8021492c489fae8440eb04141019db3c02aa71fd2",
+      "inputs": [
+        "memory-s.png",
+        "memory-slim.png",
+        "memory-m.png",
+        "memory-l.png"
+      ]
+    },
+    {
+      "file": "system-sizes.png",
+      "sha256": "7484bfb8f115c84718b88a01aa3407d6e0f1621747a24ccb7d8c720790331f2f",
+      "inputs": [
+        "system-s.png",
+        "system-slim.png",
+        "system-m.png",
+        "system-l.png"
+      ]
+    },
+    {
+      "file": "network-sizes.png",
+      "sha256": "8de51d585132fbc24319eece27f64c098891622f5e85cfabfc2244a8aa984348",
+      "inputs": [
+        "network-s.png",
+        "network-slim.png",
+        "network-m.png",
+        "network-l.png"
+      ]
+    },
+    {
+      "file": "disk-sizes.png",
+      "sha256": "16d1949ce478dc6e1ea832e54e7f64e557ce222bf1de8bb0b33cd93d15e2f6b6",
+      "inputs": [
+        "disk-s.png",
+        "disk-slim.png",
+        "disk-m.png",
+        "disk-l.png"
+      ]
+    },
+    {
+      "file": "calendar-sizes.png",
+      "sha256": "369bed68c62374d411bcb7a8c7971916690cae6d47e29b74cba3175c9e787f83",
+      "inputs": [
+        "calendar-s.png",
+        "calendar-slim.png",
+        "calendar-m.png",
+        "calendar-l.png"
+      ]
+    }
+  ]
+}

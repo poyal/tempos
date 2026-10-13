@@ -1,9 +1,9 @@
-param([Parameter(Mandatory)][string]$Results)
+param([Parameter(Mandatory)][string]$Results,[string]$Output='docs/assets/widgets-overview.png')
 $ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.Drawing
 $source=(Resolve-Path -LiteralPath $Results).Path
 $root=Split-Path $PSScriptRoot -Parent
-$output=Join-Path $root 'docs/assets/widgets-overview.png'
+$output=Join-Path $root $Output
 $bitmap=[Drawing.Bitmap]::new(1088,730)
 $graphics=[Drawing.Graphics]::FromImage($bitmap)
 $title=[Drawing.Font]::new('Malgun Gothic',24,[Drawing.FontStyle]::Bold)

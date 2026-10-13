@@ -1,33 +1,90 @@
-# Tempos 사용자 매뉴얼
+# Tempos
 
 Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 캘린더를 놓는 앱입니다. Tempos 계정이나 관리자 권한, .NET 설치 없이 사용할 수 있습니다. 설정은 PC의 `%LocalAppData%\Tempos`에 저장합니다.
 
 처음 사용하시면 **ZIP 압축 풀기 → 실행 → 트레이에서 설정 열기 → 위젯 배치 → 날씨 서비스 선택** 순서로 진행하세요.
 
-[![시계·날씨·캘린더·CPU·GPU·메모리·시스템 정보·네트워크·디스크의 실제 실행 예시](docs/assets/widgets-overview.png)](docs/assets/widgets-overview.png)
+**[Windows 11 x64 다운로드 · v0.1.0](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip)** · [릴리즈 노트](docs/releases/v0.1.0.md) · [SHA-256 확인](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip.sha256)
+
+[![시계·날씨·캘린더·CPU·GPU·메모리·시스템 정보·네트워크·디스크의 실제 실행 예시](docs/assets/v0.1.0/overview.png)](docs/assets/v0.1.0/overview.png)
 
 실제 앱의 위젯을 촬영용 예제 데이터로 실행한 화면입니다. 개인 계정·위치·실시간 측정값은 사용하지 않았습니다. 이미지를 누르면 크게 볼 수 있습니다. [크기별 화면과 촬영 조건](docs/screenshots.md).
 
-아래는 **배포 실행 파일에서 실제 Windows 메모리·네트워크 사용량을 수집한 화면**입니다. Windows 11에서 ZIP을 새로 풀어 검증했으며, 실제 수집에서 발견한 메모리 그래프 누락도 수정했습니다. [실행 결과와 전체 실측 화면](docs/validation/windows-2026-10-13/README.md).
+[위젯별 크기 보기](#gallery) · [설치](#install) · [화면과 종료](#window) · [위젯 배치](#widgets) · [표시 설정](#appearance) · [날씨](#weather) · [캘린더](#calendar) · [자동 시작](#startup) · [백업·업데이트](#backup) · [문제 해결](#help)
 
-<table>
-  <tr><th>실제 메모리 사용량</th><th>실제 전체 네트워크</th></tr>
-  <tr>
-    <td><img src="docs/validation/windows-2026-10-13/windows-live-kind-4.png" alt="실제 메모리 사용률과 정상 표시된 최근 60초 그래프" width="400"></td>
-    <td><img src="docs/validation/windows-2026-10-13/windows-live-kind-6.png" alt="실제 전체 네트워크의 수신·송신 속도와 그래프" width="400"></td>
-  </tr>
-</table>
+<a id="gallery"></a>
+## 나에게 맞는 크기로
 
-[설치](#install) · [화면과 종료](#window) · [위젯 배치](#widgets) · [표시 설정](#appearance) · [날씨](#weather) · [캘린더](#calendar) · [자동 시작](#startup) · [백업·업데이트](#backup) · [문제 해결](#help)
+9종 위젯의 **S · Slim · M · L**, 캘린더 전용 **XL**까지 37개 구성을 지원합니다. 아래 이미지는 같은 앱에서 촬영한 크기별 화면을 동일한 비율로 배치했습니다. 누르면 원본 크기로 열립니다. 캘린더 XL은 별도 배율입니다.
+
+### 시계
+
+아날로그 없이 시간과 날짜를 또렷하게. 초 표시, 12/24시간제와 시간대를 선택할 수 있습니다.
+
+[![시계 S·Slim·M·L: 크기에 따라 날짜와 디지털 시간을 배치한 실제 앱 화면](docs/assets/v0.1.0/clock-sizes.png)](docs/assets/v0.1.0/clock-sizes.png)
+
+### 날씨
+
+날씨와 낮밤에 맞춰 배경이 바뀝니다. 넓은 크기에서는 최저·최고와 시간별 예보를 함께 확인합니다.
+
+[![날씨 S·Slim·M·L: 지역·기온·날씨 아이콘과 시간별 예보](docs/assets/v0.1.0/weather-sizes.png)](docs/assets/v0.1.0/weather-sizes.png)
+
+### CPU
+
+현재 사용률을 바로 확인하고, L에서는 최근 60초의 그래프·평균·최대를 봅니다.
+
+[![CPU S·Slim·M·L: 사용률과 크기에 맞춘 그래프](docs/assets/v0.1.0/cpu-sizes.png)](docs/assets/v0.1.0/cpu-sizes.png)
+
+### GPU
+
+선택한 GPU의 사용량과 장치명을 CPU와 같은 구성으로 확인합니다.
+
+[![GPU S·Slim·M·L: 그래픽 사용률·장치명·사용량 추이](docs/assets/v0.1.0/gpu-sizes.png)](docs/assets/v0.1.0/gpu-sizes.png)
+
+### 메모리
+
+사용률과 사용 중인 용량을 함께 보고, L에서는 메모리 사용량의 변화를 추적합니다.
+
+[![메모리 S·Slim·M·L: 사용률·사용량과 전체 용량·60초 추이](docs/assets/v0.1.0/memory-sizes.png)](docs/assets/v0.1.0/memory-sizes.png)
+
+### 시스템 정보
+
+PC 이름, Windows 버전, CPU, GPU와 가동 시간을 크기에 맞게 정리합니다. 표시 항목도 고를 수 있습니다.
+
+[![시스템 정보 S·Slim·M·L: 간단한 PC 요약부터 전체 사양 목록까지](docs/assets/v0.1.0/system-sizes.png)](docs/assets/v0.1.0/system-sizes.png)
+
+### 네트워크
+
+기본값은 전체 네트워크입니다. 유선·무선의 수신과 송신을 합산하거나 장치를 따로 선택합니다.
+
+[![네트워크 S·Slim·M·L: 전체 네트워크의 수신·송신 속도와 그래프](docs/assets/v0.1.0/network-sizes.png)](docs/assets/v0.1.0/network-sizes.png)
+
+### 디스크
+
+S · Slim · M은 선택 볼륨의 여유 공간을, L은 전체 로컬 드라이브의 사용량과 여유 공간을 보여줍니다.
+
+[![디스크 S·Slim·M·L: 선택한 디스크와 전체 드라이브 목록 비교](docs/assets/v0.1.0/disk-sizes.png)](docs/assets/v0.1.0/disk-sizes.png)
+
+### 캘린더
+
+연결 없이 로컬 달력을 사용하고, Google 캘린더를 연결해 읽기 전용 일정을 함께 표시합니다.
+
+[![캘린더 S·Slim·M·L: 날짜·다가오는 일정·월간 달력](docs/assets/v0.1.0/calendar-sizes.png)](docs/assets/v0.1.0/calendar-sizes.png)
+
+[![캘린더 XL: 날짜 칸마다 종일·시간·여러 날 일정을 표시하는 1008×840 DIP 화면](docs/assets/v0.1.0/calendar-xl.png)](docs/assets/v0.1.0/calendar-xl.png)
+
+소개 이미지는 예제 데이터이며 성능 측정값이 아닙니다. [37개 원본과 촬영 조건](docs/screenshots.md#release-010) · [다운로드 후 열 수 있는 갤러리](docs/assets/v0.1.0/gallery.html) · [이전 실제 Windows 수집 화면과 검증](docs/validation/windows-2026-10-13/README.md).
 
 <a id="install"></a>
 ## 설치하고 실행하기
 
-1. 받은 `Tempos-<버전>-win-x64.zip`을 계속 사용할 폴더에 풉니다.
+1. [Windows ZIP](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip)을 내려받아 계속 사용할 폴더에 풉니다.
 2. **Tempos.exe**를 실행합니다. 실행 파일과 함께 들어 있는 **data** 폴더를 유지하세요.
 3. 바탕화면에 기본 위젯 다섯 개가 나타납니다. 작업표시줄 알림 영역의 **Tempos 아이콘**을 누르면 설정이 열립니다.
 
 현재는 ZIP을 풀어 실행하는 방식입니다. 앱 폴더를 옮겼다면 아래의 Windows 자동 시작 설정도 다시 등록하세요.
+
+[![처음 실행한 설정창: 기본 위젯 다섯 개와 위젯 탭](docs/assets/v0.1.0/usage-first-launch.png)](docs/assets/v0.1.0/usage-first-launch.png)
 
 <a id="window"></a>
 ## 화면과 종료 방법 익히기
@@ -52,6 +109,17 @@ Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 
 2. 왼쪽 목록에서 위젯을 선택합니다.
 3. 크기, 확대, 모니터 등 원하는 값을 고른 뒤 **적용**을 누릅니다.
 4. **정렬 모드**를 켜고 바탕화면의 위젯을 드래그합니다. 배치가 끝나면 정렬 모드를 끕니다.
+
+[![시계를 추가하고 M 크기로 적용한 위젯 설정 화면](docs/assets/v0.1.0/usage-add-apply.png)](docs/assets/v0.1.0/usage-add-apply.png)
+
+<details>
+<summary>정렬 모드를 켠 화면 보기</summary>
+
+[![정렬 모드를 켠 설정창과 상태 안내](docs/assets/v0.1.0/usage-arrange.png)](docs/assets/v0.1.0/usage-arrange.png)
+
+[![정렬 모드에서 이동할 수 있는 시계 위젯](docs/assets/v0.1.0/usage-arrange-widget.png)](docs/assets/v0.1.0/usage-arrange-widget.png)
+
+</details>
 
 같은 종류도 여러 개 만들 수 있으며 최대 64개까지 저장합니다. 화면에 놓을 공간이 없으면 추가나 크기 변경이 적용되지 않습니다. 크기를 줄이거나 기존 위젯을 옮겨 공간을 확보하세요.
 
@@ -104,11 +172,20 @@ Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 
 
 모니터가 연결되지 않으면 가능한 화면에 임시로 배치합니다. 원래 모니터와 저장 위치는 유지합니다.
 
+<details>
+<summary>12시간제와 시스템 정보 표시 항목 설정 보기</summary>
+
+[![시계를 선택했을 때 나타나는 12시간제 표시 옵션과 적용 버튼](docs/assets/v0.1.0/usage-clock-options.png)](docs/assets/v0.1.0/usage-clock-options.png)
+
+[![시스템 정보의 PC·Windows·CPU·GPU·가동 시간 표시 항목 선택](docs/assets/v0.1.0/usage-system-options.png)](docs/assets/v0.1.0/usage-system-options.png)
+
+</details>
+
 <table>
   <tr><th>시계 설정</th><th>네트워크 설정</th></tr>
   <tr>
-    <td><a href="docs/assets/final-settings-clock.png"><img src="docs/assets/final-settings-clock.png" alt="초 표시와 시간대만 나타나는 시계 위젯 설정" width="430"></a></td>
-    <td><a href="docs/assets/final-settings-network.png"><img src="docs/assets/final-settings-network.png" alt="그래프와 전체 네트워크 집계 대상을 선택하는 설정" width="430"></a></td>
+    <td><a href="docs/assets/v0.1.0/usage-add-apply.png"><img src="docs/assets/v0.1.0/usage-add-apply.png" alt="초 표시와 시간대만 나타나는 시계 위젯 설정" width="430"></a></td>
+    <td><a href="docs/assets/v0.1.0/usage-network.png"><img src="docs/assets/v0.1.0/usage-network.png" alt="그래프와 전체 네트워크 집계 대상을 선택하는 설정" width="430"></a></td>
   </tr>
 </table>
 
@@ -129,15 +206,31 @@ Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 
 
 **현재 위치 찾기**를 누르면 Windows 위치 기능으로 가까운 국내 지역을 한 번 선택합니다. **적용**하면 해당 지역을 계속 사용하며 위치를 자동 추적하지 않습니다. 위치 권한이 없거나 조회에 실패하면 기존 선택을 유지합니다.
 
-[![지역 목록과 현재 위치 찾기가 있는 날씨 설정](docs/assets/final-settings-weather.png)](docs/assets/final-settings-weather.png)
+<details>
+<summary>현재 위치로 지역을 한 번 선택하고 적용한 화면 보기</summary>
 
-![날씨 서비스 선택과 캘린더 연동 설정](docs/assets/weather-connections-open-meteo.png)
+[![현재 위치 찾기 후 부산 지역을 선택해 저장한 예제 화면](docs/assets/v0.1.0/usage-location-applied.png)](docs/assets/v0.1.0/usage-location-applied.png)
+
+촬영에서는 부산 목업 좌표를 사용했습니다. 실제 위치를 조회하거나 공개한 화면이 아닙니다.
+
+</details>
+
+[![지역 목록과 현재 위치 찾기가 있는 날씨 설정](docs/assets/v0.1.0/usage-weather-region.png)](docs/assets/v0.1.0/usage-weather-region.png)
+
+![날씨 서비스 선택과 캘린더 연동 설정](docs/assets/v0.1.0/usage-weather-open-meteo.png)
 
 *격리된 테스트 앱의 예제 화면입니다. 실제 개인 계정이나 인증키를 사용하지 않았습니다.*
 
 처음 설치하면 **Open-Meteo**를 사용합니다. 예전 설정으로 업데이트하면 **기상청** 선택을 유지합니다. 공급자를 바꿔도 저장한 기상청 키와 위젯 배치는 보존됩니다.
 
 **기상청 연결:** [API허브](https://apihub.kma.go.kr/)에서 본인 인증키를 발급받은 뒤, 기상청을 선택·적용하고 **기상청 API허브 인증키 → 날씨 인증키 저장**을 사용하세요. 공공데이터포털의 `ServiceKey`와는 다른 키입니다.
+
+<details>
+<summary>기상청 인증키 입력 화면 보기</summary>
+
+[![기상청 서비스 선택 후 활성화된 API허브 인증키 입력란](docs/assets/v0.1.0/usage-weather-kma.png)](docs/assets/v0.1.0/usage-weather-kma.png)
+
+</details>
 
 외부 요청은 기상청 최소 10분, Open-Meteo 최소 15분 간격입니다. 더 짧은 갱신 주기를 선택해도 중간에는 캐시를 사용합니다. 통신 실패 시 같은 서비스의 최근 자료에 갱신 지연을 표시하며 다른 서비스로 자동 전환하지 않습니다.
 
@@ -146,9 +239,9 @@ Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 
 <table>
   <tr><th>맑은 낮</th><th>비 오는 날</th><th>맑은 밤</th></tr>
   <tr>
-    <td><a href="docs/assets/final-weather-clear.png"><img src="docs/assets/final-weather-clear.png" alt="맑은 낮의 해와 배경" width="270"></a></td>
-    <td><a href="docs/assets/final-weather-rain.png"><img src="docs/assets/final-weather-rain.png" alt="비 오는 날의 구름과 강수 배경" width="270"></a></td>
-    <td><a href="docs/assets/final-weather-night.png"><img src="docs/assets/final-weather-night.png" alt="맑은 밤의 달과 별 배경" width="270"></a></td>
+    <td><a href="docs/assets/v0.1.0/weather-clear.png"><img src="docs/assets/v0.1.0/weather-clear.png" alt="맑은 낮의 해와 배경" width="270"></a></td>
+    <td><a href="docs/assets/v0.1.0/weather-rain.png"><img src="docs/assets/v0.1.0/weather-rain.png" alt="비 오는 날의 구름과 강수 배경" width="270"></a></td>
+    <td><a href="docs/assets/v0.1.0/weather-night.png"><img src="docs/assets/v0.1.0/weather-night.png" alt="맑은 밤의 달과 별 배경" width="270"></a></td>
   </tr>
 </table>
 
@@ -163,9 +256,13 @@ Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 
 4. 표시할 캘린더를 선택한 뒤 **캘린더 선택 저장**을 누릅니다.
 5. 일정은 캘린더 위젯에서 확인합니다. L/XL의 월 이동은 **위젯** 탭에서 **이전 달 / 오늘 / 다음 달**을 사용하세요.
 
-[![날짜 칸에 종일·시간 일정과 여러 날 일정을 표시하는 캘린더 XL](docs/assets/final-calendar-month.png)](docs/assets/final-calendar-month.png)
+[![Google 캘린더 연결 완료와 표시할 캘린더 선택 화면](docs/assets/v0.1.0/usage-calendar-connected.png)](docs/assets/v0.1.0/usage-calendar-connected.png)
 
-예제의 **기념일**은 종일 일정, **워크숍**은 여러 날에 걸친 일정입니다. 날짜 칸에 담기지 않는 일정은 **+N개**로 표시합니다.
+*연결 화면은 목업 계정입니다. 실제 사용 시 본인 OAuth 클라이언트로 브라우저에서 승인합니다.*
+
+[![이전 달·오늘·다음 달 버튼이 있는 캘린더 설정](docs/assets/v0.1.0/usage-calendar-month.png)](docs/assets/v0.1.0/usage-calendar-month.png)
+
+[위쪽 XL 예제](#gallery)의 **기념일**은 종일 일정, **워크숍**은 여러 날에 걸친 일정입니다. 날짜 칸에 담기지 않는 일정은 **+N개**로 표시합니다.
 
 Testing 상태의 Google 프로젝트는 테스트 사용자 등록과 토큰 만료 조건을 확인하세요. **연결 해제**는 PC의 토큰과 일정 캐시를 지웁니다. Google 계정의 접근 권한 철회는 계정 설정에서 따로 할 수 있습니다. [Google 공식 연결 안내](https://developers.google.com/identity/protocols/oauth2/native-app)
 
@@ -175,6 +272,8 @@ Testing 상태의 Google 프로젝트는 테스트 사용자 등록과 토큰 �
 1. **앱** 탭을 엽니다.
 2. **Windows 로그인 시 시작**을 체크합니다. 별도의 적용 버튼 없이 바로 저장됩니다.
 3. 다음 Windows 로그인 때 등록된 위치의 Tempos가 실행됩니다.
+
+[![앱 탭의 전체 테마·Windows 자동 시작·백업·데이터 폴더·종료 버튼](docs/assets/v0.1.0/usage-app-startup.png)](docs/assets/v0.1.0/usage-app-startup.png)
 
 앱을 완전히 종료해도 이 옵션은 유지됩니다. 체크를 해제해도 위젯 설정은 지워지지 않습니다. Windows 시작 앱 설정에서 실행을 차단한 경우에는 Windows 쪽 상태도 확인하세요.
 
@@ -188,6 +287,14 @@ Testing 상태의 Google 프로젝트는 테스트 사용자 등록과 토큰 �
 1. **앱 → 레이아웃 내보내기**를 누르고 JSON 파일을 저장합니다.
 2. 복원할 때 **레이아웃 가져오기**를 누르고 저장한 파일을 선택합니다.
 3. 가져오기는 현재 위젯 구성·테마·날씨 서비스 선택을 교체합니다. 가져온 위젯은 표시 상태로 열립니다.
+
+<table>
+  <tr><th>레이아웃 내보내기 완료</th><th>레이아웃 가져오기 완료</th></tr>
+  <tr>
+    <td><a href="docs/assets/v0.1.0/usage-backup-exported.png"><img src="docs/assets/v0.1.0/usage-backup-exported.png" alt="레이아웃을 JSON으로 저장한 후 완료 안내" width="430"></a></td>
+    <td><a href="docs/assets/v0.1.0/usage-backup-restored.png"><img src="docs/assets/v0.1.0/usage-backup-restored.png" alt="저장한 레이아웃을 가져온 후 완료 안내" width="430"></a></td>
+  </tr>
+</table>
 
 레이아웃에는 위젯별 설정과 날씨 서비스 선택이 들어갑니다. 인증키, Google 인증 정보, 일정 캐시, 자동 시작 등록과 숨김 상태는 포함하지 않습니다. 다른 PC나 Windows 사용자에서는 필요한 서비스를 다시 연결하세요.
 
@@ -213,5 +320,12 @@ Testing 상태의 Google 프로젝트는 테스트 사용자 등록과 토큰 �
 | Google 연결이 풀렸습니다 | 토큰 만료·권한 철회·Testing 프로젝트 조건을 확인하고 다시 연결하세요. |
 
 오류를 조사할 때는 **앱 → 진단 정보 저장**을 누릅니다. 데이터 폴더의 `diagnostics.json`에 창 배치·모니터·수집 상태가 기록됩니다. 인증키나 일정 제목은 포함하지 않습니다.
+
+<details>
+<summary>진단 정보를 저장한 화면 보기</summary>
+
+[![앱 탭에서 진단 정보를 저장한 후 안내 메시지](docs/assets/v0.1.0/usage-diagnostics.png)](docs/assets/v0.1.0/usage-diagnostics.png)
+
+</details>
 
 [문의·오류 신고](https://github.com/poyal/tempos/issues) · [상세 사용 안내](docs/user-guide.md) · [문서 모음](docs/README.md) · [실제 검증 범위](docs/verification.md) · [외부 구성요소와 자료](THIRD_PARTY_NOTICES.md)

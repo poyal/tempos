@@ -23,6 +23,8 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --sm
 
 ZIP에 실행 파일, `data/regions.json`, 사용자 README, docs, 외부 고지·라이선스가 포함되는지 확인한다. TestHost·개인 설정·캐시·키는 포함하지 않는다. 압축을 푼 실행 파일 SHA-256이 빌드한 Release 실행 파일과 같은지 확인한다.
 
+스크립트는 실행 파일의 버전과 ZIP 버전의 일치도 검사한다. README와 사용법 이미지는 ZIP 안에서 열 수 있게 포함하고, docs에서 참조하는 과거 디자인·개발 지침은 같은 릴리즈 태그의 저장소 링크로 변환한다. 패키징 후 `node scripts/verify-docs.cjs <압축 푼 앱 폴더>`로 문서·이미지 참조와 촬영 해시를 확인한다.
+
 위 E2E는 TestHost에서 외부 API 목업으로 실행한다. 압축을 푼 배포 앱의 실제 서비스 연결 검사는 사용자가 별도로 요청한 경우에만 `--integration-live-api --exe <압축푼폴더/Tempos.exe>`를 붙여 수행하고 실연동 결과로 기록한다. 목업 검사와 패키지 내용·해시 확인을 실제 API 연결 성공으로 표시하지 않는다.
 
 ## 보관과 게시

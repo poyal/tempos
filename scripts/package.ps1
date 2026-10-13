@@ -12,6 +12,20 @@ $folder=Join-Path $stage ('Tempos-'+$Version+'-win-x64')
 if($LASTEXITCODE){throw 'Package installation failed.'}
 Copy-Item -LiteralPath (Join-Path $root 'docs') -Destination $folder -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $root 'plan.md') -Destination (Join-Path $folder 'plan.md')
+# Historical design/source references stay online; the manual and its screenshots
+# are included locally. Avoid broken relative links without shipping source trees.
+foreach($doc in Get-ChildItem -LiteralPath (Join-Path $folder 'docs') -Recurse -File -Filter '*.md'){
+  $content=[IO.File]::ReadAllText($doc.FullName)
+  $rewritten=[regex]::Replace($content,'\]\((?<link>(?:\.\./)+(?:design/[^)#\s]+|AGENTS\.md))(?<anchor>#[^)]*)?\)',[Text.RegularExpressions.MatchEvaluator]{param($match)
+    $target=[IO.Path]::GetFullPath((Join-Path $doc.DirectoryName $match.Groups['link'].Value))
+    $relative=[IO.Path]::GetRelativePath($folder,$target).Replace('\','/')
+    if($relative.StartsWith('../')){throw 'Documentation reference escapes package root.'}
+    $escaped=($relative.Split('/') | ForEach-Object {[Uri]::EscapeDataString($_)}) -join '/'
+    return '](https://github.com/poyal/tempos/blob/v'+$Version+'/'+$escaped+$match.Groups['anchor'].Value+')'
+  })
+  if($content -ne $rewritten){[IO.File]::WriteAllText($doc.FullName,$rewritten,[Text.UTF8Encoding]::new($false))}
+}
+if((Get-Item -LiteralPath (Join-Path $folder 'Tempos.exe')).VersionInfo.ProductVersion -ne $Version.Split('-')[0]){throw 'Package version does not match executable resources.'}
 if(Test-Path (Join-Path $folder 'Tempos.TestHost.exe')){throw 'TestHost must not be distributed.'}
 $zip=Join-Path $artifactRoot ('Tempos-'+$Version+'-win-x64.zip')
 Compress-Archive -LiteralPath $folder -DestinationPath $zip -Force
