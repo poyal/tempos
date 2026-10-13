@@ -53,7 +53,7 @@ Open-Meteo의 작은 JSON 응답은 압축 협상 없이 받는다. 로컬 Windo
 
 - `out/`: 빌드별 실행 파일과 캐시.
 - `test-results/`: 실행별 E2E·성능 원본. 사용자 바탕화면이 포함될 수 있어 Git 제외.
-- `artifacts/`: 빌드·검사 로그, 배포 ZIP·해시. Git 제외.
+- `artifacts/`: 빌드·검사 로그, 배포 ZIP·설치 EXE·해시. Git 제외.
 - `docs/validation/`: 장기 보존할 검증 요약. 사용자 데이터와 키는 포함하지 않는다.
 - `docs/assets/`: 문서용으로 검토한 앱 영역 캡처.
 

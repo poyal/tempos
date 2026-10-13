@@ -2,9 +2,9 @@
 
 Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 캘린더를 놓는 앱입니다. Tempos 계정이나 관리자 권한, .NET 설치 없이 사용할 수 있습니다. 설정은 PC의 `%LocalAppData%\Tempos`에 저장합니다.
 
-처음 사용하시면 **ZIP 압축 풀기 → 실행 → 트레이에서 설정 열기 → 위젯 배치 → 날씨 서비스 선택** 순서로 진행하세요.
+처음 사용하시면 **설치 EXE 실행 → 설치 폴더 선택 → Tempos 실행 → 위젯 배치 → 날씨 서비스 선택** 순서로 진행하세요.
 
-**[Windows 11 x64 다운로드 · v0.1.0](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip)** · [릴리즈 노트](docs/releases/v0.1.0.md) · [SHA-256 확인](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip.sha256)
+**[Windows 11 x64 설치 EXE · v0.1.0](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.exe)** · [릴리즈 노트](docs/releases/v0.1.0.md) · [SHA-256 확인](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.exe.sha256) · [무설치 ZIP](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip)
 
 [![시계·날씨·캘린더·CPU·GPU·메모리·시스템 정보·네트워크·디스크의 실제 실행 예시](docs/assets/v0.1.0/overview.png)](docs/assets/v0.1.0/overview.png)
 
@@ -78,11 +78,18 @@ S · Slim · M은 선택 볼륨의 여유 공간을, L은 전체 로컬 드라�
 <a id="install"></a>
 ## 설치하고 실행하기
 
-1. [Windows ZIP](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip)을 내려받아 계속 사용할 폴더에 풉니다.
-2. **Tempos.exe**를 실행합니다. 실행 파일과 함께 들어 있는 **data** 폴더를 유지하세요.
-3. 바탕화면에 기본 위젯 다섯 개가 나타납니다. 작업표시줄 알림 영역의 **Tempos 아이콘**을 누르면 설정이 열립니다.
+1. [Tempos-0.1.0-win-x64.exe](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.exe)를 내려받아 실행합니다.
+2. 설치할 폴더를 선택하고 **설치**를 누릅니다. 기본 경로는 `%LocalAppData%\Programs\Tempos`이며 관리자 권한 없이 현재 사용자에게 설치합니다.
+3. **Tempos 실행**을 선택하고 **마침**을 누릅니다. 다음부터 시작 메뉴나 바탕화면의 **Tempos** 바로가기로 실행하세요.
+4. 바탕화면에 기본 위젯 다섯 개가 나타납니다. 작업표시줄 알림 영역의 **Tempos 아이콘**에서 설정을 다시 열 수 있습니다.
 
-현재는 ZIP을 풀어 실행하는 방식입니다. 앱 폴더를 옮겼다면 아래의 Windows 자동 시작 설정도 다시 등록하세요.
+| 설치 폴더 선택 | 설치 완료 |
+| --- | --- |
+| [![현재 사용자에게 설치할 폴더를 고르는 실제 Windows 설치 화면](docs/assets/installer-v0.1.0/installer-folder.png)](docs/assets/installer-v0.1.0/installer-folder.png) | [![설치를 마치고 Tempos를 실행하는 화면](docs/assets/installer-v0.1.0/installer-complete.png)](docs/assets/installer-v0.1.0/installer-complete.png) |
+
+실제 Windows 설치 화면입니다. 경로는 촬영용 예시이며, 테스트에서는 자동 실행을 끄고 별도 테스트 설정으로 실행했습니다. [설치 검증 기록](docs/validation/installer-v0.1.0.md).
+
+설치 없이 쓰려면 [ZIP](https://github.com/poyal/tempos/releases/download/v0.1.0/Tempos-0.1.0-win-x64.zip)을 풀고 **Tempos.exe**를 실행하세요. 함께 들어 있는 **data** 폴더를 유지합니다. 기존 ZIP에서 설치형으로 옮길 때도 위젯 설정은 유지하며, 자동 시작을 사용했다면 설치한 앱에서 다시 등록하세요.
 
 [![처음 실행한 설정창: 기본 위젯 다섯 개와 위젯 탭](docs/assets/v0.1.0/usage-first-launch.png)](docs/assets/v0.1.0/usage-first-launch.png)
 
@@ -301,10 +308,14 @@ Testing 상태의 Google 프로젝트는 테스트 사용자 등록과 토큰 �
 **같은 PC에서 업데이트**
 
 1. **Tempos 종료**로 앱을 완전히 종료합니다.
-2. 새 ZIP의 실행 파일과 `data` 폴더를 기존 앱 폴더에 교체합니다.
+2. 새 버전의 설치 EXE를 실행하고 기존 설치 폴더에 설치합니다. ZIP 사용자는 실행 파일과 `data` 폴더를 교체합니다.
 3. Tempos를 다시 실행해 저장된 위젯 구성을 확인합니다.
 
 설정은 앱 폴더와 별도의 `%LocalAppData%\Tempos`에 있으므로 같은 사용자·데이터 폴더로 실행하면 유지됩니다. **앱 → 데이터 폴더 열기**에서 확인할 수 있습니다. 설정 파일의 정상 백업도 보관하지만 기기 간 동기화 기능은 아닙니다.
+
+**제거**
+
+Tempos를 종료한 뒤 **Windows 설정 → 앱 → 설치된 앱 → Tempos → 제거**를 사용하세요. 설치 폴더의 **Uninstall Tempos.exe**로도 제거할 수 있습니다. 앱·바로가기·해당 설치본의 자동 시작 등록을 지우며 저장된 위젯 설정과 연동 정보는 유지합니다. 설치 폴더를 변경하려면 기존 설치를 제거한 후 새 폴더에 설치하세요.
 
 <a id="help"></a>
 ## 문제가 있을 때

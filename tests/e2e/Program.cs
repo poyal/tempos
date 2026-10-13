@@ -127,6 +127,7 @@ internal static partial class Program
         App? app = null; Automation = new UIA3Automation();
         try
         {
+            if (args.Contains("--installer")) { InstallerLifecycle(exe); return 0; }
             if (!LiveApis && !Path.GetFileName(exe).Equals("Tempos.TestHost.exe", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.");
             if (LiveApis && !Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase))
@@ -322,7 +323,7 @@ internal static partial class Program
         {
             if (DesktopToggled) { try { ToggleDesktop(); } catch { } }
             if (app != null) { try { var dialog = OwnedWindow("#32770"); if (dialog != 0) { PostMessage(dialog, 0x10, 0, 0); Thread.Sleep(200); } PostMessage(Window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); } catch { } app.Dispose(); }
-            Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", testClass = LiveApis ? "live-api-integration" : "e2e", apiMode = LiveApis ? "live" : "mock", systemMode = Live || LiveApis ? "real" : "fixture", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", testClass = args.Contains("--installer") ? "installer-lifecycle" : LiveApis ? "live-api-integration" : "e2e", apiMode = args.Contains("--installer") ? "not-exercised" : LiveApis ? "live" : "mock", systemMode = args.Contains("--installer") ? "clock-only" : Live || LiveApis ? "real" : "fixture", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
         }
     }
 }

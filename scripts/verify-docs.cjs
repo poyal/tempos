@@ -34,5 +34,16 @@ for(const entry of entries){
 }
 const pngs=fs.readdirSync(dir).filter(f=>f.endsWith('.png'));
 if(pngs.length!==entries.length||new Set(entries.map(e=>e.file)).size!==entries.length)failures.push('Untracked or duplicate release images');
+const installerDir=path.join(root,'docs/assets/installer-v0.1.0');
+let installerImages=0;
+if(fs.existsSync(installerDir)){
+  const installer=JSON.parse(fs.readFileSync(path.join(installerDir,'captures.json'),'utf8').replace(/^\uFEFF/,''));
+  for(const capture of installer.captures){
+    const bytes=fs.readFileSync(path.join(installerDir,capture.file));
+    if(crypto.createHash('sha256').update(bytes).digest('hex')!==capture.sha256)failures.push('Installer screenshot hash mismatch: '+capture.file);
+    installerImages++;
+  }
+  if(installerImages!==2)failures.push('Expected folder and completion installer screenshots');
+}
 if(failures.length){console.error(failures.join('\n'));process.exit(1);}
-console.log(`PASS ${files.length} documents, ${references} local references/anchors, ${entries.length} PNG hashes, 37 widget sizes, 17 usage captures`);
+console.log(`PASS ${files.length} documents, ${references} local references/anchors, ${entries.length} PNG hashes, 37 widget sizes, 17 usage captures, ${installerImages} installer captures`);

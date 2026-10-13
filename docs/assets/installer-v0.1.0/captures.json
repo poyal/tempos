@@ -1,0 +1,15 @@
+{
+  "sourceRun": "test-results/e2e-20261013-222101-492",
+  "type": "actual-windows-installer",
+  "conditions": "150% DPI; client area capture; example C:\\Apps\\Tempos displayed before restoring isolated install path; completion auto-run unchecked",
+  "captures": [
+    {
+      "file": "installer-complete.png",
+      "sha256": "bb0d5f348c04094a839e31b1d61ea48a7332104cdb7b172347cdd9d0d2e964ce"
+    },
+    {
+      "file": "installer-folder.png",
+      "sha256": "a544d062996389b307aa5535035d8f3629e7d643677d3e4940011d9a9a80d2f4"
+    }
+  ]
+}

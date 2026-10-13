@@ -16,4 +16,6 @@ MIT License. 원문 라이선스는 `third_party/nlohmann/LICENSE.MIT`입니다.
 
 ## 개발·테스트 도구
 
+Windows 설치 EXE는 [NSIS](https://nsis.sourceforge.io/) Unicode 도구로 만듭니다. 설치·제거 엔진은 zlib/libpng 라이선스, LZMA 압축 모듈은 Common Public License 1.0을 따릅니다. 배포한 도구의 전체 고지는 설치 폴더의 `licenses/NSIS.txt`에 포함합니다. Tempos의 설치 그림은 기존 앱 아이콘과 자체 생성 배경을 사용합니다.
+
 FlaUI.UIA3 5.0.0 (MIT), Microsoft .NET SDK 및 Windows/Visual Studio SDK는 개발과 테스트에 사용합니다. FlaUI와 .NET 런타임은 Tempos 배포 ZIP에 포함하지 않습니다. 각 도구의 라이선스는 해당 배포본과 패키지에 유지합니다.
