@@ -36,6 +36,7 @@ internal static partial class Program
     static string Root = "", Data = "";
     static int ProcessId;
     static bool Live;
+    static bool LiveApis;
     static bool DesktopToggled;
     static void ToggleDesktop() { dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application")!)!; try { shell.ToggleDesktop(); DesktopToggled = !DesktopToggled; Thread.Sleep(800); } finally { Marshal.FinalReleaseComObject(shell); } }
     static void Settle(int seconds, string phase) { for (int elapsed = 0; elapsed < seconds; elapsed += 30) { Thread.Sleep(Math.Min(30, seconds - elapsed) * 1000); Console.WriteLine($"STABILIZE {phase} {Math.Min(elapsed + 30, seconds)}/{seconds}s"); } }
@@ -81,19 +82,40 @@ internal static partial class Program
     static App Start(string exe, string? arguments = null)
     {
         Controls.Clear();
-        var app = App.Launch(new ProcessStartInfo(exe, (arguments ?? $"--data-dir \"{Data}\" --settings") + (Live ? " --live" : "")) { WorkingDirectory = Root, UseShellExecute = false });
+        var app = App.Launch(new ProcessStartInfo(exe, (arguments ?? $"--data-dir \"{Data}\" --settings") + (Live ? " --live-system" : "")) { WorkingDirectory = Root, UseShellExecute = false });
         ProcessId = app.ProcessId;
-        for (int i = 0; i < 100; i++) { Thread.Sleep(100); var windows = app.GetAllTopLevelWindows(Automation); var window = windows.FirstOrDefault(x => x.Title.Contains("위젯 설정")); if (window != null) { Window = window; return app; } if (app.HasExited) throw new Exception($"App exited before its settings window was created: {app.ExitCode:X8}"); }
+        for (int i = 0; i < 100; i++)
+        {
+            Thread.Sleep(100);
+            var window = app.GetAllTopLevelWindows(Automation).FirstOrDefault(x => x.Title.Contains("위젯 설정"));
+            if (window != null)
+            {
+                Window = window;
+                try { Check(State()["apiMode"]?.GetValue<string>() == (LiveApis ? "live" : "mock"), "API boundary matches the requested test class"); }
+                catch { PostMessage(window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); app.Dispose(); throw; }
+                return app;
+            }
+            if (app.HasExited) throw new Exception($"App exited before its settings window was created: {app.ExitCode:X8}");
+        }
         throw new Exception("Management window startup timeout");
     }
-    static void Quit(App app) { Tab(2); Button(1507); Check(WaitExit(app, 10000), "Clean process shutdown"); app.Dispose(); }
+    static void Quit(App app)
+    {
+        Tab(2); Button(1507); Check(WaitExit(app, 10000), "Clean process shutdown"); app.Dispose();
+        var calls = Path.Combine(Data, "api-mock-requests.jsonl");
+        if (!LiveApis && File.Exists(calls))
+            Check(File.ReadAllLines(calls).Select(line => JsonNode.Parse(line)!).All(c =>
+                c["transport"]!.GetValue<string>() == "mock" && c["matched"]!.GetValue<bool>()),
+                "No unregistered API requests or live fallback in E2E");
+    }
     [STAThread]
     static int Main(string[] args)
     {
         var started = DateTimeOffset.Now;
         System.Windows.Forms.Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         Root = Path.GetFullPath(args.Length > 0 ? args[0] : "."); Data = Path.Combine(Root, "test-results", "e2e-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + (args.Contains("--startup") ? " 시작 옵션" : "")); Directory.CreateDirectory(Data);
-        Live = args.Contains("--live-smoke");
+        Live = args.Contains("--live-smoke") || args.Contains("--windows-real") || args.Contains("--api-mock");
+        LiveApis = args.Contains("--integration-live-api");
         int savedLayoutArg = Array.IndexOf(args, "--saved-layout");
         if (savedLayoutArg >= 0)
         {
@@ -105,10 +127,19 @@ internal static partial class Program
         App? app = null; Automation = new UIA3Automation();
         try
         {
+            if (!LiveApis && !Path.GetFileName(exe).Equals("Tempos.TestHost.exe", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.");
+            if (LiveApis && !Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("Live API integration requires an explicit production Tempos.exe path.");
+            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--design" or "--startup"))
+                throw new ArgumentException("Mock-only suites cannot run as live API integration.");
+            if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
+                throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
             app = Start(exe);
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
-            if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, args.Contains("--allow-location-to-open-meteo")); return 0; }
+            if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, !LiveApis || args.Contains("--allow-location-to-open-meteo")); return 0; }
+            if (args.Contains("--api-mock")) { ApiMock(ref app, exe); return 0; }
             if (args.Contains("--ui-review")) { UiReview(ref app, exe); return 0; }
             if (args.Contains("--design")) { DesignAudit(ref app); return 0; }
             if (args.Contains("--weather")) { WeatherOptions(ref app, exe); return 0; }
@@ -125,7 +156,7 @@ internal static partial class Program
             {
                 Check(SendMessage(GetDlgItem(Window.Properties.NativeWindowHandle, 1314), 0x146, 0, 0) == 3837, "All 3837 packaged weather regions loaded");
                 var state = Diagnostic(); Check(File.Exists(Path.Combine(Data, "diagnostics.json")), "Diagnostic file created");
-                if (exeArg >= 0) { Check(!state["fixture"]!.GetValue<bool>(), "Packaged executable uses production providers"); Check(!File.Exists(Path.Combine(Path.GetDirectoryName(exe)!, "Tempos.TestHost.exe")), "Package excludes test host"); }
+                if (LiveApis) { Check(!state["fixture"]!.GetValue<bool>(), "Packaged executable uses production providers"); Check(!File.Exists(Path.Combine(Path.GetDirectoryName(exe)!, "Tempos.TestHost.exe")), "Package excludes test host"); }
                 Quit(app); app = null; return 0;
             }
             if (args.Contains("--interaction"))
@@ -290,7 +321,7 @@ internal static partial class Program
         {
             if (DesktopToggled) { try { ToggleDesktop(); } catch { } }
             if (app != null) { try { var dialog = OwnedWindow("#32770"); if (dialog != 0) { PostMessage(dialog, 0x10, 0, 0); Thread.Sleep(200); } PostMessage(Window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); } catch { } app.Dispose(); }
-            Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", testClass = LiveApis ? "live-api-integration" : "e2e", apiMode = LiveApis ? "live" : "mock", systemMode = Live || LiveApis ? "real" : "fixture", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
         }
     }
 }

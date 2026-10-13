@@ -27,7 +27,7 @@ target_link_libraries(Tempos.TestHost PRIVATE tempos_core d2d1 dwrite d3d11 dcom
 target_link_options(Tempos.TestHost PRIVATE /MANIFEST:EMBED /MANIFESTINPUT:${CMAKE_CURRENT_SOURCE_DIR}/resources/tempos.manifest)
 include(CTest)
 if(BUILD_TESTING)
-  add_executable(tempos_tests tests/core_tests.cpp tests/weather_tests.cpp)
+  add_executable(tempos_tests tests/core_tests.cpp tests/weather_tests.cpp tests/api_mock_tests.cpp)
   target_link_libraries(tempos_tests PRIVATE tempos_core)
   add_test(NAME core COMMAND tempos_tests)
 endif()

@@ -12,7 +12,8 @@ Event parseEvent(const Json &, const std::wstring &calendar, uint32_t color);
 std::string pkceChallenge(const std::string &verifier);
 class CalendarService {
 public:
-  CalendarService(Store &, HttpClient &, bool fixture = false);
+  using Authorize = std::function<void(const std::string &)>;
+  CalendarService(Store &, HttpClient &, bool fixture = false, Authorize authorize = {});
   Snapshot read(const Widget &, std::stop_token);
   void connect(std::stop_token);
   void disconnect();
@@ -26,6 +27,7 @@ private:
   Store &store_;
   HttpClient &http_;
   bool fixture_;
+  Authorize authorize_;
   mutable std::mutex mutex_;
   std::mutex requestMutex_;
   CalendarAccount account_;

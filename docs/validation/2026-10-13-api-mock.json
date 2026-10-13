@@ -1,0 +1,2553 @@
+{
+  "date": "2026-10-13",
+  "policy": "Real Windows E2E with mocked external APIs and location; live API integration is separate.",
+  "binarySha256": "3f20fe6a1f874368e111c4e2350d0550ac7d7330ddfda657d1168ccca689a295",
+  "runnerSha256": "d7e490e2c57d1d460884c420bfaf5d0fcce8ceade21c52a064f7ad7630cde15d",
+  "core": {
+    "passed": 202,
+    "executableSha256": "f7cbc4761d7391ca4336925de7ceaa8f2971e604a8e4a135ec7b718c452699c5",
+    "checks": [
+      "PASS 1 Real memory collector retains consecutive samples for the graph",
+      "PASS 2 Real memory history supplies valid average and maximum percentages",
+      "PASS 3 All-drive subscriptions ignore selected volume and stay separate from individual drives",
+      "PASS 4 Individual drive subscriptions retain distinct volume identity",
+      "PASS 5 All mounted local volumes are represented, including unavailable volumes",
+      "PASS 6 All-drive capacity agrees with single-volume capacity",
+      "PASS 7 All-drive capacity agrees with single-volume capacity",
+      "PASS 8 All-drive capacity agrees with single-volume capacity",
+      "PASS 9 All-drive capacity agrees with single-volume capacity",
+      "PASS 10 All-drive capacity agrees with single-volume capacity",
+      "PASS 11 All-drive capacity agrees with single-volume capacity",
+      "PASS 12 Opaque palette supports readable small white labels",
+      "PASS 13 Opaque palette supports readable small white labels",
+      "PASS 14 Opaque palette supports readable small white labels",
+      "PASS 15 Opaque palette supports readable small white labels",
+      "PASS 16 Opaque palette supports readable small white labels",
+      "PASS 17 Opaque palette supports readable small white labels",
+      "PASS 18 Opaque palette supports readable small white labels",
+      "PASS 19 Opaque palette supports readable small white labels",
+      "PASS 20 Opaque palette supports readable small white labels",
+      "PASS 21 GPU process instances share case-insensitive engine identity",
+      "PASS 22 GPU total counters excluded",
+      "PASS 23 One-time location selects nearest region",
+      "PASS 24 Island location selects local region",
+      "PASS 25 Overseas location does not silently select Korea",
+      "PASS 26 Invalid location rejected",
+      "PASS 27 Aggregate network primes existing counters",
+      "PASS 28 Aggregate network sums receive and send rates independently",
+      "PASS 29 Duplicate adapter is not double counted",
+      "PASS 30 New adapter does not create a lifetime-counter spike",
+      "PASS 31 Counter reset primes a fresh baseline",
+      "PASS 32 Disconnected total is unavailable rather than stale",
+      "PASS 33 Reconnected adapter does not reuse disconnected baseline",
+      "PASS 34 ratio scale",
+      "PASS 35 grid negative snap",
+      "PASS 36 gutter collision",
+      "PASS 37 gutter boundary",
+      "PASS 38 free placement",
+      "PASS 39 no space",
+      "PASS 40 time weighted history",
+      "PASS 41 invalid not zero",
+      "PASS 42 history bounded",
+      "PASS 43 October calendar grid",
+      "PASS 44 four week month",
+      "PASS 45 six week month",
+      "PASS 46 timezone offset",
+      "PASS 47 rfc roundtrip",
+      "PASS 48 local date",
+      "PASS 49 midnight seconds",
+      "PASS 50 multi day membership",
+      "PASS 51 exclusive all day end",
+      "PASS 52 multi-day bars split at week boundaries",
+      "PASS 53 malformed timestamp suffix rejected",
+      "PASS 54 fractional seconds accepted",
+      "PASS 55 observation publication",
+      "PASS 56 ultra publication",
+      "PASS 57 forecast previous date",
+      "PASS 58 weather missing categories",
+      "PASS 59 weather true zero",
+      "PASS 60 KMA conditions",
+      "PASS 61 KMA error code",
+      "PASS 62 RFC7636 test vector",
+      "PASS 63 calendar parsing",
+      "PASS 64 widget persistence",
+      "PASS 65 XL calendar only",
+      "PASS 66 malformed calendar month in imported layout rejected",
+      "PASS 67 export excludes credentials",
+      "PASS 68 duplicate IDs rejected",
+      "PASS 69 Seoul sun plausibility",
+      "PASS 70 atomic settings save",
+      "PASS 71 settings read",
+      "PASS 72 lock settings file for failed-write regression",
+      "PASS 73 failed replace preserves complete previous settings",
+      "PASS 74 failed save removes temporary file",
+      "PASS 75 save succeeds after file lock released",
+      "PASS 76 backup contains previous valid settings",
+      "PASS 77 corrupt settings restore entire valid backup with warning",
+      "PASS 78 corrupt source retained for diagnosis",
+      "PASS 79 explicit empty layout stays empty",
+      "PASS 80 64 widgets round trip",
+      "PASS 81 65 widgets rejected",
+      "PASS 82 malformed timezone offset rejected",
+      "PASS 83 malformed timezone offset rejected",
+      "PASS 84 malformed timezone offset rejected",
+      "PASS 85 malformed timezone offset rejected",
+      "PASS 86 malformed timezone offset rejected",
+      "PASS 87 malformed all-day date rejected",
+      "PASS 88 malformed all-day date rejected",
+      "PASS 89 malformed all-day date rejected",
+      "PASS 90 malformed all-day date rejected",
+      "PASS 91 DPAPI save",
+      "PASS 92 DPAPI read",
+      "PASS 93 DPAPI ciphertext",
+      "PASS 94 DPAPI erase",
+      "PASS 95 calendar mutation blocked",
+      "PASS 96 current timestamp bounded formatting",
+      "PASS 97 local midnight bounded formatting",
+      "PASS 98 negative hour rejected",
+      "PASS 99 event datetime requires offset",
+      "PASS 100 DST day length",
+      "PASS 101 negative-origin mixed-DPI monitor retained",
+      "PASS 102 disconnected monitor collision-free relocation",
+      "PASS 103 temporary relocation preserves original layout",
+      "PASS 104 oversized widget safely parked",
+      "PASS 105 KMA APIhub auth and GET",
+      "PASS 106 KMA APIhub auth and GET",
+      "PASS 107 KMA APIhub auth and GET",
+      "PASS 108 actual weather parser distinguishes freezing zero and snow",
+      "PASS 109 same-grid weather cache avoids repeat requests",
+      "PASS 110 restart restores offline weather without inventing values",
+      "PASS 111 XML gateway error handled",
+      "PASS 112 invalid KMA key explained",
+      "PASS 113 KMA key is encoded exactly once",
+      "PASS 114 KMA key is encoded exactly once",
+      "PASS 115 KMA pagination combines complete observations",
+      "PASS 116 KMA key is encoded exactly once",
+      "PASS 117 KMA key is encoded exactly once",
+      "PASS 118 failed KMA page cannot replace complete snapshot",
+      "PASS 119 KMA Retry-After suppresses repeated calls",
+      "PASS 120 calendar HTTP read-only",
+      "PASS 121 calendar HTTP read-only",
+      "PASS 122 calendar atomic pagination",
+      "PASS 123 calendar HTTP read-only",
+      "PASS 124 calendar HTTP read-only",
+      "PASS 125 failed page retains full previous snapshot",
+      "PASS 126 disconnect clears private cache and token",
+      "PASS 127 disconnected calendar renders local dates only",
+      "PASS 128 expired refresh token prompts reconnect",
+      "PASS 129 late calendar response cannot resurrect disconnected data",
+      "PASS 130 Unregistered mock API endpoint fails without live fallback",
+      "PASS 131 Registered weather mock uses the normal HTTP boundary",
+      "PASS 132 Mock OAuth loopback callback and token exchange connect the real calendar service",
+      "PASS 133 Mock calendar pagination passes through the real event parser",
+      "PASS 134 Malformed mock response preserves the actual private cache",
+      "PASS 135 Mock API disconnect removes account secrets and event cache",
+      "PASS 136 Mock authorization denial does not connect an account",
+      "PASS 137 New profiles default to Open-Meteo",
+      "PASS 138 Legacy profiles retain KMA",
+      "PASS 139 Weather provider survives layout export/import",
+      "PASS 140 Unsupported provider rejected without silent fallback",
+      "PASS 141 Open-Meteo KST daily boundary and next four hours across midnight",
+      "PASS 142 Open-Meteo Celsius and metres-per-second units",
+      "PASS 143 Documented WMO code mapped",
+      "PASS 144 Documented WMO code mapped",
+      "PASS 145 Documented WMO code mapped",
+      "PASS 146 Documented WMO code mapped",
+      "PASS 147 Documented WMO code mapped",
+      "PASS 148 Documented WMO code mapped",
+      "PASS 149 Documented WMO code mapped",
+      "PASS 150 Documented WMO code mapped",
+      "PASS 151 Documented WMO code mapped",
+      "PASS 152 Documented WMO code mapped",
+      "PASS 153 Documented WMO code mapped",
+      "PASS 154 Documented WMO code mapped",
+      "PASS 155 Documented WMO code mapped",
+      "PASS 156 Documented WMO code mapped",
+      "PASS 157 Documented WMO code mapped",
+      "PASS 158 Documented WMO code mapped",
+      "PASS 159 Documented WMO code mapped",
+      "PASS 160 Documented WMO code mapped",
+      "PASS 161 Documented WMO code mapped",
+      "PASS 162 Documented WMO code mapped",
+      "PASS 163 Documented WMO code mapped",
+      "PASS 164 Documented WMO code mapped",
+      "PASS 165 Documented WMO code mapped",
+      "PASS 166 Documented WMO code mapped",
+      "PASS 167 Documented WMO code mapped",
+      "PASS 168 Documented WMO code mapped",
+      "PASS 169 Documented WMO code mapped",
+      "PASS 170 Documented WMO code mapped",
+      "PASS 171 Documented WMO code mapped",
+      "PASS 172 Unknown WMO code remains unknown",
+      "PASS 173 Missing optional values are not zero",
+      "PASS 174 Malformed, stale or unordered Open-Meteo data rejected",
+      "PASS 175 Malformed, stale or unordered Open-Meteo data rejected",
+      "PASS 176 Malformed, stale or unordered Open-Meteo data rejected",
+      "PASS 177 Malformed, stale or unordered Open-Meteo data rejected",
+      "PASS 178 Malformed, stale or unordered Open-Meteo data rejected",
+      "PASS 179 Weather test credential protected",
+      "PASS 180 KMA credentials never sent to Open-Meteo",
+      "PASS 181 Open-Meteo request fixes units and Korean timezone",
+      "PASS 182 Open-Meteo request shared within fifteen-minute cache",
+      "PASS 183 Open-Meteo protected disk cache survives restart",
+      "PASS 184 KMA credentials never sent to Open-Meteo",
+      "PASS 185 Open-Meteo request fixes units and Korean timezone",
+      "PASS 186 Rate limit preserves same-provider snapshot",
+      "PASS 187 Rate limit applies across locations without mixing caches",
+      "PASS 188 Retry-After exceeds normal retry interval",
+      "PASS 189 KMA credentials never sent to Open-Meteo",
+      "PASS 190 Open-Meteo request fixes units and Korean timezone",
+      "PASS 191 Server failure retains same-provider data",
+      "PASS 192 KMA credentials never sent to Open-Meteo",
+      "PASS 193 Open-Meteo request fixes units and Korean timezone",
+      "PASS 194 Expired weather values removed after twenty-four hours",
+      "PASS 195 Provider operations preserve KMA key",
+      "PASS 196 Subscription keys include provider",
+      "PASS 197 Late old-provider response discarded and duplicate widgets share requests",
+      "PASS 198 Startup command preserves Unicode, spaces and trailing backslash",
+      "PASS 199 Startup registration survives object recreation",
+      "PASS 200 Startup disable is persistent and idempotent",
+      "PASS 201 Malformed startup registry value is not shown as enabled",
+      "PASS 202 Startup registry failure propagates to caller"
+    ]
+  },
+  "finalModes": [
+    {
+      "mode": "--api-mock",
+      "source": "test-results/e2e-20261013-210514-312",
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--weather",
+      "source": "test-results/e2e-20261013-210649-054",
+      "passed": 63,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--windows-real",
+      "source": "test-results/e2e-20261013-210859-537",
+      "passed": 40,
+      "failed": 0,
+      "skipped": 1
+    }
+  ],
+  "totals": {
+    "passed": 161,
+    "failed": 0,
+    "skipped": 1
+  },
+  "productionLaunchGuard": {
+    "passed": true,
+    "source": "test-results/e2e-20261013-210449-986",
+    "expectedExitCode": 1,
+    "appLaunched": false,
+    "result": {
+      "started": "2026-10-13T21:04:49.9829868+09:00",
+      "completed": "2026-10-13T21:04:50.2858035+09:00",
+      "mode": "--smoke",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\review\\Tempos.exe",
+      "executableSha256": "F069C85DCAC900FF1DBCF0874BAD7E938187C074CD692BF341F2D97E0469B820",
+      "results": [
+        {
+          "name": "Unhandled test failure: E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.",
+          "passed": false
+        }
+      ]
+    }
+  },
+  "attempts": [
+    {
+      "source": "test-results/e2e-20261013-205738-994",
+      "phase": "initial",
+      "exitCode": 1,
+      "started": "2026-10-13T20:57:38.9903197+09:00",
+      "completed": "2026-10-13T20:57:41.1904795+09:00",
+      "mode": "--api-mock",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "real",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "FF97BEAF1C1995B705BD6AF1405EE42BF984693BAA8AEAC18A356E33A7C52539",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Mock API E2E retains real Windows system collectors",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Denied mock authorization gives a connection error",
+          "passed": true
+        },
+        {
+          "name": "Denied authorization saves no refresh token",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Mock OAuth exchange and calendar-list parser populate the connection UI",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 2",
+          "passed": true
+        },
+        {
+          "name": "Parsed mock event reaches widget accessibility output",
+          "passed": false
+        },
+        {
+          "name": "Unhandled test failure: Parsed mock event reaches widget accessibility output",
+          "passed": false
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-exchange",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/users/me/calendarList",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        }
+      ],
+      "passed": 10,
+      "failed": 2,
+      "skipped": 0
+    },
+    {
+      "source": "test-results/e2e-20261013-205922-021",
+      "phase": "initial",
+      "exitCode": 0,
+      "started": "2026-10-13T20:59:22.0178537+09:00",
+      "completed": "2026-10-13T21:00:56.7081895+09:00",
+      "mode": "--api-mock",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "real",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "FF97BEAF1C1995B705BD6AF1405EE42BF984693BAA8AEAC18A356E33A7C52539",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Mock API E2E retains real Windows system collectors",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Denied mock authorization gives a connection error",
+          "passed": true
+        },
+        {
+          "name": "Denied authorization saves no refresh token",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Mock OAuth exchange and calendar-list parser populate the connection UI",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 2",
+          "passed": true
+        },
+        {
+          "name": "Parsed mock event reaches widget accessibility output",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after timeout",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after unauthorized",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after forbidden",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after quota",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after server-error",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after malformed",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 0",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock expired refresh token is removed",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 1",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 0",
+          "passed": true
+        },
+        {
+          "name": "Disconnect clears mock account credentials and cached events",
+          "passed": true
+        },
+        {
+          "name": "Every API request matched the mock contract",
+          "passed": true
+        },
+        {
+          "name": "Both OAuth exchange and refresh use mock APIs",
+          "passed": true
+        },
+        {
+          "name": "Mock credentials do not leak into settings JSON",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-exchange",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/users/me/calendarList",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "timeout",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "unauthorized",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "forbidden",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "quota",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "server-error",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "malformed",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "empty",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "unauthorized",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-exchange",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/users/me/calendarList",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        }
+      ],
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "source": "test-results/e2e-20261013-210056-819",
+      "phase": "initial",
+      "exitCode": 0,
+      "started": "2026-10-13T21:00:56.81612+09:00",
+      "completed": "2026-10-13T21:03:07.1083341+09:00",
+      "mode": "--weather",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "FF97BEAF1C1995B705BD6AF1405EE42BF984693BAA8AEAC18A356E33A7C52539",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "New profile uses Open-Meteo",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Open-Meteo needs no key and explains free-use condition",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "KMA credential input enabled",
+          "passed": true
+        },
+        {
+          "name": "KMA key stored as protected file",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Switching provider preserves encrypted KMA credential",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Two weather widgets share one subscription",
+          "passed": true
+        },
+        {
+          "name": "Style-only changes do not request weather",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "Global provider and both weather widgets survive normal restart",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Saved-profile process really terminated",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Committed settings survive forced process termination",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "Layout export includes provider",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Save failure preserves provider and restores selector",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 2, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 2, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 2, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 45",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 95",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 71",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 999",
+          "passed": true
+        },
+        {
+          "name": "Delayed old-provider request started",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 0",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 1",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 2",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 3",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "Legacy settings without provider retain KMA",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        }
+      ],
+      "passed": 60,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "source": "test-results/e2e-20261013-210307-212",
+      "phase": "initial",
+      "exitCode": 0,
+      "started": "2026-10-13T21:03:07.20827+09:00",
+      "completed": "2026-10-13T21:04:15.1711952+09:00",
+      "mode": "--windows-real",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "real",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "FF97BEAF1C1995B705BD6AF1405EE42BF984693BAA8AEAC18A356E33A7C52539",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Windows suite uses the executable required by its API boundary",
+          "passed": true
+        },
+        {
+          "name": "Actual Windows system collectors are active",
+          "passed": true
+        },
+        {
+          "name": "App runs in the interactive Windows user session",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 2",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 3",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 4",
+          "passed": true
+        },
+        {
+          "name": "Actual network uses aggregate interface counters",
+          "passed": true
+        },
+        {
+          "name": "Actual aggregate receive/send rates are available",
+          "passed": true
+        },
+        {
+          "name": "Large disk widget includes every ready local drive reported by Windows",
+          "passed": true
+        },
+        {
+          "name": "Actual disk capacity is available",
+          "passed": true
+        },
+        {
+          "name": "Large disk hides the individual volume selector",
+          "passed": true
+        },
+        {
+          "name": "Weather uses the default Open-Meteo provider",
+          "passed": true
+        },
+        {
+          "name": "Mock Open-Meteo response reaches the actual weather widget",
+          "passed": true
+        },
+        {
+          "name": "Weather is deterministic while system collectors remain real",
+          "passed": true
+        },
+        {
+          "name": "Local calendar is accessible without a Google account",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-4: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Actual memory history renders a visible graph line",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-6: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-8: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "OS SendInput drag",
+          "passed": null,
+          "skipped": true,
+          "reason": "Windows input desktop did not accept an observable cursor move; native-message tests are separate."
+        },
+        {
+          "name": "One-time location request completes without blocking the UI",
+          "passed": true
+        },
+        {
+          "name": "Location lookup does not save before Apply",
+          "passed": true
+        },
+        {
+          "name": "Location selection is saved with Apply",
+          "passed": true
+        },
+        {
+          "name": "Mock location selects the expected region",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Restart preserves all settings including location selection",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "Restart still uses actual system collectors",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        }
+      ],
+      "passed": 38,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "source": "test-results/e2e-20261013-210514-312",
+      "phase": "final-policy",
+      "exitCode": 0,
+      "started": "2026-10-13T21:05:14.3081644+09:00",
+      "completed": "2026-10-13T21:06:48.9413002+09:00",
+      "mode": "--api-mock",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "real",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "3F20FE6A1F874368E111C4E2350D0550AC7D7330DDFDA657D1168CCCA689A295",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Mock API E2E retains real Windows system collectors",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Denied mock authorization gives a connection error",
+          "passed": true
+        },
+        {
+          "name": "Denied authorization saves no refresh token",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Mock OAuth exchange and calendar-list parser populate the connection UI",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 2",
+          "passed": true
+        },
+        {
+          "name": "Parsed mock event reaches widget accessibility output",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after timeout",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after unauthorized",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after forbidden",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after quota",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after server-error",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 2, events 2",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar preserves cached events after malformed",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 0",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Mock expired refresh token is removed",
+          "passed": true
+        },
+        {
+          "name": "Mock authorization completes without an external browser",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 1",
+          "passed": true
+        },
+        {
+          "name": "Mock calendar reaches UI: status 1, events 0",
+          "passed": true
+        },
+        {
+          "name": "Disconnect clears mock account credentials and cached events",
+          "passed": true
+        },
+        {
+          "name": "Every API request matched the mock contract",
+          "passed": true
+        },
+        {
+          "name": "Both OAuth exchange and refresh use mock APIs",
+          "passed": true
+        },
+        {
+          "name": "Mock credentials do not leak into settings JSON",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-exchange",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/users/me/calendarList",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "pages",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "timeout",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "unauthorized",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "forbidden",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "quota",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "server-error",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "malformed",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-refresh",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "empty",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "unauthorized",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-browser-callback",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth2.googleapis.com/token",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "oauth-exchange",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/users/me/calendarList",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "www.googleapis.com/calendar/v3/calendars/mock-calendar/events",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        }
+      ],
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "source": "test-results/e2e-20261013-210649-054",
+      "phase": "final-policy",
+      "exitCode": 0,
+      "started": "2026-10-13T21:06:49.0510975+09:00",
+      "completed": "2026-10-13T21:08:59.4355904+09:00",
+      "mode": "--weather",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "3F20FE6A1F874368E111C4E2350D0550AC7D7330DDFDA657D1168CCCA689A295",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "New profile uses Open-Meteo",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Open-Meteo needs no key and explains free-use condition",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "KMA credential input enabled",
+          "passed": true
+        },
+        {
+          "name": "KMA key stored as protected file",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Switching provider preserves encrypted KMA credential",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Two weather widgets share one subscription",
+          "passed": true
+        },
+        {
+          "name": "Style-only changes do not request weather",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "Global provider and both weather widgets survive normal restart",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Saved-profile process really terminated",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Committed settings survive forced process termination",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "Layout export includes provider",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Save failure preserves provider and restores selector",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 2, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 2, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 2, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 45",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 95",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 71",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "WMO state reaches widget: 999",
+          "passed": true
+        },
+        {
+          "name": "Delayed old-provider request started",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: open-meteo, status 1, temperature 21",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 0",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 1",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 2",
+          "passed": true
+        },
+        {
+          "name": "Weather widget has no source label at size 3",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "All weather widgets: kma, status 1, temperature 18",
+          "passed": true
+        },
+        {
+          "name": "Legacy settings without provider retain KMA",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtNcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getUltraSrtFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        }
+      ],
+      "passed": 63,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "source": "test-results/e2e-20261013-210859-537",
+      "phase": "final-policy",
+      "exitCode": 0,
+      "started": "2026-10-13T21:08:59.5341299+09:00",
+      "completed": "2026-10-13T21:10:07.60659+09:00",
+      "mode": "--windows-real",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "real",
+      "executable": "out\\review\\Tempos.TestHost.exe",
+      "executableSha256": "3F20FE6A1F874368E111C4E2350D0550AC7D7330DDFDA657D1168CCCA689A295",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Windows suite uses the executable required by its API boundary",
+          "passed": true
+        },
+        {
+          "name": "Actual Windows system collectors are active",
+          "passed": true
+        },
+        {
+          "name": "App runs in the interactive Windows user session",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 2",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 3",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 4",
+          "passed": true
+        },
+        {
+          "name": "Actual network uses aggregate interface counters",
+          "passed": true
+        },
+        {
+          "name": "Actual aggregate receive/send rates are available",
+          "passed": true
+        },
+        {
+          "name": "Large disk widget includes every ready local drive reported by Windows",
+          "passed": true
+        },
+        {
+          "name": "Actual disk capacity is available",
+          "passed": true
+        },
+        {
+          "name": "Large disk hides the individual volume selector",
+          "passed": true
+        },
+        {
+          "name": "Weather uses the default Open-Meteo provider",
+          "passed": true
+        },
+        {
+          "name": "Mock Open-Meteo response reaches the actual weather widget",
+          "passed": true
+        },
+        {
+          "name": "Weather is deterministic while system collectors remain real",
+          "passed": true
+        },
+        {
+          "name": "Local calendar is accessible without a Google account",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-4: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Actual memory history renders a visible graph line",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-6: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-8: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "OS SendInput drag",
+          "passed": null,
+          "skipped": true,
+          "reason": "Windows input desktop did not accept an observable cursor move; native-message tests are separate."
+        },
+        {
+          "name": "One-time location request completes without blocking the UI",
+          "passed": true
+        },
+        {
+          "name": "Location lookup does not save before Apply",
+          "passed": true
+        },
+        {
+          "name": "Location selection is saved with Apply",
+          "passed": true
+        },
+        {
+          "name": "Mock location selects the expected region",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Restart preserves all settings including location selection",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "Restart still uses actual system collectors",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        }
+      ],
+      "requests": [
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        },
+        {
+          "endpoint": "api.open-meteo.com/v1/forecast",
+          "matched": true,
+          "mode": "normal",
+          "transport": "mock"
+        }
+      ],
+      "passed": 40,
+      "failed": 0,
+      "skipped": 1
+    }
+  ],
+  "location": {
+    "productionWinRtInvoked": false,
+    "apiMode": "mock",
+    "selected": true,
+    "previousSelectionRetainedOnFailure": false,
+    "coordinatesRecorded": false,
+    "regionNamePublished": false
+  },
+  "initialFailure": "The first API suite inspected accessibility before calendar presentation refreshed. Apply the selected widget after the provider result arrives; retain the refresh interval and verify its actual accessible event text.",
+  "limits": [
+    "Mock OAuth validates the app loopback/token/event pipeline, not Google login or remote consent screens.",
+    "Real API availability and actual geolocation are not E2E completion requirements.",
+    "OS input skips remain explicit; no new package or live API probe was published."
+  ],
+  "privacy": "Request records contain endpoint routes and mock scenario names only; no query strings, tokens, real accounts, actual coordinates or desktop images."
+}

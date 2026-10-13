@@ -34,8 +34,8 @@ internal static partial class Program
 
     static void WindowsReal(ref App? app, string exe, bool locationAllowed)
     {
-        Check(Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase), "Real Windows suite uses production Tempos.exe");
-        Check(!State()["fixture"]!.GetValue<bool>(), "Production providers are active without fixture data");
+        Check(Path.GetFileName(exe).Equals(LiveApis ? "Tempos.exe" : "Tempos.TestHost.exe", StringComparison.OrdinalIgnoreCase), "Windows suite uses the executable required by its API boundary");
+        Check(!State()["fixture"]!.GetValue<bool>(), "Actual Windows system collectors are active");
         var inputDesktop = OpenInputDesktop(0, false, 1);
         var environment = new { os = Environment.OSVersion.VersionString, architecture = RuntimeInformation.OSArchitecture.ToString(),
             runnerSession = Process.GetCurrentProcess().SessionId, appSession = Process.GetProcessById(app!.ProcessId).SessionId,
@@ -74,9 +74,10 @@ internal static partial class Program
         var until = DateTime.UtcNow.AddSeconds(40);
         JsonNode weather;
         do { weather = State()["windows"]![1]!; if (weather["weatherStatus"]!.GetValue<int>() == 1) break; Thread.Sleep(500); } while (DateTime.UtcNow < until);
-        Check(weather["weatherProvider"]!.GetValue<string>() == "open-meteo", "Real weather uses the default Open-Meteo service");
+        Check(weather["weatherProvider"]!.GetValue<string>() == "open-meteo", "Weather uses the default Open-Meteo provider");
         Check(weather["weatherStatus"]!.GetValue<int>() == 1 && weather["weatherTemperature"] is not null,
-            "Live Open-Meteo response reaches the actual weather widget");
+            LiveApis ? "Live Open-Meteo response reaches the actual weather widget" : "Mock Open-Meteo response reaches the actual weather widget");
+        if (!LiveApis) Check(weather["weatherTemperature"]!.GetValue<double>() == 21, "Weather is deterministic while system collectors remain real");
         SelectWidget(8); NativeCombo(1300, 3); NativeButton(1316);
         Check(Summary(8).Contains("캘린더"), "Local calendar is accessible without a Google account");
 
@@ -156,21 +157,21 @@ internal static partial class Program
         }
         else
         {
-        // Exercise the production WinRT path only after explicit consent. Applying
-        // the selected region causes its coordinates to be sent to Open-Meteo.
+        // E2E uses mock coordinates. Live integration requires separate consent.
         SelectWidget(1);
         var previousRegion = Settings()["widgets"]![1]!["region"]!.GetValue<string>();
         SetForegroundWindow(Window.Properties.NativeWindowHandle); NativeButton(1320);
         until = DateTime.UtcNow.AddSeconds(65);
         while (!Element(1320).IsEnabled && DateTime.UtcNow < until) Thread.Sleep(200);
-        Check(Element(1320).IsEnabled, "Actual Windows location request completes without blocking the UI");
+        Check(Element(1320).IsEnabled, "One-time location request completes without blocking the UI");
         var status = Element(1999).Name;
         bool locationSelected = status.Contains("선택했어요");
-        Check(Settings()["widgets"]![1]!["region"]!.GetValue<string>() == previousRegion, "Real location lookup does not save before Apply");
+        Check(Settings()["widgets"]![1]!["region"]!.GetValue<string>() == previousRegion, "Location lookup does not save before Apply");
         if (locationSelected)
         {
             NativeButton(1316);
-            Check(!string.IsNullOrWhiteSpace(Settings()["widgets"]![1]!["region"]!.GetValue<string>()), "Real Windows location selection is saved with Apply");
+            Check(!string.IsNullOrWhiteSpace(Settings()["widgets"]![1]!["region"]!.GetValue<string>()), "Location selection is saved with Apply");
+            if (!LiveApis) Check(Settings()["widgets"]![1]!["region"]!.GetValue<string>().Contains("부산"), "Mock location selects the expected region");
         }
         else
         {
@@ -179,14 +180,15 @@ internal static partial class Program
             Check(Settings()["widgets"]![1]!["region"]!.GetValue<string>() == previousRegion, "Real location failure preserves the selected region");
             Skip("Successful real position fix", status.Contains("허용") ? "Windows location access is denied or disabled; global privacy settings were preserved." : "Windows could not return a supported position; existing region was preserved.");
         }
-        File.WriteAllText(Path.Combine(Data, "location-outcome.json"), JsonSerializer.Serialize(new { productionWinRtInvoked = true,
+        File.WriteAllText(Path.Combine(Data, "location-outcome.json"), JsonSerializer.Serialize(new { productionWinRtInvoked = LiveApis,
+            apiMode = LiveApis ? "live" : "mock",
             selected = locationSelected, previousSelectionRetainedOnFailure = !locationSelected, coordinatesRecorded = false, regionNamePublished = false }));
         }
 
         var saved = Settings().DeepClone(); Restart(ref app, exe);
-        Check(JsonNode.DeepEquals(saved, Settings()), "Production restart preserves all settings including location selection");
+        Check(JsonNode.DeepEquals(saved, Settings()), "Restart preserves all settings including location selection");
         VisibleWidgets("windows-live-restarted", 9);
-        Check(!State()["fixture"]!.GetValue<bool>(), "Restart still uses actual providers");
+        Check(!State()["fixture"]!.GetValue<bool>(), "Restart still uses actual system collectors");
         Quit(app!); app = null;
     }
 }

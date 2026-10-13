@@ -37,7 +37,7 @@ Open-Meteo의 작은 JSON 응답은 압축 협상 없이 받는다. 로컬 Windo
 
 기본 저장 위치는 `%LocalAppData%\Tempos`다. `--data-dir <폴더>`로 별도 프로필을 열 수 있다. 이 옵션으로 자동 시작을 등록하면 절대 데이터 경로도 명령에 보존한다.
 
-테스트는 `Tempos.TestHost.exe`와 별도 데이터 폴더를 사용한다. 제작용 날씨 HTTP 응답과 제어 명령은 TestHost에만 포함한다. TestHost의 자동 시작 레지스트리는 `HKCU\Software\Tempos\Tests` 아래에 격리되며 Windows의 실제 Run 키에 등록하지 않는다. 배포 앱에는 레지스트리 경로를 바꾸는 실행 옵션을 제공하지 않는다.
+테스트는 `Tempos.TestHost.exe`와 별도 데이터 폴더를 사용한다. 외부 날씨·Google Calendar·OAuth·위치는 항상 목업이며, `--live-system`은 로컬 Windows 수집만 실제로 전환한다. 외부 API 목업과 제어 명령은 배포 앱에 포함하지 않는다. [E2E 기준](e2e.md)에 따라 실연동은 별도로 구분한다. TestHost의 자동 시작 레지스트리는 `HKCU\Software\Tempos\Tests` 아래에 격리되며 Windows의 실제 Run 키에 등록하지 않는다. 배포 앱에는 레지스트리 경로를 바꾸는 실행 옵션을 제공하지 않는다.
 
 ## 검사와 산출물
 

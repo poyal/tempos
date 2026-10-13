@@ -22,7 +22,8 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
     if (arg == L"--data-dir" && i + 1 < argc)
       root = argv[++i];
 #ifdef TEMPOS_TEST_HOST
-    if (arg == L"--live")
+    // Only local collectors change; TestHost API/location boundaries remain mocked.
+    if (arg == L"--live-system" || arg == L"--live")
       fixture = false;
 #endif
   }

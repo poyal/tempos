@@ -6,7 +6,7 @@
 #include <commdlg.h>
 #include <fstream>
 #ifdef TEMPOS_TEST_HOST
-#include "weather_fixture.h"
+#include "api_fixture.h"
 #endif
 namespace tempos {
 constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3, WM_LOCATION = WM_APP + 5;
@@ -124,9 +124,12 @@ App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visi
     : instance_(instance), store_(root), settings_(store_.load()),
       startupRoot_(root.empty() ? root : std::filesystem::absolute(root)),
 #ifdef TEMPOS_TEST_HOST
-      http_(fixture ? weatherFixture(store_.root()) : HttpClient::Transport{}),
+      http_(mockApi(store_.root())),
+      weather_(store_, http_, fixture), calendar_(store_, http_, fixture, mockBrowser(store_.root())),
+#else
+      weather_(store_, http_, fixture), calendar_(store_, http_, fixture),
 #endif
-      weather_(store_, http_, fixture), calendar_(store_, http_, fixture), fixture_(fixture),
+      fixture_(fixture),
       visible_(visible) {
   if (!renderer_.ready())
     throw std::runtime_error("renderer");
@@ -537,7 +540,7 @@ void App::findLocation() {
   EnableWindow(control(1320), FALSE);
   status(L"현재 위치를 한 번 찾고 있어요…");
 #ifdef TEMPOS_TEST_HOST
-  if (fixture_) {
+  {
     LocationResult result{35.1796, 129.0756, {}};
     try {
       if (auto text = boundedRead(store_.root() / L"location-scenario.json")) {
@@ -1193,7 +1196,7 @@ void App::command(int id, int notification) {
     startupFailure_ = !startupFailure_;
     return;
   }
-  if (fixture_ && id == 1913) {
+  if (id == 1913) {
     actions_.post([this](std::stop_token) {
       weather_.invalidate();
       providers_->invalidate(Kind::Weather);
@@ -1269,12 +1272,16 @@ void App::command(int id, int notification) {
     } else
       status(L"인증키 저장 실패");
     SecureZeroMemory(key.data(), key.size());
-  } else if (id == 1402)
+  } else if (id == 1402) {
+#ifdef TEMPOS_TEST_HOST
+    status(L"목업 검사에서는 외부 안내 페이지를 열지 않아요.");
+#else
     ShellExecuteW(main_, L"open",
                   settings_.weatherProvider == WeatherProvider::Kma ? L"https://apihub.kma.go.kr/"
                                                                     : L"https://open-meteo.com/en/terms",
                   nullptr, nullptr, SW_SHOWNORMAL);
-  else if (id == 1412) {
+#endif
+  } else if (id == 1412) {
     auto client = utf8(input(1410));
     if (client.empty() || client.find(".apps.googleusercontent.com") == std::string::npos) {
       status(L"데스크톱 앱 OAuth 클라이언트 ID를 입력하세요.");
@@ -1709,7 +1716,12 @@ void App::diagnose() {
   j["fixture"] = fixture_;
   j["weatherProvider"] = settings_.weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
 #ifdef TEMPOS_TEST_HOST
+  j["apiMode"] = "mock";
+  j["locationMode"] = "mock";
   j["startupRegistryKey"] = utf8(startup_.key());
+#else
+  j["apiMode"] = "live";
+  j["locationMode"] = "live";
 #endif
   j["trayRegistered"] = trayAdded_;
   j["monitors"] = Json::array();
@@ -1747,6 +1759,12 @@ void App::diagnose() {
       j["windows"].back()["weatherStatus"] = int(data->status);
       j["windows"].back()["weatherTemperature"] = data->weather ? Json(data->weather->temperature) : Json();
       j["windows"].back()["weatherState"] = data->weather ? int(data->weather->state) : 0;
+    }
+    if (w && w->kind == Kind::Calendar) {
+      auto data = providers_->snapshot(*w);
+      j["windows"].back()["calendarStatus"] = int(data->status);
+      j["windows"].back()["calendarEventCount"] = data->calendar ? data->calendar->events.size() : 0;
+      j["windows"].back()["calendarConnected"] = data->calendar && data->calendar->connected;
     }
   }
   if (atomicWrite(store_.root() / L"diagnostics.json", j.dump(2)))

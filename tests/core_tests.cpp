@@ -26,6 +26,7 @@ template <class F> void throws(F fn, const char *name) {
   check(threw, name);
 }
 void weatherTests();
+void apiMockTests();
 int liveWeatherProbe();
 void memoryHistoryRegression() {
   Widget memory;
@@ -449,6 +450,7 @@ int main(int argc, char **argv) {
     auto staleResponse = raced.read(calendarWidget, {});
     check(staleResponse.calendar->events.empty() && store.secret(L"calendar-events").empty(),
           "late calendar response cannot resurrect disconnected data");
+    apiMockTests();
     weatherTests();
     std::cout << "PASS " << passed << " checks\n";
     CoUninitialize();

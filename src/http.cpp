@@ -17,6 +17,8 @@ std::string urlEncode(std::string_view value) {
   return r;
 }
 HttpClient::HttpClient(Transport transport) : transport_(std::move(transport)) {
+  if (transport_)
+    return;
   session_ = WinHttpOpen(L"Tempos/0.1", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, WINHTTP_NO_PROXY_NAME,
                          WINHTTP_NO_PROXY_BYPASS, 0);
   if (session_)
@@ -39,7 +41,7 @@ void HttpClient::cancel() {
 Response HttpClient::request(const std::wstring &host, const std::wstring &path, const std::wstring &method,
                              const std::string &body, const std::wstring &headers, std::stop_token stop) {
   Response r;
-  if (!session_ || stop.stop_requested()) {
+  if (stop.stop_requested()) {
     r.error = ERROR_CANCELLED;
     return r;
   }
@@ -54,6 +56,10 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
   }
   if (transport_)
     return transport_(host, path, method, body, headers, stop);
+  if (!session_) {
+    r.error = ERROR_CANCELLED;
+    return r;
+  }
   auto connection = WinHttpConnect(session_, host.c_str(), INTERNET_DEFAULT_HTTPS_PORT, 0);
   if (!connection) {
     r.error = GetLastError();

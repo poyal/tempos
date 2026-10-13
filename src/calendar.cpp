@@ -70,8 +70,8 @@ Event parseEvent(const Json &j, const std::wstring &calendar, uint32_t color) {
   }
   return e;
 }
-CalendarService::CalendarService(Store &s, HttpClient &h, bool fixture)
-    : store_(s), http_(h), fixture_(fixture) {
+CalendarService::CalendarService(Store &s, HttpClient &h, bool fixture, Authorize authorize)
+    : store_(s), http_(h), fixture_(fixture), authorize_(std::move(authorize)) {
   auto j = store_.loadPrivate(L"calendar-account");
   try {
     if (j.is_object()) {
@@ -256,7 +256,9 @@ void CalendarService::connect(std::stop_token stop) {
                                 "https://www.googleapis.com/auth/calendar.events.readonly") +
                       "&code_challenge=" + pkceChallenge(verifier) +
                       "&code_challenge_method=S256&state=" + state + "&access_type=offline&prompt=consent";
-    if (reinterpret_cast<INT_PTR>(
+    if (authorize_)
+      authorize_(url);
+    else if (reinterpret_cast<INT_PTR>(
             ShellExecuteW(nullptr, L"open", wide(url).c_str(), nullptr, nullptr, SW_SHOWNORMAL)) <= 32)
       throw std::runtime_error("browser");
     auto deadline = Clock::now() + 180s;
