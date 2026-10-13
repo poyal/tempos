@@ -48,3 +48,7 @@
 설치 EXE는 6,337,986바이트, SHA-256 `D236767E5D31D8C2F88D490F6B670A5D623D122692345A832742A7AE580C7A13`이다. ZIP SHA-256은 `E4648BC847643F1B33BBFEB6A22E7A9E23F4019A6F3C29C4B7A3755145AAECFE`다. 설치 payload의 앱 실행 파일은 검증한 Release 파일과 일치한다. 문서 19개·로컬 참조 300개·PNG 67개·설치 화면 2개를 패키지 안에서도 검증했다.
 
 이 최종 결과와 화면은 패키징 후 문서만 추가한 기록이다. 설치 파일은 재포장하지 않는다. Win32 동작 참고: [SetParent와 DPI](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent), [투명 창 표면 초기화](https://learn.microsoft.com/en-us/windows/win32/winmsg/window-features#layered-windows).
+
+## 게시 후 확인
+
+[Windows v0.1.1 릴리즈](https://github.com/poyal/tempos/releases/tag/v0.1.1)에 설치 EXE·ZIP과 각각의 SHA-256 파일을 게시했다. 인증 없이 공개 URL에서 다시 내려받은 두 파일 모두 로컬 검증본 및 공개 체크섬과 일치한다. ZIP을 새 작업 폴더에 풀어 앱 버전 0.1.1·Release 해시 일치·TestHost 제외·문서 및 이미지 참조를 다시 확인했다. 설치된 사용자 앱에 실행 파일을 덮어쓰거나 제거하지 않았다. [공개 파일·크기·해시·재다운로드 기록](release-v0.1.1-published.json).

@@ -1,0 +1,90 @@
+{
+  "checkedAt": "2026-10-13T23:14:43.2924252+09:00",
+  "release": {
+    "assets": [
+      {
+        "apiUrl": "https://api.github.com/repos/poyal/tempos/releases/assets/637240427",
+        "contentType": "application/x-msdownload",
+        "createdAt": "2026-10-13T14:13:36Z",
+        "digest": "sha256:d236767e5d31d8c2f88d490f6b670a5d623d122692345a832742a7ae580c7a13",
+        "downloadCount": 0,
+        "id": "RA_kwDOU_cYws4l-4Rr",
+        "label": "",
+        "name": "Tempos-0.1.1-win-x64.exe",
+        "size": 6337986,
+        "state": "uploaded",
+        "updatedAt": "2026-10-13T14:13:37Z",
+        "url": "https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.exe"
+      },
+      {
+        "apiUrl": "https://api.github.com/repos/poyal/tempos/releases/assets/637240433",
+        "contentType": "application/octet-stream",
+        "createdAt": "2026-10-13T14:13:36Z",
+        "digest": "sha256:d033da55e48d30ff6e4a725ef061f9b355ca50211b9534f7e9781ec8cbadcc9a",
+        "downloadCount": 0,
+        "id": "RA_kwDOU_cYws4l-4Rx",
+        "label": "",
+        "name": "Tempos-0.1.1-win-x64.exe.sha256",
+        "size": 92,
+        "state": "uploaded",
+        "updatedAt": "2026-10-13T14:13:36Z",
+        "url": "https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.exe.sha256"
+      },
+      {
+        "apiUrl": "https://api.github.com/repos/poyal/tempos/releases/assets/637240431",
+        "contentType": "application/zip",
+        "createdAt": "2026-10-13T14:13:36Z",
+        "digest": "sha256:e4648bc847643f1b33bbfeb6a22e7a9e23f4019a6f3c29c4b7a3755145aaecfe",
+        "downloadCount": 0,
+        "id": "RA_kwDOU_cYws4l-4Rv",
+        "label": "",
+        "name": "Tempos-0.1.1-win-x64.zip",
+        "size": 6906394,
+        "state": "uploaded",
+        "updatedAt": "2026-10-13T14:13:36Z",
+        "url": "https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.zip"
+      },
+      {
+        "apiUrl": "https://api.github.com/repos/poyal/tempos/releases/assets/637240437",
+        "contentType": "application/octet-stream",
+        "createdAt": "2026-10-13T14:13:36Z",
+        "digest": "sha256:6506d4e7e58fa9746ee4c68fc389784b78add947dc299c5de1c67cf19463123a",
+        "downloadCount": 0,
+        "id": "RA_kwDOU_cYws4l-4R1",
+        "label": "",
+        "name": "Tempos-0.1.1-win-x64.zip.sha256",
+        "size": 92,
+        "state": "uploaded",
+        "updatedAt": "2026-10-13T14:13:36Z",
+        "url": "https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.zip.sha256"
+      }
+    ],
+    "name": "Tempos v0.1.1 · Windows 11 x64",
+    "tagName": "v0.1.1",
+    "url": "https://github.com/poyal/tempos/releases/tag/v0.1.1"
+  },
+  "downloads": [
+    {
+      "file": "Tempos-0.1.1-win-x64.exe",
+      "bytes": 6337986,
+      "sha256": "D236767E5D31D8C2F88D490F6B670A5D623D122692345A832742A7AE580C7A13",
+      "publicChecksum": "D236767E5D31D8C2F88D490F6B670A5D623D122692345A832742A7AE580C7A13",
+      "matchesTestedArtifact": true
+    },
+    {
+      "file": "Tempos-0.1.1-win-x64.zip",
+      "bytes": 6906394,
+      "sha256": "E4648BC847643F1B33BBFEB6A22E7A9E23F4019A6F3C29C4B7A3755145AAECFE",
+      "publicChecksum": "E4648BC847643F1B33BBFEB6A22E7A9E23F4019A6F3C29C4B7A3755145AAECFE",
+      "matchesTestedArtifact": true
+    }
+  ],
+  "authentication": "none",
+  "publicAppMatchesVerifiedRelease": true,
+  "appVersion": "0.1.1",
+  "testHostExcluded": true,
+  "sourceCommit": "a8f7706bae909c76a86208acf4b2a418ab4a3f8d",
+  "installerLifecycle": "Not run: installed user app and layout preserved",
+  "packagedDocs": "PASS 19 documents, 300 local references/anchors, 67 PNG hashes, 37 widget sizes, 17 usage captures, 2 installer captures",
+  "repackagedAfterValidation": false
+}
