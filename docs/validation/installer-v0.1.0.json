@@ -1,0 +1,1583 @@
+{
+  "sourceCommit": "25494f25e317cadd06d7370de1e8b7c2a29ffb34",
+  "sourceDirtyAtPackaging": false,
+  "sourceTag": "v0.1.0-win-x64-installer",
+  "environment": "Windows 11 Pro 10.0.26300 x64, interactive user session, 150% DPI",
+  "installer": {
+    "file": "Tempos-0.1.0-win-x64.exe",
+    "sha256": "3EDEC8F82CE3E888562BFBFB9BC603CBFE3E2C23EDFADC5413222CD18B4A679F",
+    "bytes": 6327126,
+    "createdAt": "2026-10-13T22:23:19.6490496+09:00",
+    "compilerVersion": "v3.04",
+    "compilerSha256": "E277B7378931B74392015F5AD6B1D744DCD8A347BAA4480350A75EBEAB8D8E3D",
+    "command": "./scripts/package-installer.ps1",
+    "exitCode": 0
+  },
+  "inputs": {
+    "zip": "Tempos-0.1.0-win-x64.zip",
+    "zipSha256": "AE9EF44AEDD4367237F4A5CF92A04ED748445F6635E9583074F1371817CA60A3",
+    "executableSha256": "E8DEDCF6299A7BD47FA89F470D03CBF34B97DC1F94C9633B27E788315D84ED61",
+    "appRebuilt": false
+  },
+  "payload": {
+    "count": 141,
+    "files": [
+      {
+        "path": "data/README.md",
+        "length": 390,
+        "sha256": "0D682F069E224BAADF4EAC7F477B39263F4C6843449F3566AB89D485BF98CFDD"
+      },
+      {
+        "path": "data/regions.json",
+        "length": 375112,
+        "sha256": "700D27D260F675E8B902D46105E1D01728EC2BA71F88E05BEF9E5C42FE9D8177"
+      },
+      {
+        "path": "docs/assets/final-calendar-month.png",
+        "length": 214271,
+        "sha256": "92E7394FD39CD01CD6C380B148B11C98172FDDCD9DB389020DDFDAAA16517292"
+      },
+      {
+        "path": "docs/assets/final-captures.json",
+        "length": 679,
+        "sha256": "D113A2DA82EFE02340EB5833226C38901FF129A900C78FC1395478BFEF7C515D"
+      },
+      {
+        "path": "docs/assets/final-clock.png",
+        "length": 16863,
+        "sha256": "DE5556E91A70F5318FC1745BB6241EE0EF61E9DDC67E0976C619DA69FBB809B9"
+      },
+      {
+        "path": "docs/assets/final-disk-all.png",
+        "length": 42007,
+        "sha256": "B9D666CCA9D470A27F484005E5560213D4B3A8AF8B4AEE7C1BCEFD2A9A0D2058"
+      },
+      {
+        "path": "docs/assets/final-disk-single.png",
+        "length": 18067,
+        "sha256": "C843FA1F65F1E10C02F4F7188C68EA7C1BDD059EF592DC2036C2DBB645EED858"
+      },
+      {
+        "path": "docs/assets/final-memory.png",
+        "length": 47299,
+        "sha256": "9DFAAEE3629EDCE8B9A0445394F67FA5AE2DE00678105B4FE2BCEECB9D8AF15B"
+      },
+      {
+        "path": "docs/assets/final-settings-clock.png",
+        "length": 34921,
+        "sha256": "96CE61435889E02B02BF9B74556B48FD163D453E3556F914428B833FD84727F8"
+      },
+      {
+        "path": "docs/assets/final-settings-network.png",
+        "length": 33623,
+        "sha256": "7239B46CA745AAA5380066E1A6EB0531DC237F8C4A249125A245253EB2E5556E"
+      },
+      {
+        "path": "docs/assets/final-settings-weather.png",
+        "length": 35353,
+        "sha256": "2D0FB5B397B4BC199CD93D4CAB558D19510239D14932E19640C6AF365C2C8706"
+      },
+      {
+        "path": "docs/assets/final-system.png",
+        "length": 47782,
+        "sha256": "B81D4D2EC0892A6D0A3CC1164F861F3D00B4502F4AE54B9B9A961C65A90F8465"
+      },
+      {
+        "path": "docs/assets/final-weather-clear.png",
+        "length": 20763,
+        "sha256": "7F8985A85A2B62DF00318BAA3534AE76769647715F4F249C83BB8117973866C8"
+      },
+      {
+        "path": "docs/assets/final-weather-night.png",
+        "length": 15753,
+        "sha256": "43D17189AAD4BFA0D1CF7155131EE64678A780FA5663266410A7E5FD455654FA"
+      },
+      {
+        "path": "docs/assets/final-weather-rain.png",
+        "length": 19063,
+        "sha256": "9F1180D885863F549E8170E095750C425A86C7D220D7FA0464D32F43B990AA4E"
+      },
+      {
+        "path": "docs/assets/installer-v0.1.0/captures.json",
+        "length": 556,
+        "sha256": "895A608E96E5A558255462680C05C8CDCA635A4798EAF7E4BA4C0F732EDA42EC"
+      },
+      {
+        "path": "docs/assets/installer-v0.1.0/installer-complete.png",
+        "length": 29561,
+        "sha256": "BB0D5F348C04094A839E31B1D61EA48A7332104CDB7B172347CDD9D0D2E964CE"
+      },
+      {
+        "path": "docs/assets/installer-v0.1.0/installer-folder.png",
+        "length": 21045,
+        "sha256": "A544D062996389B307AA5535035D8F3629E7D643677D3E4940011D9A9A80D2F4"
+      },
+      {
+        "path": "docs/assets/v0.1.0/calendar-l.png",
+        "length": 45832,
+        "sha256": "A95D65A7EE714418AC4102A842E0CA5AC822A2498ADE551E4741F934E62A1358"
+      },
+      {
+        "path": "docs/assets/v0.1.0/calendar-m.png",
+        "length": 14713,
+        "sha256": "4EC2AB7E7D6285ACCD25075C84688D85CA71C50D29D495E1F2E2B4F053051036"
+      },
+      {
+        "path": "docs/assets/v0.1.0/calendar-s.png",
+        "length": 8675,
+        "sha256": "5EE40654086F5E268269E10C959995297589E645D8A506544BB9163F842A10EF"
+      },
+      {
+        "path": "docs/assets/v0.1.0/calendar-sizes.png",
+        "length": 106028,
+        "sha256": "369BED68C62374D411BCB7A8C7971916690CAE6D47E29B74CBA3175C9E787F83"
+      },
+      {
+        "path": "docs/assets/v0.1.0/calendar-slim.png",
+        "length": 11793,
+        "sha256": "EF521F215F1CAF22209E19DC463513B0AB415F61EE99A9B7A6DA81E8DD0C76E4"
+      },
+      {
+        "path": "docs/assets/v0.1.0/calendar-xl.png",
+        "length": 214271,
+        "sha256": "92E7394FD39CD01CD6C380B148B11C98172FDDCD9DB389020DDFDAAA16517292"
+      },
+      {
+        "path": "docs/assets/v0.1.0/captures.json",
+        "length": 32927,
+        "sha256": "ABE9161708248195C22FFEB977E90C4E48E87FCA714810ADCBF613C1DCD3CDC1"
+      },
+      {
+        "path": "docs/assets/v0.1.0/clock-l.png",
+        "length": 40216,
+        "sha256": "1A7BD4A603772044B846BD96BC8BE2B1E1156DBC2EDC0A1CC41646A6A3A12861"
+      },
+      {
+        "path": "docs/assets/v0.1.0/clock-m.png",
+        "length": 16129,
+        "sha256": "2197B3B321A2D0A69DED862D883F5993148742151A3749510103FCBB6C54A0C2"
+      },
+      {
+        "path": "docs/assets/v0.1.0/clock-s.png",
+        "length": 8799,
+        "sha256": "1620B791FF5724C98E40472D744AD0B8E1747F858F8F9C86FD21435310895756"
+      },
+      {
+        "path": "docs/assets/v0.1.0/clock-sizes.png",
+        "length": 97485,
+        "sha256": "19AC2FEFF40A157BB81AA417CDE4DA43FC2B174A65120BD4BE5A31D0D04BF704"
+      },
+      {
+        "path": "docs/assets/v0.1.0/clock-slim.png",
+        "length": 12070,
+        "sha256": "8B3721D3C5F643CC60EA3A5FB39BFFF92639F980FE94A440767AF04079D22307"
+      },
+      {
+        "path": "docs/assets/v0.1.0/cpu-l.png",
+        "length": 48413,
+        "sha256": "EBA054689A838A053BF6BC32DD321B213583505E2079FD2D3FCAB66BFA644039"
+      },
+      {
+        "path": "docs/assets/v0.1.0/cpu-m.png",
+        "length": 21104,
+        "sha256": "8335EC824F91354F08B0613FEF946147A12AE541F1F205AE47E29C28ECAE0B32"
+      },
+      {
+        "path": "docs/assets/v0.1.0/cpu-s.png",
+        "length": 9854,
+        "sha256": "39C6299C407BC0D0ACB756DA6FC5099A14C3AD8271203756C483C3030DBB2887"
+      },
+      {
+        "path": "docs/assets/v0.1.0/cpu-sizes.png",
+        "length": 120618,
+        "sha256": "8E818F20614B22A4E321C6D7B9FCAA4A244167AF6C352E4554DE2619E93E5707"
+      },
+      {
+        "path": "docs/assets/v0.1.0/cpu-slim.png",
+        "length": 14262,
+        "sha256": "DECAD8FF961C58A784BFF129B1680E04DDBD929512EB728C507B71959EFC6280"
+      },
+      {
+        "path": "docs/assets/v0.1.0/disk-l.png",
+        "length": 42007,
+        "sha256": "B9D666CCA9D470A27F484005E5560213D4B3A8AF8B4AEE7C1BCEFD2A9A0D2058"
+      },
+      {
+        "path": "docs/assets/v0.1.0/disk-m.png",
+        "length": 18067,
+        "sha256": "C843FA1F65F1E10C02F4F7188C68EA7C1BDD059EF592DC2036C2DBB645EED858"
+      },
+      {
+        "path": "docs/assets/v0.1.0/disk-s.png",
+        "length": 10193,
+        "sha256": "8224F3AA4BEA688276479B71AD668C54E0ACDD72A84B476EED65734CBC19E299"
+      },
+      {
+        "path": "docs/assets/v0.1.0/disk-sizes.png",
+        "length": 107832,
+        "sha256": "16D1949CE478DC6E1EA832E54E7F64E557CE222BF1DE8BB0B33CD93D15E2F6B6"
+      },
+      {
+        "path": "docs/assets/v0.1.0/disk-slim.png",
+        "length": 12012,
+        "sha256": "C9B058163D803C876F050BC98A3E32B0A9323CB1F25525ED4BAA97C3AF2EBDDA"
+      },
+      {
+        "path": "docs/assets/v0.1.0/gallery.html",
+        "length": 3982,
+        "sha256": "5B77098A56ED99EC53D813C9C293889CB5484AC99C94715E5D139CA4B3F8EF81"
+      },
+      {
+        "path": "docs/assets/v0.1.0/gpu-l.png",
+        "length": 47803,
+        "sha256": "BB9F5F9C0167939309AF28466FCBFD4AFBAE7BD7ACCD5178B03E4FD843500CE3"
+      },
+      {
+        "path": "docs/assets/v0.1.0/gpu-m.png",
+        "length": 20982,
+        "sha256": "FC6DCD6FD79266A5F09CC240A56FFEDAA34F502DA663998C2229CFAC57661B22"
+      },
+      {
+        "path": "docs/assets/v0.1.0/gpu-s.png",
+        "length": 9715,
+        "sha256": "81CEAD45455865D7A7E301E6D3A880A909E97C3E0BDD87FE5B589839DA71D214"
+      },
+      {
+        "path": "docs/assets/v0.1.0/gpu-sizes.png",
+        "length": 118570,
+        "sha256": "336659FE1BB3C0B321C11E41B1BD457527BD0547D821ED5D62B1F0165F4A3370"
+      },
+      {
+        "path": "docs/assets/v0.1.0/gpu-slim.png",
+        "length": 14238,
+        "sha256": "26B285FE4EFBAE8DE1106EE34EBF8926CCF3425556A6674681CEA664121B4401"
+      },
+      {
+        "path": "docs/assets/v0.1.0/memory-l.png",
+        "length": 47300,
+        "sha256": "BA0590045F9C7BE2B7F4E1D7E7F48AF4AD24BA80E7F901ADEFC296FE2FB901AC"
+      },
+      {
+        "path": "docs/assets/v0.1.0/memory-m.png",
+        "length": 20606,
+        "sha256": "69948CA0D7B5A90365334A4A3AC85526663924826F43A384D81239B582F450B8"
+      },
+      {
+        "path": "docs/assets/v0.1.0/memory-s.png",
+        "length": 9595,
+        "sha256": "0882CA965BFA3009E02F9F8061D1F35767204021802367135A745DA754054198"
+      },
+      {
+        "path": "docs/assets/v0.1.0/memory-sizes.png",
+        "length": 117268,
+        "sha256": "0F9CF3647E2E5B54B0E12EC8021492C489FAE8440EB04141019DB3C02AA71FD2"
+      },
+      {
+        "path": "docs/assets/v0.1.0/memory-slim.png",
+        "length": 14132,
+        "sha256": "E2DF5356961051E90A6324E807D439E28121413F069DDE4893768512D314CDA7"
+      },
+      {
+        "path": "docs/assets/v0.1.0/network-l.png",
+        "length": 57177,
+        "sha256": "D70365A29FC0AB1C69591A32FBD0D45AA85B37A49020F63588096CABA9FD0BD6"
+      },
+      {
+        "path": "docs/assets/v0.1.0/network-m.png",
+        "length": 25461,
+        "sha256": "D74B293F542C2264263F6B777A8A261AB3951A4F59F298542A59CF892C924585"
+      },
+      {
+        "path": "docs/assets/v0.1.0/network-s.png",
+        "length": 9260,
+        "sha256": "439CA04D16168B0A665397634EAE90641510356F23D1AB6301BC4175CBB23BE9"
+      },
+      {
+        "path": "docs/assets/v0.1.0/network-sizes.png",
+        "length": 129310,
+        "sha256": "8DE51D585132FBC24319EECE27F64C098891622F5E85CFABFC2244A8AA984348"
+      },
+      {
+        "path": "docs/assets/v0.1.0/network-slim.png",
+        "length": 12762,
+        "sha256": "C1490916815B35EFD68F0B4FBA91324F3C634AC2933A81D5431AFF7AFED93728"
+      },
+      {
+        "path": "docs/assets/v0.1.0/overview.png",
+        "length": 239825,
+        "sha256": "2914FBF0FA9FBF21C4E2D15A53EE51E3469257175DD92DE485B23D4FE31023EE"
+      },
+      {
+        "path": "docs/assets/v0.1.0/system-l.png",
+        "length": 47782,
+        "sha256": "B81D4D2EC0892A6D0A3CC1164F861F3D00B4502F4AE54B9B9A961C65A90F8465"
+      },
+      {
+        "path": "docs/assets/v0.1.0/system-m.png",
+        "length": 23960,
+        "sha256": "B6845D3EA500AAF0F0011419FB12C2E6284860D06E58CFE2C668B9E5561FFB74"
+      },
+      {
+        "path": "docs/assets/v0.1.0/system-s.png",
+        "length": 10779,
+        "sha256": "5F2FF3DF83EF0BB1C3BCD45ADFE37B3CFA8B6CF674724155C34B9C0E148DDBE9"
+      },
+      {
+        "path": "docs/assets/v0.1.0/system-sizes.png",
+        "length": 135235,
+        "sha256": "7484BFB8F115C84718B88A01AA3407D6E0F1621747A24CCB7D8C720790331F2F"
+      },
+      {
+        "path": "docs/assets/v0.1.0/system-slim.png",
+        "length": 13968,
+        "sha256": "289D445A84F2DE4BF69D07E60F497AE9A5FBE276BB75288818B7FFEA2053288A"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-add-apply.png",
+        "length": 36282,
+        "sha256": "9409AD509F3C52CD770922867AC2EC424F0123AADAC3B63EEE65894052844129"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-app-startup.png",
+        "length": 35438,
+        "sha256": "ED9E39A9BB1B237009536D75E882440942DA31AA63CF5C863EE3384ED612513C"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-arrange-widget.png",
+        "length": 17896,
+        "sha256": "79B1D0DDC20D37AAB4380D78D9E085E63D5540082641304D0113AB454BE74880"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-arrange.png",
+        "length": 37060,
+        "sha256": "BA6BC4F4E2166B6289D4C9874315D5F4F159C9565019FD09952DD7B7F10DEF17"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-backup-exported.png",
+        "length": 35220,
+        "sha256": "92F29C182F5F77A9C6F0DE000A2C39BE4124E18B6A7555606E0867500F283DC6"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-backup-restored.png",
+        "length": 35345,
+        "sha256": "8BD9EF8D0A0B9CB1703758A7E50CFB0E27C07C4B817C3CDD6B87594C55314BA0"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-calendar-connected.png",
+        "length": 44850,
+        "sha256": "41245E5704C4E82AE77944E61BC01B4C9BC0A21D665F397C83E8D6BE968C9FDD"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-calendar-month.png",
+        "length": 36809,
+        "sha256": "0DC34D678D204E74BD5A919828EB4A06842C2E42190821A07C8E5063CD438C39"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-clock-options.png",
+        "length": 16130,
+        "sha256": "92E7067A03B53C21CA7639B1EA85E9130DD9C084B8B263B40533D80E16B84EA9"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-diagnostics.png",
+        "length": 36520,
+        "sha256": "B457A15C15771D772EB8E9466F9D92A7A0023BDB1C4067C224EB30C182CECB2C"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-first-launch.png",
+        "length": 39747,
+        "sha256": "C89F13AB662FF2EADB079488A3AEBF2FAA29A6781FA04F5E7D43C843EC41DBB4"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-location-applied.png",
+        "length": 37335,
+        "sha256": "C7629490BBA2D1A40E887D2560C6C30A9B5BD2B859B0D052CED89EDFA0DA9C78"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-network.png",
+        "length": 35512,
+        "sha256": "D55D9EE453332581210913BD89C234C83D7ECD031F4426E35C509D89DEDFAB15"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-system-options.png",
+        "length": 20311,
+        "sha256": "04F32D86B48414244985227590F7D0C32DC109788B74F1C93266ECEBD094661C"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-weather-kma.png",
+        "length": 42053,
+        "sha256": "AC1F58BA477E495B976B4168C878D0C9FDA0EE262594C470903CABC5C232DB4F"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-weather-open-meteo.png",
+        "length": 41642,
+        "sha256": "BF34AA8880B5B261C958CF0E883AD69F4DB631DC248333ACCB8DE2BBE8194CB9"
+      },
+      {
+        "path": "docs/assets/v0.1.0/usage-weather-region.png",
+        "length": 37366,
+        "sha256": "0611E0A26DFC4FC6A64FC12806F7A152F6C86B5232A8D84BD6816F0088AA0A73"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-clear.png",
+        "length": 20763,
+        "sha256": "7F8985A85A2B62DF00318BAA3534AE76769647715F4F249C83BB8117973866C8"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-l.png",
+        "length": 51516,
+        "sha256": "8A60551F50F01C3C6270606267386B8B725AFFA357F77FA5D0EF80E0B1451FE5"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-m.png",
+        "length": 20763,
+        "sha256": "7F8985A85A2B62DF00318BAA3534AE76769647715F4F249C83BB8117973866C8"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-night.png",
+        "length": 15753,
+        "sha256": "43D17189AAD4BFA0D1CF7155131EE64678A780FA5663266410A7E5FD455654FA"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-rain.png",
+        "length": 19063,
+        "sha256": "9F1180D885863F549E8170E095750C425A86C7D220D7FA0464D32F43B990AA4E"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-s.png",
+        "length": 11342,
+        "sha256": "1BD017E88EF56367A15B8B2FCF35859136B6737CA274D68B4C570B0C679E0078"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-sizes.png",
+        "length": 113406,
+        "sha256": "40C12597B9214CA8E067D447B187AB7826EA957D27F6075EBDA743444AB68815"
+      },
+      {
+        "path": "docs/assets/v0.1.0/weather-slim.png",
+        "length": 13989,
+        "sha256": "9D375B0E05C75A4DFDB35D2946468F3BB7D8D751F7DBCACB47FE0F05B7485183"
+      },
+      {
+        "path": "docs/assets/weather-connections-kma.png",
+        "length": 95703,
+        "sha256": "D56DD70F4F96D0600A1CB6A57AFBB14DC1A5A4E6927BF42BC920ED2BE3860C00"
+      },
+      {
+        "path": "docs/assets/weather-connections-open-meteo.png",
+        "length": 96950,
+        "sha256": "F8501BED4DA6E222C19FC97DAF0F3C149CE98B5912CC5396811335076919B67C"
+      },
+      {
+        "path": "docs/assets/weather-size-0.png",
+        "length": 11094,
+        "sha256": "9B35B8260AFB46A89204A3C92DD9DB57368E7CE94DBD869CF6FA0267B59F8EFD"
+      },
+      {
+        "path": "docs/assets/weather-size-1.png",
+        "length": 15510,
+        "sha256": "103D3A19709A6BF5915C7DAFDED873A96839EAF888632A147E83766B5ABACDC2"
+      },
+      {
+        "path": "docs/assets/weather-size-2.png",
+        "length": 19235,
+        "sha256": "64A6D6464E8F9D3FFDD7539D312F365AEB9DC36E9FD62C6B86EA0F03667033E9"
+      },
+      {
+        "path": "docs/assets/weather-size-3.png",
+        "length": 55629,
+        "sha256": "06DF1ABBB6BDF591D6FA5B5EC1791AE7BC83F45FE95E98F52FB1E0547502582A"
+      },
+      {
+        "path": "docs/assets/widgets-overview.png",
+        "length": 242534,
+        "sha256": "C6328D3A3F88B35B1EEA21AC5D54F69F6D353FAA23DF677F86AEB4537EA035C8"
+      },
+      {
+        "path": "docs/design-guide.md",
+        "length": 9369,
+        "sha256": "2243086304067CE3343D9A99835B34652572FCEC03740392736B500C6210CF84"
+      },
+      {
+        "path": "docs/development.md",
+        "length": 5192,
+        "sha256": "E8B0FC430CC16C0969D85BC1A089225933F86DA37A340E42ADFBC50B99F133D7"
+      },
+      {
+        "path": "docs/e2e.md",
+        "length": 12871,
+        "sha256": "9548403EB4A6635B22E04AFF7DEDA131017DF38D2E023E919FE96A2A75543701"
+      },
+      {
+        "path": "docs/local-release-guide.md",
+        "length": 6193,
+        "sha256": "7FE74E71D02C1903399DD960875F5686B21316C3F02BA7C1F1F5852BCB8F51B0"
+      },
+      {
+        "path": "docs/README-작성-가이드.md",
+        "length": 2667,
+        "sha256": "7300E0CDDEA3CC233C94260E2977AEC7E04B421108F1E08A2A38264F4EED98D2"
+      },
+      {
+        "path": "docs/README.md",
+        "length": 1465,
+        "sha256": "8B92189BC9F22C7E0BAD9405AC55C6F3B6CA3ADC4AC71672336437DDEAD66BEE"
+      },
+      {
+        "path": "docs/releases/v0.1.0.md",
+        "length": 4063,
+        "sha256": "2B1607C03A09281E8DB9F33906A11785263D895FAC0DB5FB8BE85E09CE981D32"
+      },
+      {
+        "path": "docs/screenshots.md",
+        "length": 9953,
+        "sha256": "AE968F1685FAE3ED732678DE0D27A5E55BF6E17989581950A7EE87DAF57A9B37"
+      },
+      {
+        "path": "docs/user-guide.md",
+        "length": 5487,
+        "sha256": "F1433125ABD48E0E2FCE67D5785A6FAFD9A104ADCA0DB29931C556146115CBFA"
+      },
+      {
+        "path": "docs/validation/2026-10-08.json",
+        "length": 34277,
+        "sha256": "1EF464F4D29C93FFCBD090D54DED3ACB4C5DAD681C97D2B88BD4CF1416F86554"
+      },
+      {
+        "path": "docs/validation/2026-10-09-audit.json",
+        "length": 272914,
+        "sha256": "7A16EEC420B5E9D5F4B3846257F3E9A6572A54AC0475144192471229F232698F"
+      },
+      {
+        "path": "docs/validation/2026-10-12-ui-review.json",
+        "length": 2356,
+        "sha256": "3C60BD18CD0F6E17C167FE4602BCADC1D2B8476FACD90246CC87C348DECABBC3"
+      },
+      {
+        "path": "docs/validation/2026-10-12-weather.json",
+        "length": 134540,
+        "sha256": "C88D6AFD732E5C6C12B29D9C8C04940744E2C5AC81E6F6BB9F9B6B410B5EEDC9"
+      },
+      {
+        "path": "docs/validation/2026-10-13-api-mock.json",
+        "length": 79262,
+        "sha256": "6C7695273115EB57E84ECF7A0263B62F6347B402726D3445A3D5CD18DB9BDAFD"
+      },
+      {
+        "path": "docs/validation/2026-10-13-final-design.json",
+        "length": 162515,
+        "sha256": "5FE14E5DCAADFD2D5DABFFA25E0891C4EAF1DBA819E81B433BF7DD0AE4E0B374"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/calendar-overflow.png",
+        "length": 198907,
+        "sha256": "439CBD0B02B84AC17EFA04DC368249841FAB1A3EBFCADE60C83D22A8C55D7712"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/calendar-xl.png",
+        "length": 150076,
+        "sha256": "9A95022D1E72D7974D8568960CB344C73B48269C4636F6C1AE0FB9BAA77DBC92"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/device-states.png",
+        "length": 329757,
+        "sha256": "E29BDC17F30EAD8CB860D4F8CB685E208B8A448C91B2194961D600767804F4FA"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/README.md",
+        "length": 5077,
+        "sha256": "8F8D3BDD33FB8EB98F8F7DA57EF41A460FA1024E44C425BCA894EA5F99A25228"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/settings.png",
+        "length": 356833,
+        "sha256": "FC109E5A6703769EE3604ED3A44D23D026707134E901C3C87F5D3E47D8DB8C71"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/themes.png",
+        "length": 290605,
+        "sha256": "B48A6F3D5288859FBEC07590ED71658CFE7328EA3D3D5EFA4BE59B9DF05490B0"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/weather-states.png",
+        "length": 265667,
+        "sha256": "5112AD26C3F0EAEBAAF848666993F3C6EF0E79E37F1938DA6A8CD5B47F22E55E"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/widgets-0.png",
+        "length": 363633,
+        "sha256": "A6FC4591FB4B68DF000222E05687EA76C69843A4CF2FD565021D5C699259170E"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/widgets-1.png",
+        "length": 365487,
+        "sha256": "907881CADAC86F2AEDC00D02B7625F69D401431CE37DB34AA28A0FE5E1F39F0C"
+      },
+      {
+        "path": "docs/validation/design-2026-10-08/widgets-2.png",
+        "length": 356742,
+        "sha256": "38529C7C6C2FC021955A776F43945DC64FA87C42C0BA858B496748F2821F28D7"
+      },
+      {
+        "path": "docs/validation/installer-v0.1.0.md",
+        "length": 3870,
+        "sha256": "DCE29AAA72D0E63DF029E911883BE5EA3B7DB82408A42002C72E3B2919581D9A"
+      },
+      {
+        "path": "docs/validation/release-v0.1.0-published.json",
+        "length": 1810,
+        "sha256": "2832266FF8D5487D8B2E9A0B602551528643EBC511B2A8185682A05270913202"
+      },
+      {
+        "path": "docs/validation/release-v0.1.0.json",
+        "length": 102314,
+        "sha256": "B52535EFCC6F159C02989ACE0779E13BAD35C39FE5CEF84A653F842EE2976DD2"
+      },
+      {
+        "path": "docs/validation/release-v0.1.0.md",
+        "length": 5296,
+        "sha256": "B4DD6368B4836F7C2FF33AB814F51881DD26D6B2AC656C6EFF62B0D1321D30D4"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/memory-before-fix.png",
+        "length": 15427,
+        "sha256": "FAD807E9FE5AD515167B0E0BD2C94BA932BEE68C5E43B4C8FE4362500EC8EAFA"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/README.md",
+        "length": 7903,
+        "sha256": "C15DE295CFEA02D7F8FC20F739634622DDA28BBA2BFE7282EADB34DE5BC71064"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/results.json",
+        "length": 269336,
+        "sha256": "D28B7844EBED99A534F1E3B69C17A52D217BF0760B818B3B4302BF43141F30FE"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-0.png",
+        "length": 17602,
+        "sha256": "D94C0C5CD029BA46C0E350A01E3B9BA691F0B4D364A89C86F09FB9BCD8219D28"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-1.png",
+        "length": 18805,
+        "sha256": "6E574EC603BDA44AAB95DE70D7ECBEF27D78C6DBD7143822F0211BD6B14C1ABB"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-2.png",
+        "length": 17373,
+        "sha256": "24D5D73EFB6C96D70C39C6D96EF9EACE3802DAC3AB06E3C8747ED6EFE6A89C30"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-3.png",
+        "length": 17715,
+        "sha256": "B67C3CC3C12086E3C9A8D7307FD1BEBBAAB7683EEBCD97DB5C8F6D7D081BD0D3"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-4.png",
+        "length": 15568,
+        "sha256": "EC61CC6E75DC68152991AEB8ECF31088AF6BDA9DFB0B0AC651F7E722CBC68A47"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-6.png",
+        "length": 19812,
+        "sha256": "1026AFC62B2A70C17CEF4E175FF97078E0C5CD1E3CC6A0F42B03EAEEF55423C4"
+      },
+      {
+        "path": "docs/validation/windows-2026-10-13/windows-live-kind-8.png",
+        "length": 46079,
+        "sha256": "2DE76758127351D701466037F2302F77FE6F98AA8BA723E880A4987BD9BB885B"
+      },
+      {
+        "path": "docs/verification.md",
+        "length": 42816,
+        "sha256": "7967975DAFC318ED14F3CA1579277843F1EA4A8D364484383DCF92994C9ADD8B"
+      },
+      {
+        "path": "docs/weather.md",
+        "length": 4269,
+        "sha256": "AEA21054AE77DCB19840FD2FB36320C7F1452984A2C10C2183E6AD164877F831"
+      },
+      {
+        "path": "licenses/nlohmann-json-MIT.txt",
+        "length": 1076,
+        "sha256": "47946327529310E96DC4773B8C52EB0EFBA739F9A52BF112C6046D07B5897829"
+      },
+      {
+        "path": "licenses/NSIS.txt",
+        "length": 15488,
+        "sha256": "3C8DE989F6504D52F5F8DFAFEDB6668CD47201F5D01F1319570727C091425DD6"
+      },
+      {
+        "path": "plan.md",
+        "length": 147791,
+        "sha256": "1D4C3AF01C6C0398693FF5FEC45499F8308FB04291BF65369B2BF77D9FF4D66E"
+      },
+      {
+        "path": "README.md",
+        "length": 25211,
+        "sha256": "DE5A7E4EEF7C9A764EBED13D003921F1844EA6D59FE013148232C11B2DCD9925"
+      },
+      {
+        "path": "Tempos.exe",
+        "length": 1152000,
+        "sha256": "E8DEDCF6299A7BD47FA89F470D03CBF34B97DC1F94C9633B27E788315D84ED61"
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "length": 1846,
+        "sha256": "D645EFF86D4246CC5DB99226462B7B07CC28CFE3D49A02371021F1AE5F8385F1"
+      }
+    ]
+  },
+  "lifecycle": {
+    "folder": "test-results/e2e-20261013-222319-784",
+    "command": "dotnet artifacts/installer-runner/Tempos.E2E.dll . --installer --exe artifacts/Tempos-0.1.0-win-x64.exe",
+    "exitCode": 0,
+    "passed": 185,
+    "failed": 0,
+    "skipped": 0,
+    "record": {
+      "started": "2026-10-13T22:23:19.7806241+09:00",
+      "completed": "2026-10-13T22:23:25.0757386+09:00",
+      "mode": "--installer",
+      "testClass": "installer-lifecycle",
+      "apiMode": "not-exercised",
+      "systemMode": "clock-only",
+      "executable": "artifacts\\Tempos-0.1.0-win-x64.exe",
+      "executableSha256": "3EDEC8F82CE3E888562BFBFB9BC603CBFE3E2C23EDFADC5413222CD18B4A679F",
+      "results": [
+        {
+          "name": "Installer under test matches build manifest",
+          "passed": true
+        },
+        {
+          "name": "Installer manifest requests current-user execution without elevation",
+          "passed": true
+        },
+        {
+          "name": "Installer test does not replace an existing installed Tempos",
+          "passed": true
+        },
+        {
+          "name": "Installer test owns only newly created shortcuts",
+          "passed": true
+        },
+        {
+          "name": "No user Tempos process is running before installer lifecycle",
+          "passed": true
+        },
+        {
+          "name": "Install and uninstall targets are within the isolated test workspace",
+          "passed": true
+        },
+        {
+          "name": "All-users install override is rejected without creating payload",
+          "passed": true
+        },
+        {
+          "name": "Silent installation rejects a drive root",
+          "passed": true
+        },
+        {
+          "name": "Silent installation rejects the user data directory without changing settings",
+          "passed": true
+        },
+        {
+          "name": "First installer page is a folder chooser retaining the requested Unicode path",
+          "passed": true
+        },
+        {
+          "name": "Installer has no all-users scope selector",
+          "passed": true
+        },
+        {
+          "name": "installer-folder: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Interactive installer reaches completion page",
+          "passed": true
+        },
+        {
+          "name": "installer-complete: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Interactive current-user installation completes",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: data/README.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: data/regions.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-calendar-month.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-captures.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-clock.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-disk-all.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-disk-single.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-memory.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-settings-clock.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-settings-network.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-settings-weather.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-system.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-weather-clear.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-weather-night.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/final-weather-rain.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/installer-v0.1.0/captures.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/installer-v0.1.0/installer-complete.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/installer-v0.1.0/installer-folder.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/calendar-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/calendar-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/calendar-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/calendar-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/calendar-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/calendar-xl.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/captures.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/clock-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/clock-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/clock-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/clock-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/clock-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/cpu-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/cpu-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/cpu-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/cpu-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/cpu-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/disk-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/disk-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/disk-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/disk-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/disk-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/gallery.html",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/gpu-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/gpu-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/gpu-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/gpu-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/gpu-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/memory-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/memory-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/memory-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/memory-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/memory-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/network-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/network-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/network-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/network-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/network-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/overview.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/system-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/system-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/system-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/system-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/system-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-add-apply.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-app-startup.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-arrange-widget.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-arrange.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-backup-exported.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-backup-restored.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-calendar-connected.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-calendar-month.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-clock-options.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-diagnostics.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-first-launch.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-location-applied.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-network.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-system-options.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-weather-kma.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-weather-open-meteo.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/usage-weather-region.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-clear.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-l.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-m.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-night.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-rain.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-s.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-sizes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/v0.1.0/weather-slim.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/weather-connections-kma.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/weather-connections-open-meteo.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/weather-size-0.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/weather-size-1.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/weather-size-2.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/weather-size-3.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/assets/widgets-overview.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/design-guide.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/development.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/e2e.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/local-release-guide.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/README-작성-가이드.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/README.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/releases/v0.1.0.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/screenshots.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/user-guide.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/2026-10-08.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/2026-10-09-audit.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/2026-10-12-ui-review.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/2026-10-12-weather.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/2026-10-13-api-mock.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/2026-10-13-final-design.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/calendar-overflow.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/calendar-xl.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/device-states.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/README.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/settings.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/themes.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/weather-states.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/widgets-0.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/widgets-1.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/design-2026-10-08/widgets-2.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/installer-v0.1.0.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/release-v0.1.0-published.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/release-v0.1.0.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/release-v0.1.0.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/memory-before-fix.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/README.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/results.json",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-0.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-1.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-2.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-3.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-4.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-6.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/validation/windows-2026-10-13/windows-live-kind-8.png",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/verification.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: docs/weather.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: licenses/nlohmann-json-MIT.txt",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: licenses/NSIS.txt",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: plan.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: README.md",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: Tempos.exe",
+          "passed": true
+        },
+        {
+          "name": "Installed payload hash: THIRD_PARTY_NOTICES.md",
+          "passed": true
+        },
+        {
+          "name": "Windows installed-app entry records version and exact path",
+          "passed": true
+        },
+        {
+          "name": "Desktop and Start menu shortcuts installed",
+          "passed": true
+        },
+        {
+          "name": "Shortcut targets installed executable and settings",
+          "passed": true
+        },
+        {
+          "name": "Shortcut targets installed executable and settings",
+          "passed": true
+        },
+        {
+          "name": "Existing installation cannot silently relocate to a different folder",
+          "passed": true
+        },
+        {
+          "name": "Installed production app opens isolated clock-only profile",
+          "passed": true
+        },
+        {
+          "name": "Installed app finds bundled regions outside repository working directory",
+          "passed": true
+        },
+        {
+          "name": "Installer startup smoke exercises no API widgets",
+          "passed": true
+        },
+        {
+          "name": "Update refuses to overwrite a running app",
+          "passed": true
+        },
+        {
+          "name": "Uninstall refuses to remove a running app",
+          "passed": true
+        },
+        {
+          "name": "Installed app exits cleanly through native command",
+          "passed": true
+        },
+        {
+          "name": "Same-folder reinstall updates successfully",
+          "passed": true
+        },
+        {
+          "name": "Reinstall retains the verified production executable",
+          "passed": true
+        },
+        {
+          "name": "Reinstall preserves saved profile and unrelated files",
+          "passed": true
+        },
+        {
+          "name": "Installed production app opens isolated clock-only profile",
+          "passed": true
+        },
+        {
+          "name": "Installed app finds bundled regions outside repository working directory",
+          "passed": true
+        },
+        {
+          "name": "Installed app restart preserves theme and clock",
+          "passed": true
+        },
+        {
+          "name": "Installed app exits cleanly through native command",
+          "passed": true
+        },
+        {
+          "name": "All-users uninstall override rejected",
+          "passed": true
+        },
+        {
+          "name": "Uninstaller rejects a different directory",
+          "passed": true
+        },
+        {
+          "name": "Current-user uninstaller completes",
+          "passed": true
+        },
+        {
+          "name": "Uninstaller removes installed executable and itself",
+          "passed": true
+        },
+        {
+          "name": "Uninstaller removes its Windows registration",
+          "passed": true
+        },
+        {
+          "name": "Uninstaller removes only its shortcuts",
+          "passed": true
+        },
+        {
+          "name": "Uninstall clears matching automatic-start registration",
+          "passed": true
+        },
+        {
+          "name": "Uninstall preserves unrelated files and user configuration",
+          "passed": true
+        },
+        {
+          "name": "Real user Tempos settings untouched",
+          "passed": true
+        },
+        {
+          "name": "Reinstall after removal succeeds",
+          "passed": true
+        },
+        {
+          "name": "Uninstall preserves another copy's automatic-start command",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "mockSmoke": {
+    "folder": "test-results/e2e-20261013-222325-161",
+    "command": "dotnet artifacts/installer-runner/Tempos.E2E.dll . --smoke",
+    "exitCode": 0,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "record": {
+      "started": "2026-10-13T22:23:25.1580295+09:00",
+      "completed": "2026-10-13T22:23:27.3363727+09:00",
+      "mode": "--smoke",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "22660126331DABA1B7A542782B2E4C5B46F373815D8A74916DB7DBD97830305A",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "All 3837 packaged weather regions loaded",
+          "passed": true
+        },
+        {
+          "name": "Diagnostic file created",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "docs": {
+    "source": "PASS 17 documents, 305 local references/anchors, 67 PNG hashes, 37 widget sizes, 17 usage captures, 2 installer captures",
+    "payload": "PASS 17 documents, 293 local references/anchors, 67 PNG hashes, 37 widget sizes, 17 usage captures, 2 installer captures",
+    "installerScreenshots": "docs/assets/installer-v0.1.0/captures.json"
+  },
+  "priorFailedAttempts": [
+    {
+      "folder": "test-results/e2e-20261013-215910-945",
+      "status": "failed",
+      "includedInFinalTotals": false,
+      "reason": "Invalid /D root silently fell back to default install; owned default install removed; original command-line path validation added.",
+      "resultFilePresent": true
+    },
+    {
+      "folder": "test-results/e2e-20261013-215951-022",
+      "status": "failed",
+      "includedInFinalTotals": false,
+      "reason": "Preflight refused prior test installation; cleaned before further runs.",
+      "resultFilePresent": true
+    },
+    {
+      "folder": "test-results/e2e-20261013-220209-939",
+      "status": "failed",
+      "includedInFinalTotals": false,
+      "reason": "NSIS path expansion returned empty for nonexistent custom directory; replaced with GetFullPathNameW.",
+      "resultFilePresent": true
+    },
+    {
+      "folder": "test-results/e2e-20261013-220601-557",
+      "status": "failed",
+      "includedInFinalTotals": false,
+      "reason": "Hidden first app window not enumerated by UI Automation; attached native owned window and fixed cleanup.",
+      "resultFilePresent": true
+    }
+  ],
+  "excludedDevelopmentPasses": [
+    "test-results/e2e-20261013-221342-266",
+    "test-results/e2e-20261013-221854-227",
+    "test-results/e2e-20261013-222101-492"
+  ],
+  "notExercised": [
+    "Live HTTP APIs, Google web consent and actual geolocation",
+    "Actual Windows sign-out/sign-in",
+    "Upgrade to a future application version",
+    "SmartScreen reputation and clean-machine matrix"
+  ],
+  "notes": "Installer runs use clock-only isolated production profile; no API widgets or credentials. Ordinary E2E APIs remain mocked. Matching user startup registry restored in finally. Exact tested artifact will be uploaded without rebuild."
+}
