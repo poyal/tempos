@@ -4,6 +4,8 @@
 
 새 Release/ASan 빌드에서 각각 핵심 202개, 실제 Windows E2E에서 **783개 통과·실패 0개·SKIP 2개**를 확인했다. 외부 API·OAuth·위치는 목업이며 로컬 시스템 수집만 실제 Windows 카운터를 사용했다. README에 9종 위젯의 37개 크기와 사용법 17장을 새로 촬영해 넣었다. [릴리즈 검증과 제한](validation/release-v0.1.0.md), [실행별 전체 결과](validation/release-v0.1.0.json), [Windows 릴리즈 노트](releases/v0.1.0.md).
 
+Windows x64 ZIP과 체크섬을 [v0.1.0](https://github.com/poyal/tempos/releases/tag/v0.1.0)에 게시하고 재다운로드 SHA-256 일치를 확인했다. [게시 후 검증 기록](validation/release-v0.1.0-published.json). 릴리즈 후 이 문서 기록만 추가했으며 배포 ZIP은 변경하지 않았다.
+
 ## 외부 API 목업 기준 적용 · 2026-10-13
 
 사용자 기준에 따라 일반 E2E는 외부 날씨·Google Calendar·OAuth·위치를 모두 목업으로 검사한다. Win32 창·JSON 파서·캐시·DPAPI 저장·재시작은 실제 경로를 사용하고, `--windows-real`에서는 CPU·GPU·메모리·디스크·네트워크 수집만 실제로 유지한다. 기준은 [E2E 안내](e2e.md)와 루트 [AGENTS.md](../AGENTS.md)에 고정했다.
