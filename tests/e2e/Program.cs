@@ -99,7 +99,10 @@ internal static partial class Program
         {
             Thread.Sleep(100);
             var handle = OwnedManagementWindow(app.ProcessId);
-            var window = handle != 0 ? Automation.FromHandle(handle).AsWindow() : null;
+            // The HWND exists before settings construction and ShowWindow finish.
+            // Querying UIA during that interval can stall on a restart.
+            var ready = handle != 0 && IsWindowVisible(handle) && GetDlgItem(handle, 1000) != 0;
+            var window = ready ? Automation.FromHandle(handle).AsWindow() : null;
             if (window != null)
             {
                 Window = window;
