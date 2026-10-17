@@ -6,6 +6,11 @@ internal static partial class Program
 {
     static void UiReview(ref App? app, string exe)
     {
+        Check(!Live && !LiveApis, "Widget gallery uses sample collectors and mock APIs");
+        File.WriteAllText(Path.Combine(Data, "sensor-setup-scenario.json"), """{"exitCode":0}""");
+        Tab(2); NativeButton(1512);
+        Check(Settings()["cpuTemperatureEnabled"]!.GetValue<bool>(), "Gallery enables CPU temperature through mock setup");
+        Tab(0);
         for (int i = 0; i < 5; i++) NativeButton(1203);
         bool Visible(int id) => IsWindowVisible(GetDlgItem(Window.Properties.NativeWindowHandle, id));
         for (int kind = 0; kind < 9; kind++)

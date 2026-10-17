@@ -18,6 +18,11 @@ internal static partial class Program
             initialBounds.Width - initialBounds.X, initialBounds.Height - initialBounds.Y + 60, 0x16);
         Thread.Sleep(200);
         CaptureSettings("usage-first-launch");
+        File.WriteAllText(Path.Combine(Data, "sensor-setup-scenario.json"), """{"exitCode":0}""");
+        Tab(2); NativeButton(1512);
+        Check(Settings()["cpuTemperatureEnabled"]!.GetValue<bool>(), "README CPU temperature uses mock setup only");
+        CaptureSettings("usage-cpu-temperature");
+        Tab(0);
         for (int i = 0; i < 5; i++) NativeButton(1203);
         NativeCombo(1201, 0); NativeButton(1202);
         SendMessage(Window.Properties.NativeWindowHandle, 0x111, 1911, 0);

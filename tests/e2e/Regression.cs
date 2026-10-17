@@ -26,6 +26,7 @@ internal static partial class Program
     [DllImport("user32.dll")] static extern bool GetClientRect(nint window, out Rectangle rectangle);
     [DllImport("user32.dll")] static extern bool ClientToScreen(nint window, ref Point point);
     [DllImport("user32.dll")] static extern nint GetAncestor(nint window, uint flags);
+    [DllImport("user32.dll")] static extern bool RedrawWindow(nint window, nint updateRect, nint updateRegion, uint flags);
     static void CaptureSettings(string name)
     {
         var handle = Window.Properties.NativeWindowHandle.Value;
@@ -34,6 +35,9 @@ internal static partial class Program
         SetWindowPos(handle, new nint(-1), 0, 0, 0, 0, 0x13);
         try
         {
+            // Finish repainting native child controls after tab/selection changes
+            // before copying screen pixels; never repair text in the PNG.
+            if (!RedrawWindow(handle, 0, 0, 0x585)) throw new Exception("Settings repaint failed");
             Thread.Sleep(200);
             if (!GetClientRect(handle, out var bounds)) throw new Exception("Settings client bounds unavailable");
             var origin = Point.Empty;

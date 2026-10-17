@@ -61,8 +61,20 @@ internal static partial class Program
     static JsonObject Settings() => JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "settings.json")))!.AsObject();
     static JsonObject Diagnostic() { Tab(2); Button(1505); return JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "diagnostics.json")))!.AsObject(); }
     static nint WidgetHandle(JsonNode item) => (nint)item["handle"]!.GetValue<long>();
-    static void NativeCombo(int id, int index) { SendMessage(Element(id).Properties.NativeWindowHandle, 0x14E, index, 0); }
-    static void NativeButton(int id) { SendMessage(Element(id).Properties.NativeWindowHandle, 0xF5, 0, 0); Thread.Sleep(100); }
+    static void NativeCombo(int id, int index)
+    {
+        // UIA may omit an occluded combo after restart. This helper deliberately
+        // drives Win32 controls; accessibility is checked separately.
+        var handle = GetDlgItem(Window.Properties.NativeWindowHandle, id);
+        if (handle == 0) throw new Exception($"Native combo {id} missing");
+        if (SendMessage(handle, 0x14E, index, 0) == -1) throw new Exception($"Native combo {id} rejects index {index}");
+    }
+    static void NativeButton(int id)
+    {
+        var handle = GetDlgItem(Window.Properties.NativeWindowHandle, id);
+        if (handle == 0) throw new Exception($"Native button {id} missing");
+        SendMessage(handle, 0xF5, 0, 0); Thread.Sleep(100);
+    }
     static void FileDialog(int command, string file)
     {
         PostMessage(Window.Properties.NativeWindowHandle, 0x111, command, 0); nint handle = 0;

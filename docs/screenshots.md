@@ -2,10 +2,45 @@
 
 README의 예제 이미지는 네이티브 TestHost를 실행해 **앱 창 또는 위젯 영역만** 캡처한 화면입니다. 개인 계정·키·일정은 사용하지 않았습니다. 예제의 Open-Meteo·기상청 값은 재현 가능한 응답입니다. 별도로 추가한 실제 Windows 측정 화면은 아래 촬영 조건과 [실행 결과](validation/windows-2026-10-13/README.md)로 구분합니다.
 
+<a id="manual-20261017"></a>
+## 사용자 매뉴얼 전면 개편 · 2026-10-17
+
+현재 README는 **0.1.2 소스의 Release TestHost**로 위젯 37개 크기와 사용법 18개 화면을 새로 촬영했다. 시계·달력은 촬영 날짜이며 날씨·일정·장치·온도·그래프는 예제 자료다. 설치본·개인 설정·실제 계정·현재 위치는 사용하지 않았다.
+
+| 위젯 | 크기별 화면 |
+| --- | --- |
+| 시계 | [S · Slim · M · L](assets/readme-2026-10-17/clock-sizes.png) |
+| 날씨 | [S · Slim · M · L](assets/readme-2026-10-17/weather-sizes.png) |
+| CPU | [S · Slim · M · L](assets/readme-2026-10-17/cpu-sizes.png) |
+| GPU | [S · Slim · M · L](assets/readme-2026-10-17/gpu-sizes.png) |
+| 메모리 | [S · Slim · M · L](assets/readme-2026-10-17/memory-sizes.png) |
+| 시스템 정보 | [S · Slim · M · L](assets/readme-2026-10-17/system-sizes.png) |
+| 네트워크 | [S · Slim · M · L](assets/readme-2026-10-17/network-sizes.png) |
+| 디스크 | [S · Slim · M · L](assets/readme-2026-10-17/disk-sizes.png) |
+| 캘린더 | [S · Slim · M · L](assets/readme-2026-10-17/calendar-sizes.png) · [XL](assets/readme-2026-10-17/calendar-xl.png) |
+
+[전체 예시](assets/readme-2026-10-17/overview.png)는 M 크기 9장을 합성한 화면이다. [오프라인 갤러리](assets/readme-2026-10-17/gallery.html)는 저장소를 내려받아 브라우저에서 열 수 있다. 원본을 비례 축소해 제목·크기 설명만 덧붙였으며 위젯 내부는 다시 그리지 않았다. 캘린더 XL은 별도 배율이다.
+
+- Windows 11 x64, 144 DPI(150%), 위젯 확대 100%, 공통 블루 테마. 위젯 소개는 배경 투명도 0%, 촬영 배경은 `#edf4fa`이다. 앱의 신규 위젯 기본 배경 투명도는 10%다.
+- `--ui-review`: 37개 크기와 맑은 낮·비·맑은 밤 3개 상태. CPU 온도는 TestHost에서 설치 결과를 목업한 뒤 활성화했다.
+- `--readme`: 첫 실행, 추가·적용, 정렬 설정·위젯, 시계·시스템 표시 옵션, 네트워크, 날씨 지역·현재 위치 적용·두 공급자, 캘린더 선택·월 이동, CPU 온도, 자동 시작, 내보내기·가져오기, 진단 저장의 18장.
+- 날씨·Google·OAuth는 HTTP 응답 경계에서 목업한다. 위치는 부산 예제 좌표를 사용하며 실제 측위하지 않는다. Google 웹 승인 화면과 실제 센서 설치/UAC 화면은 촬영하지 않았다.
+- 설정은 실행별 테스트 폴더에, 자동 시작은 테스트 전용 레지스트리에 격리한다. 설정창 내부와 위젯 영역만 공개하며 설치된 앱과 원본 레이아웃은 변경하지 않는다.
+- 원본 경로·촬영 시각·소스 커밋·TestHost 해시·PNG 해시·합성 입력은 [captures.json](assets/readme-2026-10-17/captures.json)에 기록한다. [성공·실패와 미실행 범위](validation/2026-10-17-readme.md)는 별도 검증 기록을 따른다.
+
+재현은 [E2E 준비](e2e.md)에 따라 동일한 Release TestHost에서 `--ui-review`, `--readme`, `--temperature`를 순차 실행한다. 모드·실행 폴더·종료 코드를 담은 실행 목록으로 다음을 실행한다.
+
+```powershell
+node scripts/release-screenshots.cjs artifacts/readme-2026-10-17-runs.json --output docs/assets/readme-2026-10-17 --version 0.1.2
+node scripts/verify-docs.cjs
+```
+
+출력 폴더와 표시 버전을 지정할 수 있다. 새 촬영에는 새 날짜별 폴더를 사용하며, 기존 버전 이미지와 검증 기록은 덮어쓰지 않는다. 사용법 필수 화면 목록은 캡처 기록에 함께 저장하고 검사한다. 과거 0.1.0 갤러리의 37개 크기·17개 사용법도 계속 검증한다.
+
 <a id="release-010"></a>
 ## v0.1.0 · 위젯별 크기와 사용법
 
-현재 README에는 **2026-10-13 Release TestHost**로 새로 촬영한 화면을 사용합니다. 아래 과거 촬영 기록은 날짜별 근거로 보존하며 현재 배포 후보의 검사로 합산하지 않습니다.
+이 절은 **2026-10-13 Release TestHost**로 촬영한 0.1.0 화면의 보존 기록입니다. 현재 README는 위의 2026-10-17 촬영본을 사용합니다. 과거 촬영 결과는 최신 검증에 합산하지 않습니다.
 
 | 위젯 | S · Slim · M · L 소개 이미지 |
 | --- | --- |

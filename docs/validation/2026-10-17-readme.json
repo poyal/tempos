@@ -1,0 +1,230 @@
+{
+  "date": "2026-10-17",
+  "purpose": "User manual rewrite and fresh sample screenshots",
+  "sourceCommit": "3922aa4fbf707e4d4b73583ea05012878c4918f9",
+  "productSourceChanged": false,
+  "core": {
+    "mode": "Release mock/local",
+    "passed": 243,
+    "failed": 0,
+    "skipped": 0,
+    "executableSha256": "4a681cf6d77032dae5a53d8ad689a54264fddfc0511a9dc7087b1f684ded6479",
+    "log": "artifacts/readme-2026-10-17-core.log",
+    "initialSandboxAttempt": {
+      "passedBeforeFailure": 118,
+      "failure": "DPAPI save",
+      "disposition": "Sandbox user context cannot perform DPAPI protection; rerun in actual Windows user context passed all 243 checks."
+    }
+  },
+  "successfulRuns": [
+    {
+      "folder": "e2e-20261017-221248-326",
+      "exitCode": 0,
+      "started": "2026-10-17T22:12:48.3217442+09:00",
+      "completed": "2026-10-17T22:15:21.629741+09:00",
+      "mode": "--ui-review",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "82AAC94C804F743EE3E0BBEBFD33E5A435B2F0990AEA1F0BE517E4738D6A5EB2",
+      "passed": 502,
+      "failed": 0,
+      "skipped": 0,
+      "failures": [],
+      "skips": [],
+      "mockRequests": 5,
+      "unmatchedRequests": 0,
+      "installedProfilePreserved": true
+    },
+    {
+      "folder": "e2e-20261017-221558-687",
+      "exitCode": 0,
+      "started": "2026-10-17T22:15:58.6841396+09:00",
+      "completed": "2026-10-17T22:18:19.4540744+09:00",
+      "mode": "--temperature",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "82AAC94C804F743EE3E0BBEBFD33E5A435B2F0990AEA1F0BE517E4738D6A5EB2",
+      "passed": 505,
+      "failed": 0,
+      "skipped": 0,
+      "failures": [],
+      "skips": [],
+      "mockRequests": 1,
+      "unmatchedRequests": 0,
+      "installedProfilePreserved": true
+    },
+    {
+      "folder": "e2e-20261017-222123-050",
+      "exitCode": 0,
+      "started": "2026-10-17T22:21:23.0459069+09:00",
+      "completed": "2026-10-17T22:21:52.0362461+09:00",
+      "mode": "--readme",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "82AAC94C804F743EE3E0BBEBFD33E5A435B2F0990AEA1F0BE517E4738D6A5EB2",
+      "passed": 53,
+      "failed": 0,
+      "skipped": 0,
+      "failures": [],
+      "skips": [],
+      "mockRequests": 9,
+      "unmatchedRequests": 0,
+      "installedProfilePreserved": true
+    }
+  ],
+  "totals": {
+    "passed": 1060,
+    "failed": 0,
+    "skipped": 0
+  },
+  "earlierAttempts": [
+    {
+      "folder": "e2e-20261017-220648-540",
+      "exitCode": 1,
+      "started": "2026-10-17T22:06:48.5258101+09:00",
+      "completed": "2026-10-17T22:07:04.6735269+09:00",
+      "mode": "--ui-review",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "82AAC94C804F743EE3E0BBEBFD33E5A435B2F0990AEA1F0BE517E4738D6A5EB2",
+      "passed": 71,
+      "failed": 1,
+      "skipped": 0,
+      "failures": [
+        {
+          "name": "Unhandled test failure: Control 1300 missing",
+          "passed": false
+        }
+      ],
+      "skips": [],
+      "mockRequests": 2,
+      "unmatchedRequests": 0,
+      "installedProfilePreserved": true,
+      "disposition": "UIA could not find occluded native size combo after restart; NativeCombo now resolves the owned Win32 child handle."
+    },
+    {
+      "folder": "e2e-20261017-220834-314",
+      "exitCode": 1,
+      "started": "2026-10-17T22:08:34.3108148+09:00",
+      "completed": "2026-10-17T22:08:50.447353+09:00",
+      "mode": "--ui-review",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "82AAC94C804F743EE3E0BBEBFD33E5A435B2F0990AEA1F0BE517E4738D6A5EB2",
+      "passed": 71,
+      "failed": 1,
+      "skipped": 0,
+      "failures": [
+        {
+          "name": "Unhandled test failure: Control 1316 missing",
+          "passed": false
+        }
+      ],
+      "skips": [],
+      "mockRequests": 2,
+      "unmatchedRequests": 0,
+      "installedProfilePreserved": true,
+      "disposition": "Same occlusion affected Apply; NativeButton now resolves the owned Win32 child handle."
+    },
+    {
+      "folder": "e2e-20261017-221521-752",
+      "exitCode": 0,
+      "started": "2026-10-17T22:15:21.7478645+09:00",
+      "completed": "2026-10-17T22:15:58.5840361+09:00",
+      "mode": "--readme",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "82AAC94C804F743EE3E0BBEBFD33E5A435B2F0990AEA1F0BE517E4738D6A5EB2",
+      "passed": 53,
+      "failed": 0,
+      "skipped": 0,
+      "failures": [],
+      "skips": [],
+      "mockRequests": 9,
+      "unmatchedRequests": 0,
+      "installedProfilePreserved": true,
+      "disposition": "Functional checks passed, but visual review found incompletely painted combo text in two settings images. Superseded by the final --readme run after explicit native repaint. Not counted twice."
+    }
+  ],
+  "captures": {
+    "manifest": "../assets/readme-2026-10-17/captures.json",
+    "widgets": 37,
+    "usage": 18,
+    "weatherStates": 3,
+    "boards": 10,
+    "pngs": 68
+  },
+  "preview": {
+    "renderer": "PowerShell Markdig HTML with GitHub-like responsive styles; local preview, not GitHub hosted rendering",
+    "images": 32,
+    "missingAnchors": [],
+    "layouts": [
+      {
+        "viewport": 1200,
+        "document": 1185,
+        "tables": 9,
+        "width": 1200,
+        "passed": true
+      },
+      {
+        "viewport": 390,
+        "document": 375,
+        "tables": 9,
+        "width": 390,
+        "passed": true
+      }
+    ]
+  },
+  "notRun": [
+    "--integration-live-api",
+    "--windows-real",
+    "installer lifecycle",
+    "CPU sensor/PawnIO installation or removal",
+    "ASan suite",
+    "release packaging or publishing"
+  ],
+  "limitations": [
+    "All gallery metrics and sensor temperatures are examples, not measurements.",
+    "Google browser consent, real location permissions and sensor UAC were not exercised.",
+    "Local README preview uses Markdig and GitHub-like CSS, not GitHub hosted rendering."
+  ],
+  "downloads": {
+    "url": "https://github.com/poyal/tempos/releases/tag/v0.1.2",
+    "tag": "v0.1.2",
+    "assets": [
+      {
+        "status": 200,
+        "name": "Tempos-0.1.2-win-x64.exe",
+        "url": "https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.exe"
+      },
+      {
+        "status": 200,
+        "name": "Tempos-0.1.2-win-x64.zip",
+        "url": "https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.zip"
+      }
+    ],
+    "checkedAt": "2026-10-17T22:24:46.5226474+09:00"
+  },
+  "documentValidation": {
+    "pngHashes": 135,
+    "galleries": 2,
+    "usageCaptures": 35,
+    "archivedInstallerCaptures": 2,
+    "diffCheck": "passed",
+    "documents": 26,
+    "widgetSizes": 74,
+    "references": 450
+  }
+}
