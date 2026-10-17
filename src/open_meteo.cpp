@@ -92,7 +92,8 @@ static Json compactResponse(const Json &j) {
     result[section] = Json::object();
     for (const auto &field :
          {"time", "temperature_2m", "relative_humidity_2m", "wind_speed_10m", "weather_code", "is_day",
-          "precipitation_probability", "temperature_2m_min", "temperature_2m_max"})
+          "precipitation_probability", "temperature_2m_min", "temperature_2m_max",
+          "precipitation_probability_max"})
       if (j.at(section).contains(field)) {
         auto numeric = [](const Json &v) { return v.is_number() ? v : Json(); };
         const auto &v = j.at(section).at(field);
@@ -141,12 +142,30 @@ WeatherData parseOpenMeteo(const Json &j, int64_t now) {
     }
     return out;
   };
-  if (j.contains("daily"))
-    for (const auto &day : rows(j.at("daily")))
-      if (localDate(day.at("time").get<int64_t>(), L"Asia/Seoul") == localDate(now, L"Asia/Seoul")) {
+  if (j.contains("daily")) {
+    const auto today = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+    int64_t previous = 0;
+    for (const auto &day : rows(j.at("daily"))) {
+      const auto time = day.at("time").get<int64_t>();
+      if (time <= previous || time != localMidnight(localDate(time, L"Asia/Seoul"), L"Asia/Seoul"))
+        throw std::runtime_error("INVALID_DAYS");
+      previous = time;
+      if (time == today) {
         d.low = value(day, "temperature_2m_min", -100, 70);
         d.high = value(day, "temperature_2m_max", -100, 70);
+      } else if (time > today && time <= today + 4 * 86400) {
+        WeatherDay forecast;
+        forecast.time = time;
+        forecast.low = value(day, "temperature_2m_min", -100, 70);
+        forecast.high = value(day, "temperature_2m_max", -100, 70);
+        if (forecast.low > forecast.high)
+          forecast.low = forecast.high = NAN;
+        forecast.probability = value(day, "precipitation_probability_max", 0, 100);
+        forecast.state = wmoWeatherState(code(day));
+        d.days.push_back(forecast);
       }
+    }
+  }
   if (j.contains("hourly")) {
     int64_t previous = 0;
     for (const auto &hour : rows(j.at("hourly"))) {
@@ -185,7 +204,9 @@ Snapshot WeatherService::readOpenMeteo(const Widget &w, std::stop_token stop) {
           d.fetched = fetched;
           auto key = item.at("id").get<std::string>();
           openLast_[key] = d;
-          openDue_[key] = fetched + 900;
+          openDue_[key] = item.at("response").contains("daily") &&
+                                  item.at("response").at("daily").contains("precipitation_probability_max")
+                              ? fetched + 900 : 0;
           openResponses_[key] = compactResponse(item.at("response"));
         } catch (...) {
         }
@@ -210,9 +231,9 @@ Snapshot WeatherService::readOpenMeteo(const Widget &w, std::stop_token stop) {
       std::wstring path = L"/v1/forecast?latitude=" + std::to_wstring(w.latitude) + L"&longitude=" +
                           std::to_wstring(w.longitude) +
                           L"&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,is_day"
-                          L"&hourly=temperature_2m,weather_code,precipitation_probability"
-                          L"&daily=temperature_2m_min,temperature_2m_max&timezone=Asia%2FSeoul"
-                          L"&timeformat=unixtime&wind_speed_unit=ms&temperature_unit=celsius&forecast_days=2";
+                          L"&daily=temperature_2m_min,temperature_2m_max,weather_code,precipitation_probability_max"
+                          L"&timezone=Asia%2FSeoul"
+                          L"&timeformat=unixtime&wind_speed_unit=ms&temperature_unit=celsius&forecast_days=5";
       auto response = http_.request(L"api.open-meteo.com", path, L"GET", {}, {}, stop);
       if (response.status == 429)
         openBlockedUntil_ = now + std::max(900, response.retryAfter);
@@ -258,6 +279,8 @@ Snapshot WeatherService::readOpenMeteo(const Widget &w, std::stop_token stop) {
     if (std::isfinite(sun.first) && std::isfinite(sun.second))
       d.night = hour < sun.first || hour >= sun.second;
     std::erase_if(d.hours, [now](auto &h) { return h.time <= now; });
+    const auto today = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+    std::erase_if(d.days, [today](auto &day) { return day.time <= today; });
     s.status = failed || now < openBlockedUntil_ || now - d.observed > 7200 ? Status::Stale : Status::Ready;
     s.weather = std::make_shared<WeatherData>(std::move(d));
     if (s.status == Status::Stale)

@@ -79,8 +79,10 @@ Widget readWidget(const Json &j) {
 Json settingsJson(const Settings &s, bool exporting) {
   Json j = {{"version", 1}, {"theme", s.theme}, {"widgets", Json::array()}};
   j["weatherProvider"] = s.weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
-  if (!exporting)
+  if (!exporting) {
     j["hidden"] = s.hidden;
+    j["cpuTemperatureEnabled"] = s.cpuTemperatureEnabled;
+  }
   for (auto &w : s.widgets)
     j["widgets"].push_back(widgetJson(w));
   return j;
@@ -95,6 +97,7 @@ Settings readSettings(const Json &j) {
   s.weatherProvider = provider == "kma" ? WeatherProvider::Kma : WeatherProvider::OpenMeteo;
   s.theme = j.value("theme", 1);
   s.hidden = j.value("hidden", false);
+  s.cpuTemperatureEnabled = j.value("cpuTemperatureEnabled", false);
   if (s.theme < 0 || s.theme >= 9)
     throw std::runtime_error("Invalid theme");
   if (!j.contains("widgets") || !j["widgets"].is_array() || j["widgets"].size() > 64)

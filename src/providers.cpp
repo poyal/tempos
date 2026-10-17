@@ -112,7 +112,7 @@ void LocalMetrics::retain(bool cpu, bool gpu, bool network) {
     networkTotal_.reset();
   }
 }
-std::vector<Device> LocalMetrics::devices(Kind k) {
+std::vector<Device> LocalMetrics::devices(Kind k, bool availableOnly) {
   std::vector<Device> out;
   if (k == Kind::Gpu) {
     gpus_.clear();
@@ -164,6 +164,10 @@ std::vector<Device> LocalMetrics::devices(Kind k) {
           continue;
         UINT type = GetDriveTypeW(paths);
         if (type != DRIVE_FIXED && type != DRIVE_REMOVABLE)
+          continue;
+        // Exclude empty, removed, locked or inaccessible volumes from the picker.
+        // disk() also suppresses media-error dialogs while checking capacity.
+        if (availableOnly && disk(volume).status != Status::Ready)
           continue;
         wchar_t label[128]{};
         GetVolumeInformationW(volume, label, 128, nullptr, nullptr, nullptr, nullptr, 0);
@@ -243,6 +247,7 @@ Snapshot LocalMetrics::gpu(const std::wstring &source) {
     return s;
   }
   s.title = found->device.name;
+  s.temperature = gpuTemperature(found->luid);
   double t = monotonic();
   if (t - gpuTime_ >= .8) {
     gpuUsage_.clear();
@@ -389,7 +394,7 @@ Snapshot LocalMetrics::network(const std::wstring &source) {
 Snapshot LocalMetrics::disk(const std::wstring &source) {
   Snapshot s;
   if (source == allDisksSource) {
-    for (auto &device : devices(Kind::Disk)) {
+    for (auto &device : devices(Kind::Disk, false)) {
       auto volume = disk(device.id);
       s.disks.push_back({device.id, device.name, volume.total, volume.available, volume.secondary});
     }
@@ -449,8 +454,8 @@ std::wstring providerKey(const Widget &w, WeatherProvider provider) {
   }
   return key;
 }
-ProviderService::ProviderService(HWND notify, RemoteRead remote, bool fixture)
-    : remote_(std::move(remote)), notify_(notify), fixture_(fixture),
+ProviderService::ProviderService(HWND notify, RemoteRead remote, bool fixture, TemperatureRead temperature)
+    : remote_(std::move(remote)), temperatureFixture_(std::move(temperature)), notify_(notify), fixture_(fixture),
       thread_([this](std::stop_token t) { run(t); }) {}
 ProviderService::~ProviderService() {
   stop();
@@ -463,8 +468,18 @@ void ProviderService::stop() {
   remoteQueue_.stop();
 }
 void ProviderService::configure(const std::vector<Widget> &widgets, bool paused, bool energy,
-                                WeatherProvider provider) {
+                                WeatherProvider provider, bool cpuTemperature) {
   std::lock_guard g(mutex_);
+  cpuTemperatureEnabled_ = cpuTemperature;
+  bool hasCpu = false;
+  int thermalInterval = 10;
+  for (const auto &widget : widgets)
+    if (widget.kind == Kind::Cpu) {
+      hasCpu = true;
+      thermalInterval = std::min(thermalInterval, widget.interval);
+    }
+  cpuTemperature_.configure(!fixture_ && cpuTemperature && hasCpu && !paused,
+                             energy ? std::max(5, thermalInterval) : thermalInterval);
   weatherProvider_ = provider;
   {
     std::lock_guard localGuard(localMutex_);
@@ -558,6 +573,11 @@ void ProviderService::publish(const std::wstring &key, uint64_t generation, Snap
   data.weatherProvider = e.provider;
   auto old = e.data;
   double t = monotonic();
+  if (data.temperature.status == TemperatureStatus::Ready &&
+      !validTemperature(data.temperature, t, e.interval)) {
+    data.temperature.status = TemperatureStatus::Stale;
+    data.temperature.celsius = NAN;
+  }
   if (e.widget.kind == Kind::Cpu || e.widget.kind == Kind::Gpu || e.widget.kind == Kind::Memory ||
       e.widget.kind == Kind::Network) {
     data.history = old->history;
@@ -582,6 +602,7 @@ void ProviderService::run(std::stop_token token) {
     Widget w;
     WeatherProvider provider = WeatherProvider::Kma;
     uint64_t generation = 0;
+    bool temperatureEnabled = false;
     {
       std::unique_lock l(mutex_);
       auto next = Clock::now() + 24h;
@@ -594,6 +615,7 @@ void ProviderService::run(std::stop_token token) {
             w = e.widget;
             provider = e.provider;
             generation = e.generation;
+            temperatureEnabled = cpuTemperatureEnabled_;
             e.busy = true;
             break;
           }
@@ -654,9 +676,16 @@ void ProviderService::run(std::stop_token token) {
           s.value = s.secondary / s.total * 100.;
         s.title = std::wstring(kindName(w.kind));
         s.detail = L"테스트 자료";
+        if (w.kind == Kind::Cpu && !temperatureEnabled)
+          s.temperature = {NAN, TemperatureStatus::Disabled, 0};
+        else if (w.kind == Kind::Cpu || w.kind == Kind::Gpu)
+          s.temperature = temperatureFixture_ ? temperatureFixture_(w.kind) :
+                            TemperatureReading{w.kind == Kind::Cpu ? 45. : 52., TemperatureStatus::Ready, monotonic()};
       } else {
         std::lock_guard g(localMutex_);
         s = local_.read(w.kind, w.source);
+        if (w.kind == Kind::Cpu)
+          s.temperature = cpuTemperature_.reading();
       }
       publish(key, generation, std::move(s));
     }

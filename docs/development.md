@@ -4,7 +4,7 @@ Tempos는 Windows 11 x64용 C++20·Win32·Direct2D·DirectWrite 앱이다. 사�
 
 ## 환경과 빌드
 
-Visual Studio 2022 C++ Build Tools, Windows SDK, CMake/Ninja, PowerShell이 필요하다. 실행 앱에는 .NET이 필요 없으며 FlaUI E2E 도구만 .NET 10을 사용한다.
+Visual Studio 2022 C++ Build Tools, Windows SDK, CMake/Ninja, PowerShell이 필요하다. 기본 앱은 네이티브 실행 파일이다. FlaUI E2E와 선택 CPU 센서 도우미 빌드에는 .NET 10 SDK를 사용한다. 센서 도우미는 런타임을 포함해 배포하므로 사용자가 .NET을 따로 설치할 필요가 없다.
 
 ```powershell
 ./scripts/build.ps1 -Preset release -Clean -Test
@@ -21,6 +21,7 @@ DPAPI와 UI 검사는 실제 Windows 사용자 컨텍스트에서 실행한다. 
 | 모델·저장 | `model.*`, `storage.*`: 위젯·모니터·날씨 타입, JSON, 원자적 저장, 정상 백업, DPAPI |
 | 앱·렌더링 | `app.*`, `render.*`, `accessibility.*`: 네이티브 설정창·트레이·위젯 창, 정적 렌더링, UIA |
 | 공유 수집 | `providers.*`: 공급자·위치별 구독 공유, 세대 번호, 제한된 작업 큐 |
+| 온도 | `temperature.*`: Windows GPU 온도·제한된 비동기 CPU 파이프 클라이언트. `sensors/`: 선택 설치하는 CPU 센서 서비스 |
 | 날씨 | `weather.*`, `open_meteo.cpp`: 기상청과 Open-Meteo 파싱·캐시·재시도 |
 | 인증·통신 | `calendar.*`, `http.*`: 조회 전용 Google OAuth·일정, HTTPS 허용 호스트·응답 크기·시간 제한 |
 | 자동 시작 | `startup.*`: 현재 사용자 Run 등록과 명령행 인용 |
@@ -58,3 +59,5 @@ Open-Meteo의 작은 JSON 응답은 압축 협상 없이 받는다. 로컬 Windo
 - `docs/assets/`: 문서용으로 검토한 앱 영역 캡처.
 
 같은 이름의 바이너리를 같은 빌드로 간주하지 않는다. 검사 시각과 SHA-256을 기록한다. 문서 전용 수정은 링크·이미지·앵커와 `git diff --check`로 확인한다. 패키징은 [로컬 검증·배포 안내](local-release-guide.md)를 따른다.
+
+CPU 센서 도우미를 포함한 패키지는 첫 준비 시 `scripts/build-sensors.ps1 -Download -Test`로 고정 PawnIO 설치 파일을 내려받고 SHA-256·서명을 검증한다. 이후 `scripts/package.ps1`이 잠금 파일을 사용해 센서 도우미를 빌드하고 함께 묶는다. 빌드 중 서비스/드라이버를 설치하지 않는다. [센서 동작·설치·검증 경계](sensors.md).

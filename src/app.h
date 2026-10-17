@@ -51,6 +51,9 @@ private:
   void findLocation();
   void applyLocation(LocationResult);
   void weatherControls();
+  void sensorControls();
+  void startSensorSetup(bool removing);
+  void completeSensorSetup(DWORD result);
   void applyControls();
   void command(int, int);
   void rebuild();
@@ -106,6 +109,8 @@ private:
   bool fixture_ = false, visible_ = false, closing_ = false, loading_ = false, suspended_ = false,
        sessionLocked_ = false;
   bool settingsBuilt_ = false;
+  HANDLE sensorSetup_{};
+  bool sensorRemoving_ = false;
   UINT settingsDpi_ = 96;
   int tab_ = 0;
   bool trayAdded_ = false;

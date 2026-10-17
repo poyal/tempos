@@ -11,6 +11,7 @@ std::wstring weatherCondition(int rain, int sky);
 std::vector<Json> kmaItems(const std::string &body);
 WeatherState wmoWeatherState(int code);
 WeatherData parseOpenMeteo(const Json &, int64_t now);
+std::vector<WeatherDay> parseKmaDays(const std::vector<Json> &, int64_t now);
 class WeatherService {
 public:
   WeatherService(Store &store, HttpClient &http, bool fixture = false,

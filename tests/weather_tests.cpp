@@ -1,4 +1,5 @@
 #include "weather.h"
+#include "weather_fixture.h"
 #include "providers.h"
 #include "startup.h"
 #include <shellapi.h>
@@ -17,9 +18,11 @@ static Json response(int64_t now) {
             {"weather_code", 95},
             {"is_day", 0}}},
           {"daily",
-           {{"time", {midnight, midnight + 86400}},
-            {"temperature_2m_min", {16, 17}},
-            {"temperature_2m_max", {24, 25}}}},
+           {{"time", {midnight, midnight + 86400, midnight + 172800, midnight + 259200, midnight + 345600, midnight + 432000}},
+            {"temperature_2m_min", {16, 17, 18, 19, 20, 21}},
+            {"temperature_2m_max", {24, 25, 26, 27, 28, 29}},
+            {"weather_code", {0, 0, 2, 61, 71, 95}},
+            {"precipitation_probability_max", {0, 10, 20, 80, 90, 100}}}},
           {"hourly",
            {{"time", {now - 3600, now + 3600, now + 7200, now + 10800, now + 14400}},
             {"temperature_2m", {20, 21, 22, 23, 24}},
@@ -49,6 +52,17 @@ void weatherTests() {
         "Open-Meteo KST daily boundary and next four hours across midnight");
   check(parsed.wind == 2.1 && parsed.humidity == 62 && parsed.temperature == 21.5,
         "Open-Meteo Celsius and metres-per-second units");
+  check(parsed.days.size() == 4 && parsed.days.front().low == 17 && parsed.days.back().high == 28 &&
+            parsed.days[2].state == WeatherState::Rain && parsed.days[2].probability == 80,
+        "Next four local days exclude today and day five, with daily conditions and maximum probability");
+  auto partial = payload;
+  partial["daily"]["temperature_2m_min"][1] = nullptr;
+  partial["daily"]["precipitation_probability_max"][1] = 101;
+  partial["daily"]["weather_code"][1] = 999;
+  auto dailyMissing = parseOpenMeteo(partial, now).days;
+  check(std::isnan(dailyMissing[0].low) && std::isnan(dailyMissing[0].probability) &&
+            dailyMissing[0].state == WeatherState::Unknown,
+        "Missing daily temperature and invalid probability/code stay unknown");
   for (int c : {0,  1,  2,  3,  45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66,
                 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 97, 99})
     check(wmoWeatherState(c) != WeatherState::Unknown, "Documented WMO code mapped");
@@ -60,7 +74,7 @@ void weatherTests() {
   auto values = parseOpenMeteo(missing, now);
   check(std::isnan(values.humidity) && std::isnan(values.hours[0].probability),
         "Missing optional values are not zero");
-  for (int scenario = 0; scenario < 5; ++scenario) {
+  for (int scenario = 0; scenario < 7; ++scenario) {
     auto bad = payload;
     if (scenario == 0)
       bad["hourly"]["weather_code"].erase(0);
@@ -72,6 +86,10 @@ void weatherTests() {
       bad["current"]["time"] = now - 86400;
     if (scenario == 4)
       bad["hourly"]["time"][1] = now - 7200;
+    if (scenario == 5)
+      bad["daily"]["time"][2] = bad["daily"]["time"][1];
+    if (scenario == 6)
+      bad["daily"]["weather_code"].erase(0);
     rejected = false;
     try {
       parseOpenMeteo(bad, now);
@@ -80,6 +98,25 @@ void weatherTests() {
     }
     check(rejected, "Malformed, stale or unordered Open-Meteo data rejected");
   }
+  std::vector<Json> kma;
+  auto addKma = [&](const char *date, const char *time, const char *category, const char *value) {
+    kma.push_back({{"fcstDate", date}, {"fcstTime", time}, {"category", category}, {"fcstValue", value}});
+  };
+  addKma("20261012", "2300", "TMN", "0");
+  addKma("20261013", "0600", "TMN", "-2");
+  addKma("20261013", "1500", "TMX", "15");
+  addKma("20261013", "0600", "SKY", "1");
+  addKma("20261013", "1500", "PTY", "1");
+  addKma("20261013", "0600", "POP", "10");
+  addKma("20261013", "1500", "POP", "80");
+  addKma("20261015", "0600", "TMN", "-999");
+  addKma("20261015", "1500", "TMX", "14");
+  addKma("20261017", "1500", "TMX", "99");
+  auto kmaDays = parseKmaDays(kma, now);
+  check(kmaDays.size() == 2 && kmaDays[0].low == -2 && kmaDays[0].high == 15 &&
+            kmaDays[0].probability == 80 && kmaDays[0].state == WeatherState::Rain &&
+            std::isnan(kmaDays[1].low),
+        "KMA daily aggregation retains missing days, negative temperatures and strongest condition/max POP");
   auto root = std::filesystem::temp_directory_path() / (L"Tempos.WeatherTests." + newId());
   Store store(root);
   check(store.saveSecret(L"weather-key", "private-kma-key"), "Weather test credential protected");
@@ -88,6 +125,9 @@ void weatherTests() {
   HttpClient http([&](const std::wstring &host, const std::wstring &path, const auto &, const auto &,
                       const auto &, auto) {
     ++calls;
+    check(path.find(L"forecast_days=5") != std::wstring::npos &&
+              path.find(L"precipitation_probability_max") != std::wstring::npos,
+          "HTTP request fetches today plus next four daily forecasts");
     check(host == L"api.open-meteo.com" && path.find(L"private-kma-key") == std::wstring::npos &&
               path.find(L"authKey") == std::wstring::npos,
           "KMA credentials never sent to Open-Meteo");
@@ -105,6 +145,8 @@ void weatherTests() {
   WeatherService restarted(store, http, false, [&] { return now; });
   check(restarted.read(w, {}, WeatherProvider::OpenMeteo).weather->temperature == 21.5 && calls == 1,
         "Open-Meteo protected disk cache survives restart");
+  check(restarted.read(w, {}, WeatherProvider::OpenMeteo).weather->days[2].probability == 80 && calls == 1,
+        "Daily forecast fields survive protected cache restart");
   now += 900;
   httpStatus = 429;
   check(read().status == Status::Stale && calls == 2, "Rate limit preserves same-provider snapshot");
@@ -114,6 +156,8 @@ void weatherTests() {
   w.longitude -= .01;
   now += 901;
   check(read().status == Status::Stale && calls == 2, "Retry-After exceeds normal retry interval");
+  check(read().weather->days.size() == 3 && read().weather->days.front().low == 18,
+        "Midnight rollover drops yesterday's tomorrow from stale daily cache");
   now += 900;
   httpStatus = 503;
   check(read().status == Status::Stale && calls == 3, "Server failure retains same-provider data");
@@ -121,6 +165,18 @@ void weatherTests() {
   check(read().status == Status::Unavailable && !read().weather,
         "Expired weather values removed after twenty-four hours");
   check(store.secret(L"weather-key") == "private-kma-key", "Provider operations preserve KMA key");
+  HttpClient kmaHttp(weatherFixture(root));
+  WeatherService kmaService(store, kmaHttp);
+  auto kmaSnapshot = kmaService.read(w, {}, WeatherProvider::Kma);
+  check(kmaSnapshot.status == Status::Ready && kmaSnapshot.weather->days.size() == 4 &&
+            kmaSnapshot.weather->days[2].probability == 80,
+        "KMA HTTP boundary uses production fetch filtering and daily parser");
+  atomicWrite(root / L"weather-scenario.json", R"({"mode":"offline"})");
+  WeatherService kmaRestarted(store, kmaHttp);
+  auto cachedKma = kmaRestarted.read(w, {}, WeatherProvider::Kma);
+  check(cachedKma.status == Status::Stale && cachedKma.weather->days.size() == 4 &&
+            cachedKma.weather->days[2].state == WeatherState::Rain,
+        "KMA four-day forecasts survive protected cache restart during HTTP failure");
   check(providerKey(w, WeatherProvider::Kma) != providerKey(w, WeatherProvider::OpenMeteo),
         "Subscription keys include provider");
   Widget other = w;

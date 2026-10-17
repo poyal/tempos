@@ -27,6 +27,7 @@ template <class F> void throws(F fn, const char *name) {
 }
 void weatherTests();
 void apiMockTests();
+void temperatureTests();
 int liveWeatherProbe();
 void memoryHistoryRegression() {
   Widget memory;
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
     if (argc == 2 && std::string_view(argv[1]) == "--live-weather")
       return liveWeatherProbe();
     memoryHistoryRegression();
+    temperatureTests();
     if (argc == 2 && std::string_view(argv[1]) == "--memory-history")
       return 0;
     Widget diskWidget;
@@ -68,7 +70,7 @@ int main(int argc, char **argv) {
     check(providerKey(diskWidget) != individualDisk,
           "Individual drive subscriptions retain distinct volume identity");
     LocalMetrics diskMetrics;
-    auto volumeDevices = diskMetrics.devices(Kind::Disk);
+    auto volumeDevices = diskMetrics.devices(Kind::Disk, false);
     auto volumeSnapshot = diskMetrics.read(Kind::Disk, allDisksSource);
     check(volumeSnapshot.disks.size() == volumeDevices.size(),
           "All mounted local volumes are represented, including unavailable volumes");

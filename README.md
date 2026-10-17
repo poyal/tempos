@@ -1,12 +1,14 @@
 # Tempos
 
-Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 캘린더를 놓는 앱입니다. Tempos 계정이나 관리자 권한, .NET 설치 없이 사용할 수 있습니다. 설정은 PC의 `%LocalAppData%\Tempos`에 저장합니다.
+Tempos는 Windows 11 x64 바탕화면에 시계, 날씨, 시스템 사용량과 캘린더를 놓는 앱입니다. Tempos 계정이나 .NET 설치 없이 사용할 수 있습니다. 기본 기능은 일반 권한으로 실행하며, 선택 기능인 CPU 온도는 처음 센서 도우미를 설치할 때 관리자 승인이 필요합니다. 설정은 PC의 `%LocalAppData%\Tempos`에 저장합니다.
+
+최신 레이아웃과 온도·사용률 색상 변경은 [As-is / To-be HTML 보고서](docs/validation/2026-10-17-layout-report.html)에서 확인할 수 있습니다. 변경 부분은 빨간색으로 표시하고, 직전 수정과 최신 수정의 차이를 37개 크기별로 비교했습니다. 최초 0.1.0과의 차이는 [1차 보고서](docs/validation/2026-10-17-layout-report-v1.html)에 보존했습니다.
 
 처음 사용하시면 **설치 EXE 실행 → 설치 폴더 선택 → Tempos 실행 → 위젯 배치 → 날씨 서비스 선택** 순서로 진행하세요.
 
-**[Windows 11 x64 설치 EXE · v0.1.1](https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.exe)** · [릴리즈 노트](docs/releases/v0.1.1.md) · [SHA-256 확인](https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.exe.sha256) · [무설치 ZIP](https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.zip)
+**[Windows 11 x64 설치 EXE · v0.1.2](https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.exe)** · [릴리즈 노트](docs/releases/v0.1.2.md) · [SHA-256 확인](https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.exe.sha256) · [무설치 ZIP](https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.zip)
 
-v0.1.1은 서로 다른 배율의 모니터에서 정렬 모드를 반복 전환하면 위젯 그림이 사라지던 문제를 수정했습니다. 업데이트해도 저장된 레이아웃은 유지합니다.
+v0.1.2는 CPU/GPU 온도·사용률 색상 표시, 다음 4일 예보와 위젯 배치를 개선했습니다. 업데이트해도 저장된 레이아웃은 유지합니다.
 
 [![시계·날씨·캘린더·CPU·GPU·메모리·시스템 정보·네트워크·디스크의 실제 실행 예시](docs/assets/v0.1.0/overview.png)](docs/assets/v0.1.0/overview.png)
 
@@ -27,19 +29,19 @@ v0.1.1은 서로 다른 배율의 모니터에서 정렬 모드를 반복 전환
 
 ### 날씨
 
-날씨와 낮밤에 맞춰 배경이 바뀝니다. 넓은 크기에서는 최저·최고와 시간별 예보를 함께 확인합니다.
+날씨와 낮밤에 맞춰 배경이 바뀝니다. L에서는 내일부터 4일의 날씨·최고/최저·최대 강수확률을 확인합니다. 발표 자료가 없는 날짜는 ‘예보 없음’으로 표시합니다. 아래 이미지는 0.1.0의 기존 화면이며 최신 화면은 위 보고서에 있습니다.
 
 [![날씨 S·Slim·M·L: 지역·기온·날씨 아이콘과 시간별 예보](docs/assets/v0.1.0/weather-sizes.png)](docs/assets/v0.1.0/weather-sizes.png)
 
 ### CPU
 
-현재 사용률을 바로 확인하고, L에서는 최근 60초의 그래프·평균·최대를 봅니다.
+현재 사용률과 선택 설치한 센서 도우미의 CPU 온도를 확인하고, L에서는 최근 60초의 그래프·평균·최대를 봅니다. CPU/GPU 모델명은 M·L 하단 한 줄에 표시하고 S·Slim에서는 숨깁니다. [CPU 온도 설정과 지원 범위](docs/sensors.md).
 
 [![CPU S·Slim·M·L: 사용률과 크기에 맞춘 그래프](docs/assets/v0.1.0/cpu-sizes.png)](docs/assets/v0.1.0/cpu-sizes.png)
 
 ### GPU
 
-선택한 GPU의 사용량과 장치명을 CPU와 같은 구성으로 확인합니다.
+선택한 GPU의 사용량·온도·장치명을 CPU와 같은 구성으로 확인합니다. 드라이버가 온도를 제공하지 않으면 `—`로 표시합니다.
 
 [![GPU S·Slim·M·L: 그래픽 사용률·장치명·사용량 추이](docs/assets/v0.1.0/gpu-sizes.png)](docs/assets/v0.1.0/gpu-sizes.png)
 
@@ -80,7 +82,7 @@ S · Slim · M은 선택 볼륨의 여유 공간을, L은 전체 로컬 드라�
 <a id="install"></a>
 ## 설치하고 실행하기
 
-1. [Tempos-0.1.1-win-x64.exe](https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.exe)를 내려받아 실행합니다.
+1. [Tempos-0.1.2-win-x64.exe](https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.exe)를 내려받아 실행합니다.
 2. 설치할 폴더를 선택하고 **설치**를 누릅니다. 기본 경로는 `%LocalAppData%\Programs\Tempos`이며 관리자 권한 없이 현재 사용자에게 설치합니다.
 3. **Tempos 실행**을 선택하고 **마침**을 누릅니다. 다음부터 시작 메뉴나 바탕화면의 **Tempos** 바로가기로 실행하세요.
 4. 바탕화면에 기본 위젯 다섯 개가 나타납니다. 작업표시줄 알림 영역의 **Tempos 아이콘**에서 설정을 다시 열 수 있습니다.
@@ -91,7 +93,7 @@ S · Slim · M은 선택 볼륨의 여유 공간을, L은 전체 로컬 드라�
 
 실제 Windows 설치 화면입니다. 경로는 촬영용 예시이며, 테스트에서는 자동 실행을 끄고 별도 테스트 설정으로 실행했습니다. [설치 검증 기록](docs/validation/installer-v0.1.0.md).
 
-설치 없이 쓰려면 [ZIP](https://github.com/poyal/tempos/releases/download/v0.1.1/Tempos-0.1.1-win-x64.zip)을 풀고 **Tempos.exe**를 실행하세요. 함께 들어 있는 **data** 폴더를 유지합니다. 기존 ZIP에서 설치형으로 옮길 때도 위젯 설정은 유지하며, 자동 시작을 사용했다면 설치한 앱에서 다시 등록하세요.
+설치 없이 쓰려면 [ZIP](https://github.com/poyal/tempos/releases/download/v0.1.2/Tempos-0.1.2-win-x64.zip)을 풀고 **Tempos.exe**를 실행하세요. 함께 들어 있는 **data** 폴더를 유지합니다. 기존 ZIP에서 설치형으로 옮길 때도 위젯 설정은 유지하며, 자동 시작을 사용했다면 설치한 앱에서 다시 등록하세요.
 
 [![처음 실행한 설정창: 기본 위젯 다섯 개와 위젯 탭](docs/assets/v0.1.0/usage-first-launch.png)](docs/assets/v0.1.0/usage-first-launch.png)
 
@@ -135,7 +137,7 @@ S · Slim · M은 선택 볼륨의 여유 공간을, L은 전체 로컬 드라�
 | 종류 | 표시 정보 |
 | --- | --- |
 | 시계 | 모든 크기에서 선택한 시간대의 디지털 날짜와 시간 |
-| 날씨 | 선택한 국내 지역의 날씨, 최저·최고, 시간별 예보 |
+| 날씨 | 선택한 국내 지역의 날씨, 최저·최고, 다음 4일 예보 |
 | CPU / GPU / 메모리 | 사용량과 지원되는 그래프 |
 | 시스템 정보 | PC·OS·CPU·GPU·가동 시간 |
 | 네트워크 | 전체 네트워크 또는 선택한 어댑터의 수신·송신 속도 |
@@ -144,7 +146,7 @@ S · Slim · M은 선택 볼륨의 여유 공간을, L은 전체 로컬 드라�
 
 **네트워크:** 기본값인 **전체 네트워크**는 연결된 유선·무선 장치의 수신·송신을 합산합니다. 필터 드라이버·터널 등 가상 인터페이스는 중복 집계를 막기 위해 제외합니다. **네트워크 집계 대상**에서 개별 장치를 선택할 수도 있습니다.
 
-**디스크:** S/Slim/M은 위젯을 선택한 뒤 **볼륨**을 지정하고 **적용**하세요. L은 전체 로컬 볼륨을 표시하므로 볼륨 선택 필드가 나타나지 않습니다. 작은 크기로 돌아가면 이전 선택을 사용합니다. 7개 이상이면 6개씩 12초마다 다음 목록으로 넘어갑니다. 잠기거나 제거된 볼륨은 조회 불가로 표시합니다.
+**디스크:** S/Slim/M은 위젯을 선택한 뒤 **볼륨**을 지정하고 **적용**하세요. 선택 목록에는 용량을 읽을 수 있는 드라이브만 나타납니다. L은 전체 로컬 볼륨을 표시하므로 볼륨 선택 필드가 나타나지 않습니다. 작은 크기로 돌아가면 이전 선택을 사용합니다. 7개 이상이면 6개씩 12초마다 다음 목록으로 넘어갑니다. 잠기거나 제거된 볼륨은 조회 불가로 표시합니다.
 
 <table>
   <tr><th>선택한 디스크 · M</th><th>전체 디스크 · L</th><th>시스템 사양 · L</th></tr>

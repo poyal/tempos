@@ -45,6 +45,7 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 | --- | --- |
 | 없음 | 기본 9종 추가·설정·저장·재시작 |
 | `--windows-real` | 실제 Windows 사용자 세션·CPU/GPU/메모리·전체 네트워크·로컬 디스크·그래프·OS 입력 시도·저장·재시작. 날씨·현재 위치는 목업 |
+| `--temperature` | 센서 응답 경계 목업·설치 취소/실패/재부팅 요구·설정 저장/재시작·내보내기 격리·미지원/오래됨/복구·날씨/CPU/GPU/메모리 S/Slim/M/L×100/150/200% 예제 캡처·CPU/GPU/메모리/디스크 M의 흰색/주황색/빨간색/오래된 값 픽셀 확인 |
 | `--api-mock` | OAuth 승인 거부·교환·갱신, 캘린더 목록·페이지 합치기·빈 응답·401/403/429/503·시간 초과·비정상 응답·캐시·연결 해제 |
 | `--weather` | 공급자 전환, 키 보존, 신규/구버전 기본값, 요청 공유, 저장 실패, 정상·강제 종료 복원, 레이아웃 가져오기, 오류 응답·WMO 상태·늦은 응답, 위젯 출처 문구 제거 |
 | `--ui-review` | 9종 선택별 설정, 클릭 무동작·읽기 전용 접근성, 현재 위치 한 번 선택·저장, 전체 네트워크, 37개 크기, 전체 디스크·자동 페이지 순환 |
@@ -65,6 +66,8 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 `--exe`로 다른 빌드의 `Tempos.TestHost.exe`를 지정할 수 있다. 기본 E2E에 `Tempos.exe`를 주면 프로세스를 실행하기 전에 거부한다. 시작·재시작마다 진단의 API 모드도 확인한다. `--weather`, `--api-mock`, `--ui-review`, `--design`, `--startup`은 목업 전용이다.
 
 `--windows-real`은 TestHost의 로컬 수집만 실제로 전환한다. 날씨는 기본 지역에 대한 목업 21°C, 현재 위치는 부산 목업 좌표를 사용한다. OS `SendInput`은 실제 포인터 이동과 저장 위치 변경까지 확인하며, 입력 데스크톱이 이를 허용하지 않으면 SKIP으로 남긴다. 메시지 기반 `--interaction`의 통과로 대체하지 않는다.
+
+`--temperature`의 센서 값은 `sensor-scenario.json`의 직렬화된 응답을 실제 온도 파서에 주입한다. 설치 결과는 `sensor-setup-scenario.json`으로 모의하며 TestHost는 실제 센서 설치 프로그램을 실행하지 않는다. 별도 센서 단위 검사는 가짜 수집기와 실제 로컬 이름 있는 파이프를 사용한다. `--windows-real`은 기존 서비스/Windows 드라이버의 실제 온도만 검사하고 없으면 SKIP으로 기록한다. 센서 서비스·PawnIO 설치/제거는 기존 사용자 앱이 있는 이 작업 환경에서 실행하지 않는다.
 
 실제 API 요청은 사용자가 별도로 요청할 때 **실연동 검사**로 실행한다. `--integration-live-api`와 명시적인 배포 `Tempos.exe` 경로가 모두 필요하다. 결과의 `testClass`는 `live-api-integration`이며 일반 E2E와 합산하지 않는다. 이 옵션 자체를 사용자 승인으로 취급하지 않는다.
 

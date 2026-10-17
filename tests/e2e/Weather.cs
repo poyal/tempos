@@ -25,6 +25,15 @@ internal static partial class Program
         File.WriteAllText(Path.Combine(Data, "weather-scenario.json"), value.ToJsonString());
         SendMessage(Window.Properties.NativeWindowHandle, 0x111, 1913, 0);
     }
+    static void WaitDailyCount(int count)
+    {
+        for (int i = 0; i < 150; i++)
+        {
+            if (WeatherWindows().All(w => w["weatherDays"]!.AsArray().Count == count)) return;
+            Thread.Sleep(100);
+        }
+        throw new Exception("Daily forecast count did not reach " + count);
+    }
     static void SelectWeather(int index)
     {
         Tab(1); NativeCombo(1403, index); NativeButton(1404);
@@ -34,10 +43,16 @@ internal static partial class Program
         NativeButton(1316);
         Check(Settings()["weatherProvider"]!.GetValue<string>() == "open-meteo", "New profile uses Open-Meteo");
         WaitWeather("open-meteo", 1, 21);
+        Check(WeatherWindows().All(w => w["weatherDays"]!.AsArray().Count == 4 &&
+                  w["weatherDays"]![2]!["probability"]!.GetValue<double>() == 80),
+              "Open-Meteo HTTP daily response reaches all widgets with four days and maximum probability");
         Tab(1);
         Check(!Element(1400).IsEnabled && Element(1405).Name.Contains("비상업적"), "Open-Meteo needs no key and explains free-use condition");
         Screenshot("weather-connections-open-meteo", Window.BoundingRectangle);
         SelectWeather(0); WaitWeather("kma", 1, 18);
+        Check(WeatherWindows().All(w => w["weatherDays"]!.AsArray().Count == 4 &&
+                  w["weatherDays"]![2]!["state"]!.GetValue<int>() == 4),
+              "KMA HTTP daily rows reach widgets as four daily forecasts");
         Check(Element(1400).IsEnabled, "KMA credential input enabled");
         Element(1400).AsTextBox().Text = "e2e-isolated-key"; NativeButton(1401);
         var secretPath = Path.Combine(Data, "weather-key.bin");

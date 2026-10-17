@@ -1,7 +1,8 @@
-param([switch]$SkipBuild,[ValidatePattern('^\d+\.\d+\.\d+(-[a-z0-9.]+)?$')][string]$Version='0.1.1')
+param([switch]$SkipBuild,[ValidatePattern('^\d+\.\d+\.\d+(-[a-z0-9.]+)?$')][string]$Version='0.1.2')
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 if(-not $SkipBuild){& (Join-Path $PSScriptRoot 'build.ps1') -Preset release -Clean -Test}
+& (Join-Path $PSScriptRoot 'build-sensors.ps1') -Test
 $vswhere=Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $vs=& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
 $cmake=Join-Path $vs 'Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe'
@@ -10,6 +11,7 @@ $stage=Join-Path $artifactRoot ('package-'+[Guid]::NewGuid().ToString('N'))
 $folder=Join-Path $stage ('Tempos-'+$Version+'-win-x64')
 & $cmake --install (Join-Path $root 'out/release') --prefix $folder
 if($LASTEXITCODE){throw 'Package installation failed.'}
+Copy-Item -LiteralPath (Join-Path $root 'out/release/Tempos.Sensors.Setup.exe') -Destination $folder
 Copy-Item -LiteralPath (Join-Path $root 'docs') -Destination $folder -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $root 'plan.md') -Destination (Join-Path $folder 'plan.md')
 # Historical design/source references stay online; the manual and its screenshots

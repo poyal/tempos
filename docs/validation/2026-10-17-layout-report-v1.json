@@ -1,0 +1,4061 @@
+{
+  "generatedAt": "2026-10-17T04:52:49.336Z",
+  "changed": 18,
+  "unchanged": 19,
+  "layouts": 37,
+  "sources": [
+    {
+      "file": "docs/assets/v0.1.0/clock-s.png",
+      "sha256": "1620b791ff5724c98e40472d744ad0b8e1747f858f8f9c86fd21435310895756"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-0-size-0.png",
+      "sha256": "9e8da1f4ebb8ea5b89bf065c3346f3d857ea2c210c0b8a8b1280f77cfdddb5d1"
+    },
+    {
+      "file": "docs/assets/v0.1.0/clock-slim.png",
+      "sha256": "8b3721d3c5f643cc60ea3a5fb39bfff92639f980fe94a440767af04079d22307"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-0-size-1.png",
+      "sha256": "02b938e1601c67122366e507e11a1b2fcf4f7a36fd73d44f9f22d9d188340839"
+    },
+    {
+      "file": "docs/assets/v0.1.0/clock-m.png",
+      "sha256": "2197b3b321a2d0a69ded862d883f5993148742151a3749510103fcbb6c54a0c2"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-0-size-2.png",
+      "sha256": "5460c9dae4391c4a6eed8c19e50a15bf6da885e4e44f2e93556bb29656c21d55"
+    },
+    {
+      "file": "docs/assets/v0.1.0/clock-l.png",
+      "sha256": "1a7bd4a603772044b846bd96bc8be2b1e1156dbc2edc0a1cc41646a6a3a12861"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-0-size-3.png",
+      "sha256": "bf71336f76aad181759f9b95fb51685ba6f0cbdce487e11bf309e10c854dc98b"
+    },
+    {
+      "file": "docs/assets/v0.1.0/weather-s.png",
+      "sha256": "1bd017e88ef56367a15b8b2fcf35859136b6737ca274d68b4c570b0c679e0078"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-1-size-0.png",
+      "sha256": "e15cbe889d2d3ab053f965ef9e7bce53afe9d2be66911f279cb1efd595c72e43"
+    },
+    {
+      "file": "docs/assets/v0.1.0/weather-slim.png",
+      "sha256": "9d375b0e05c75a4dfdb35d2946468f3bb7d8d751f7dbcacb47fe0f05b7485183"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-1-size-1.png",
+      "sha256": "8fd7f50c7fb2399a955db02a316647cb684a6ab1ac7a487be93107973f5628e5"
+    },
+    {
+      "file": "docs/assets/v0.1.0/weather-m.png",
+      "sha256": "7f8985a85a2b62df00318baa3534ae76769647715f4f249c83bb8117973866c8"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-1-size-2.png",
+      "sha256": "5f6c59ac3f9c1ca67524b59515e14c490c12036cd0601f530db8f28826e85e27"
+    },
+    {
+      "file": "docs/assets/v0.1.0/weather-l.png",
+      "sha256": "8a60551f50f01c3c6270606267386b8b725affa357f77fa5d0ef80e0b1451fe5"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-1-size-3.png",
+      "sha256": "67f5802f7aa368b25b811f80dc4c442db90f7eebf6cf1e2e82b504da464ea0ba"
+    },
+    {
+      "file": "docs/assets/v0.1.0/cpu-s.png",
+      "sha256": "39c6299c407bc0d0acb756da6fc5099a14c3ad8271203756c483c3030dbb2887"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-2-size-0.png",
+      "sha256": "954bad0adabd839e8d6288023327454b6dc870f443d8b2740c1ffdced424df9a"
+    },
+    {
+      "file": "docs/assets/v0.1.0/cpu-slim.png",
+      "sha256": "decad8ff961c58a784bff129b1680e04ddbd929512eb728c507b71959efc6280"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-2-size-1.png",
+      "sha256": "5c530a5903e7c044cc3845d0a7c64bd1e549a04d19796793f70130f60e730c43"
+    },
+    {
+      "file": "docs/assets/v0.1.0/cpu-m.png",
+      "sha256": "8335ec824f91354f08b0613fef946147a12ae541f1f205ae47e29c28ecae0b32"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-2-size-2.png",
+      "sha256": "7ab3551fbd40d9047f196653caad962bc63ec1d7d9600bca6933b52c081ccde7"
+    },
+    {
+      "file": "docs/assets/v0.1.0/cpu-l.png",
+      "sha256": "eba054689a838a053bf6bc32dd321b213583505e2079fd2d3fcab66bfa644039"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-2-size-3.png",
+      "sha256": "e29190a4cf6ec8516581497f4f397fb57898a9846bc3016dfda1b4715507f77c"
+    },
+    {
+      "file": "docs/assets/v0.1.0/gpu-s.png",
+      "sha256": "81cead45455865d7a7e301e6d3a880a909e97c3e0bdd87fe5b589839da71d214"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-3-size-0.png",
+      "sha256": "22057abd6dd845325d0768b4986ea89a905a4fb1b58e66a9dad09dc7ce4d3aa2"
+    },
+    {
+      "file": "docs/assets/v0.1.0/gpu-slim.png",
+      "sha256": "26b285fe4efbae8de1106ee34ebf8926ccf3425556a6674681cea664121b4401"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-3-size-1.png",
+      "sha256": "47012843135893bcbdbdaf0818db5ff9b0903e4f9e69b16876938734f638c7b9"
+    },
+    {
+      "file": "docs/assets/v0.1.0/gpu-m.png",
+      "sha256": "fc6dcd6fd79266a5f09cc240a56ffedaa34f502da663998c2229cfac57661b22"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-3-size-2.png",
+      "sha256": "eea30d423a32f3f72271efb5d7fd68a8467faf17a7be8f8c495e11709f106889"
+    },
+    {
+      "file": "docs/assets/v0.1.0/gpu-l.png",
+      "sha256": "bb9f5f9c0167939309af28466fcbfd4afbae7bd7accd5178b03e4fd843500ce3"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-3-size-3.png",
+      "sha256": "874b480aec7746af89b2b94fca54f76536e65ce49dd63bbb1e57ba7f0ff080ae"
+    },
+    {
+      "file": "docs/assets/v0.1.0/memory-s.png",
+      "sha256": "0882ca965bfa3009e02f9f8061d1f35767204021802367135a745da754054198"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-4-size-0.png",
+      "sha256": "aa1cb4aff85836a40ef5c36a172ab083e61fd34dd8350eb08fabf97931ce4b7b"
+    },
+    {
+      "file": "docs/assets/v0.1.0/memory-slim.png",
+      "sha256": "e2df5356961051e90a6324e807d439e28121413f069dde4893768512d314cda7"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-4-size-1.png",
+      "sha256": "a0f48ef1acf604656134eae45d34bbeb6f1ef1bf7e96851c1a67c874a9f53789"
+    },
+    {
+      "file": "docs/assets/v0.1.0/memory-m.png",
+      "sha256": "69948ca0d7b5a90365334a4a3ac85526663924826f43a384d81239b582f450b8"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-4-size-2.png",
+      "sha256": "0abc01093f6433cf6b80d26e667fc6d0480546c4553f632a865ded3ac6504640"
+    },
+    {
+      "file": "docs/assets/v0.1.0/memory-l.png",
+      "sha256": "ba0590045f9c7be2b7f4e1d7e7f48af4ad24ba80e7f901adefc296fe2fb901ac"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-4-size-3.png",
+      "sha256": "1777feee08a3731f3d60de5df3a452d034c67fc10403ecc5ba12e5d3f5fd37df"
+    },
+    {
+      "file": "docs/assets/v0.1.0/system-s.png",
+      "sha256": "5f2ff3df83ef0bb1c3bcd45adfe37b3cfa8b6cf674724155c34b9c0e148ddbe9"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-5-size-0.png",
+      "sha256": "5f2ff3df83ef0bb1c3bcd45adfe37b3cfa8b6cf674724155c34b9c0e148ddbe9"
+    },
+    {
+      "file": "docs/assets/v0.1.0/system-slim.png",
+      "sha256": "289d445a84f2de4bf69d07e60f497ae9a5fbe276bb75288818b7ffea2053288a"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-5-size-1.png",
+      "sha256": "289d445a84f2de4bf69d07e60f497ae9a5fbe276bb75288818b7ffea2053288a"
+    },
+    {
+      "file": "docs/assets/v0.1.0/system-m.png",
+      "sha256": "b6845d3ea500aaf0f0011419fb12c2e6284860d06e58cfe2c668b9e5561ffb74"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-5-size-2.png",
+      "sha256": "b6845d3ea500aaf0f0011419fb12c2e6284860d06e58cfe2c668b9e5561ffb74"
+    },
+    {
+      "file": "docs/assets/v0.1.0/system-l.png",
+      "sha256": "b81d4d2ec0892a6d0a3cc1164f861f3d00b4502f4ae54b9b9a961c65a90f8465"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-5-size-3.png",
+      "sha256": "b81d4d2ec0892a6d0a3cc1164f861f3d00b4502f4ae54b9b9a961c65a90f8465"
+    },
+    {
+      "file": "docs/assets/v0.1.0/network-s.png",
+      "sha256": "439ca04d16168b0a665397634eae90641510356f23d1ab6301bc4175cbb23be9"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-6-size-0.png",
+      "sha256": "439ca04d16168b0a665397634eae90641510356f23d1ab6301bc4175cbb23be9"
+    },
+    {
+      "file": "docs/assets/v0.1.0/network-slim.png",
+      "sha256": "c1490916815b35efd68f0b4fba91324f3c634ac2933a81d5431aff7afed93728"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-6-size-1.png",
+      "sha256": "c1490916815b35efd68f0b4fba91324f3c634ac2933a81d5431aff7afed93728"
+    },
+    {
+      "file": "docs/assets/v0.1.0/network-m.png",
+      "sha256": "d74b293f542c2264263f6b777a8a261ab3951a4f59f298542a59cf892c924585"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-6-size-2.png",
+      "sha256": "ac3c1a7f20df52e40d58729491488491e040922b3adbc247ded535787f47b25c"
+    },
+    {
+      "file": "docs/assets/v0.1.0/network-l.png",
+      "sha256": "d70365a29fc0ab1c69591a32fbd0d45aa85b37a49020f63588096caba9fd0bd6"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-6-size-3.png",
+      "sha256": "e8222a618256a9ad9dd0a2e96ccf4aa785d6302be499c69a9b11050ad9229ac5"
+    },
+    {
+      "file": "docs/assets/v0.1.0/disk-s.png",
+      "sha256": "8224f3aa4bea688276479b71ad668c54e0acdd72a84b476eed65734cbc19e299"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-7-size-0.png",
+      "sha256": "8224f3aa4bea688276479b71ad668c54e0acdd72a84b476eed65734cbc19e299"
+    },
+    {
+      "file": "docs/assets/v0.1.0/disk-slim.png",
+      "sha256": "c9b058163d803c876f050bc98a3e32b0a9323cb1f25525ed4baa97c3af2ebdda"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-7-size-1.png",
+      "sha256": "c9b058163d803c876f050bc98a3e32b0a9323cb1f25525ed4baa97c3af2ebdda"
+    },
+    {
+      "file": "docs/assets/v0.1.0/disk-m.png",
+      "sha256": "c843fa1f65f1e10c02f4f7188c68ea7c1bdd059ef592dc2036c2dbb645eed858"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-7-size-2.png",
+      "sha256": "c843fa1f65f1e10c02f4f7188c68ea7c1bdd059ef592dc2036c2dbb645eed858"
+    },
+    {
+      "file": "docs/assets/v0.1.0/disk-l.png",
+      "sha256": "b9d666cca9d470a27f484005e5560213d4b3a8af8b4aee7c1bcefd2a9a0d2058"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-7-size-3.png",
+      "sha256": "b9d666cca9d470a27f484005e5560213d4b3a8af8b4aee7c1bcefd2a9a0d2058"
+    },
+    {
+      "file": "docs/assets/v0.1.0/calendar-s.png",
+      "sha256": "5ee40654086f5e268269e10c959995297589e645d8a506544bb9163f842a10ef"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-8-size-0.png",
+      "sha256": "eb97c70ac63414c890216602daff685fb5b4c89d2b5cc4530bab634362af361e"
+    },
+    {
+      "file": "docs/assets/v0.1.0/calendar-slim.png",
+      "sha256": "ef521f215f1caf22209e19dc463513b0ab415f61ee99a9b7a6da81e8dd0c76e4"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-8-size-1.png",
+      "sha256": "4963caee6a90f7bec2f5393d8644e796992ba26ef77af6df3987c7d72318f9a9"
+    },
+    {
+      "file": "docs/assets/v0.1.0/calendar-m.png",
+      "sha256": "4ec2ab7e7d6285accd25075c84688d85ca71c50d29d495e1f2e2b4f053051036"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-8-size-2.png",
+      "sha256": "ee85f6ea890e77ce9eb161a8e1b393b88e46f6598b42df5654bb10ad9c77551e"
+    },
+    {
+      "file": "docs/assets/v0.1.0/calendar-l.png",
+      "sha256": "a95d65a7ee714418ac4102a842e0ca5ac822a2498ade551e4741f934e62a1358"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-8-size-3.png",
+      "sha256": "3320e94d34e395285fbe8ffe0f10ae3207c747d4bfaed5ad9cc4ed9ca2bbf8b8"
+    },
+    {
+      "file": "docs/assets/v0.1.0/calendar-xl.png",
+      "sha256": "92e7394fd39cd01cd6c380b148b11c98172fddcd9db389020ddfdaaa16517292"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-8-size-4.png",
+      "sha256": "b53fbb7b29f96381fb54526bbf4506d9c6df6211ed7d073d1685b51e0766b8d3"
+    },
+    {
+      "file": "docs/assets/v0.1.0/usage-app-startup.png",
+      "sha256": "ed9e39a9bb1b237009536d75e882440942da31aa63cf5c863ee3384ed612513c"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/temperature-settings.png",
+      "sha256": "62508b51265725ddd856149c51ac9d09d5451df03847fb5638bf0a9d1a4e4313"
+    },
+    {
+      "file": "docs/validation/layout-2026-10-17-input/weather.png",
+      "sha256": "1f68ad39af450792e0a83d0e1f9f459fe8a248716fb168dcf48eebe0147f0996"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-1-size-2.png",
+      "sha256": "5f6c59ac3f9c1ca67524b59515e14c490c12036cd0601f530db8f28826e85e27"
+    },
+    {
+      "file": "docs/validation/layout-2026-10-17-input/cpu-gpu.png",
+      "sha256": "71aaf3d7f2fa78164795fba60d2f8f5c078cf1edb92273b493693c874153fb56"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-2-size-2.png",
+      "sha256": "7ab3551fbd40d9047f196653caad962bc63ec1d7d9600bca6933b52c081ccde7"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-3-size-2.png",
+      "sha256": "eea30d423a32f3f72271efb5d7fd68a8467faf17a7be8f8c495e11709f106889"
+    },
+    {
+      "file": "docs/validation/layout-2026-10-17-input/memory.png",
+      "sha256": "351cc3c6718d8a3fe54f8c4aa6ef45a057ca3ce57c64f46fc3add5336b713e9b"
+    },
+    {
+      "file": "test-results/e2e-20261017-134558-597/design-kind-4-size-2.png",
+      "sha256": "0abc01093f6433cf6b80d26e667fc6d0480546c4553f632a865ded3ac6504640"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-2-1-0.png",
+      "sha256": "a44ea1359e66dfad85808c188c4ca18389f1eed3811d5c5ffe7f4f7c6dbf7258"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-3-2-0.png",
+      "sha256": "c637c7739ced127aee2348af38d9bb54c24d74309735de6429e51619be70f2ab"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-2-temperature-30.png",
+      "sha256": "40b64b716e64826ca27856b2d19cad3fe270f5b796e799c069843cb8886f81bf"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-2-temperature-32.png",
+      "sha256": "6fbd55d19ee272ba0e90dcc3b628004cf64974500397fad5ed303dd2fb8dae62"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-2-no-graph.png",
+      "sha256": "93ce681bbe168587ed279427569ef5ca8076fcf5eacf211a80ca2039bd22f8a9"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-weather-fahrenheit-negative.png",
+      "sha256": "7ee0e824f015f3dc066eeebc93f79e091194757f67db5bce70c97edef2b343ad"
+    },
+    {
+      "file": "test-results/e2e-20261017-134901-062/layout-example-weather-stale.png",
+      "sha256": "bb022a29aa48073c0d5e85422bb9a4693aaf4064b5a3326ef16de792b343c76e"
+    },
+    {
+      "file": "test-results/e2e-20261017-135102-783/windows-live-kind-2.png",
+      "sha256": "f6e1a73e9981e301970387ec212e180f42669fe1a66beb9e664b630b818f028e"
+    },
+    {
+      "file": "test-results/e2e-20261017-135102-783/windows-live-kind-3.png",
+      "sha256": "917128bfbe439c990bb703ce7a8b8efa7754b011f126ba546caa8cc9b594804b"
+    }
+  ],
+  "runs": [
+    {
+      "folder": "test-results/e2e-20261017-134558-597",
+      "started": "2026-10-17T13:45:58.5924439+09:00",
+      "completed": "2026-10-17T13:49:00.4300941+09:00",
+      "mode": "--ui-review",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "0599D877CC774B7C6057A32412F908A5D2628492F8E217CC39CB76305B378F2F",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "TestHost uses only this run's isolated settings directory",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-0: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 0: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-0: desktop hit test kind 0 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-1: desktop hit test kind 0 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-2: desktop hit test kind 0 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-3: desktop hit test kind 0 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-0-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-1: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 1: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "Find location selects a region without silently saving",
+          "passed": true
+        },
+        {
+          "name": "Applying one-time location saves closest region",
+          "passed": true
+        },
+        {
+          "name": "Location denial retains selected region",
+          "passed": true
+        },
+        {
+          "name": "Out-of-area location does not replace region",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "TestHost uses only this run's isolated settings directory",
+          "passed": true
+        },
+        {
+          "name": "One-time location survives restart without tracking",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-0: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-1: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-2: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-3: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-1-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-0: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-1: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-2: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-3: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-4: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-4: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-4: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-4: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-4: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-4: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-5: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-5: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-5: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-5: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-5: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-5: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-6: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-6: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-6: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-6: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-6: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-6: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-7: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-7: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-7: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-7: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-7: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-7: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-8: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-8: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-8: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-8: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-8: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-scene-8: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-fixed: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-fixed: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-fixed: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-fixed: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-fixed: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-weather-fixed: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-weather-transparent: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-weather-transparent: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-weather-transparent: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-weather-transparent: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-weather-transparent: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-2: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 2: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-0: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-1: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-2: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-3: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-2-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-3: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 3: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-0: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-1: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-2: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-3: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-3-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-4: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 4: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-0: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-1: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-2: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-3: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-4-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-5: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 5: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-0: desktop hit test kind 5 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-1: desktop hit test kind 5 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-2: desktop hit test kind 5 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-3: desktop hit test kind 5 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-5-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-6: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 6: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "New network widget defaults to aggregate traffic",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-0: desktop hit test kind 6 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-1: desktop hit test kind 6 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-2: desktop hit test kind 6 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-3: desktop hit test kind 6 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-6-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-7: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 7: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "Disk size 0: volume selector only for single-drive layouts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-0: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Disk size 1: volume selector only for single-drive layouts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-1: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Disk size 2: volume selector only for single-drive layouts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-2: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Disk size 3: volume selector only for single-drive layouts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-3: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-7-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Disk L exposes all drive rows to accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-20: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-20: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-20: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-20: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-20: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-20: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "More than six disks automatically advance without a click",
+          "passed": true
+        },
+        {
+          "name": "design-disk-next-page: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-disk-next-page: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-disk-next-page: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-disk-next-page: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-disk-next-page: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-disk-next-page: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-21: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-21: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-21: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-21: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-21: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-21: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-22: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-22: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-22: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-22: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-22: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-22: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-23: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-23: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-23: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-23: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-23: desktop hit test kind 7 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-disk-scenario-23: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Native background transparency input",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: seconds only for clock",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: graph only for metrics",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: weather-only controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: appropriate device controls",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: timezone only for clock/calendar",
+          "passed": true
+        },
+        {
+          "name": "settings-kind-8: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: relevant display option 0",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: relevant display option 1",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: relevant display option 2",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: relevant display option 3",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: relevant display option 4",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: system-only fields",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: clicks do not open settings, details, or menu",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: clicks do not mutate widget",
+          "passed": true
+        },
+        {
+          "name": "Kind 8: display-only accessibility",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-0: desktop hit test kind 8 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-1: desktop hit test kind 8 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-2: desktop hit test kind 8 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-3: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-3: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-3: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-3: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-3: desktop hit test kind 8 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-4: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-4: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-4: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-4: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-4: desktop hit test kind 8 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "design-kind-8-size-4: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "Installed layout, backup and startup registration remain unchanged",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "folder": "test-results/e2e-20261017-134901-062",
+      "started": "2026-10-17T13:49:01.0577231+09:00",
+      "completed": "2026-10-17T13:51:02.2218374+09:00",
+      "mode": "--temperature",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "fixture",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "0599D877CC774B7C6057A32412F908A5D2628492F8E217CC39CB76305B378F2F",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "TestHost uses only this run's isolated settings directory",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "CPU sensor opt-in defaults off",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 0, value ",
+          "passed": true
+        },
+        {
+          "name": "Setup cancel/reboot/failure never enables sensors: 1223",
+          "passed": true
+        },
+        {
+          "name": "Setup cancel/reboot/failure never enables sensors: 3010",
+          "passed": true
+        },
+        {
+          "name": "Setup cancel/reboot/failure never enables sensors: 1",
+          "passed": true
+        },
+        {
+          "name": "Successful mock setup enables sensors",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 2, value 45",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "TestHost uses only this run's isolated settings directory",
+          "passed": true
+        },
+        {
+          "name": "Temperature opt-in survives restart",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 2, value 45",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 3, value ",
+          "passed": true
+        },
+        {
+          "name": "Temperature failure preserves usage display",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 5, value ",
+          "passed": true
+        },
+        {
+          "name": "Temperature failure preserves usage display",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 4, value ",
+          "passed": true
+        },
+        {
+          "name": "Temperature failure preserves usage display",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 2, value 47",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "Layout export omits machine sensor opt-in",
+          "passed": true
+        },
+        {
+          "name": "Native layout file dialog opens",
+          "passed": true
+        },
+        {
+          "name": "File name control found",
+          "passed": true
+        },
+        {
+          "name": "File dialog accept button found",
+          "passed": true
+        },
+        {
+          "name": "File dialog completed",
+          "passed": true
+        },
+        {
+          "name": "Layout import preserves local sensor opt-in",
+          "passed": true
+        },
+        {
+          "name": "Mock removal disables CPU temperature",
+          "passed": true
+        },
+        {
+          "name": "Sensor boundary reaches UI state 0, value ",
+          "passed": true
+        },
+        {
+          "name": "temperature-settings: settings client is unobscured",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-0: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-1: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-2: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-0-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-0: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-1: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-2: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-1-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-0: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-1: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-2: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-2-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-0: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-1: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-2: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-1-3-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-fahrenheit-negative: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-fahrenheit-negative: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-fahrenheit-negative: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-fahrenheit-negative: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-fahrenheit-negative: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-fahrenheit-negative: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-stale: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-stale: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-stale: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-stale: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-stale: desktop hit test kind 1 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-weather-stale: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-0: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-1: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-2: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-0-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-0: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-1: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-2: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-1-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-0: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-1: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-2: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-2-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-0: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-1: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-2: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-3-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-30: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-30: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-30: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-30: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-30: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-30: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-32: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-32: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-32: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-32: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-32: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-temperature-32: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-no-graph: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-no-graph: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-no-graph: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-no-graph: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-no-graph: desktop hit test kind 2 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-2-no-graph: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-0: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-1: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-2: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-0-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-0: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-1: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-2: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-1-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-0: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-1: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-2: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-2-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-0: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-1: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-2: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-3-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-30: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-30: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-30: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-30: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-30: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-30: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-32: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-32: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-32: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-32: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-32: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-temperature-32: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-no-graph: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-no-graph: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-no-graph: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-no-graph: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-no-graph: desktop hit test kind 3 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-3-no-graph: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-0: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-1: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-2: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-0-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-0: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-1: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-2: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-1-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-0: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-1: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-2: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-2-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-0: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-0: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-0: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-0: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-0: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-1: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-1: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-1: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-1: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-1: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-2: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-2: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-2: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-2: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-2: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-3-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-no-graph: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-no-graph: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-no-graph: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-no-graph: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-no-graph: desktop hit test kind 4 (hit Tempos.Widget)",
+          "passed": true
+        },
+        {
+          "name": "layout-example-4-no-graph: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "Installed layout, backup and startup registration remain unchanged",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "folder": "test-results/e2e-20261017-135102-783",
+      "started": "2026-10-17T13:51:02.7792467+09:00",
+      "completed": "2026-10-17T13:52:30.2007643+09:00",
+      "mode": "--windows-real",
+      "testClass": "e2e",
+      "apiMode": "mock",
+      "systemMode": "real",
+      "executable": "out\\release\\Tempos.TestHost.exe",
+      "executableSha256": "0599D877CC774B7C6057A32412F908A5D2628492F8E217CC39CB76305B378F2F",
+      "results": [
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "TestHost uses only this run's isolated settings directory",
+          "passed": true
+        },
+        {
+          "name": "Initial five widgets",
+          "passed": true
+        },
+        {
+          "name": "Windows suite uses the executable required by its API boundary",
+          "passed": true
+        },
+        {
+          "name": "Actual Windows system collectors are active",
+          "passed": true
+        },
+        {
+          "name": "App runs in the interactive Windows user session",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 2",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 3",
+          "passed": true
+        },
+        {
+          "name": "Actual system counter returns a valid percentage: kind 4",
+          "passed": true
+        },
+        {
+          "name": "Actual local temperature: kind 2",
+          "passed": null,
+          "skipped": true,
+          "reason": "No valid sensor reading; status 4. This suite never installs a driver or sensor service."
+        },
+        {
+          "name": "Actual local temperature reaches the widget: kind 3",
+          "passed": true
+        },
+        {
+          "name": "Actual network uses aggregate interface counters",
+          "passed": true
+        },
+        {
+          "name": "Actual aggregate receive/send rates are available",
+          "passed": true
+        },
+        {
+          "name": "Large disk widget includes every ready local drive reported by Windows",
+          "passed": true
+        },
+        {
+          "name": "Actual disk capacity is available",
+          "passed": true
+        },
+        {
+          "name": "Large disk hides the individual volume selector",
+          "passed": true
+        },
+        {
+          "name": "Weather uses the default Open-Meteo provider",
+          "passed": true
+        },
+        {
+          "name": "Mock Open-Meteo response reaches the actual weather widget",
+          "passed": true
+        },
+        {
+          "name": "Weather is deterministic while system collectors remain real",
+          "passed": true
+        },
+        {
+          "name": "Local calendar is accessible without a Google account",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-0: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-1: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-2: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-3: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-4: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "Actual memory history renders a visible graph line",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-6: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "windows-live-kind-8: captured widget pixels present",
+          "passed": true
+        },
+        {
+          "name": "OS SendInput drag",
+          "passed": null,
+          "skipped": true,
+          "reason": "Windows input desktop did not accept an observable cursor move; native-message tests are separate."
+        },
+        {
+          "name": "One-time location request completes without blocking the UI",
+          "passed": true
+        },
+        {
+          "name": "Location lookup does not save before Apply",
+          "passed": true
+        },
+        {
+          "name": "Location selection is saved with Apply",
+          "passed": true
+        },
+        {
+          "name": "Mock location selects the expected region",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "API boundary matches the requested test class",
+          "passed": true
+        },
+        {
+          "name": "TestHost uses only this run's isolated settings directory",
+          "passed": true
+        },
+        {
+          "name": "Restart preserves all settings including location selection",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: list and native window counts",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: window identities match saved widgets",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: all widgets placed and visible",
+          "passed": true
+        },
+        {
+          "name": "windows-live-restarted: live windows owned by test process",
+          "passed": true
+        },
+        {
+          "name": "Restart still uses actual system collectors",
+          "passed": true
+        },
+        {
+          "name": "Clean process shutdown",
+          "passed": true
+        },
+        {
+          "name": "No unregistered API requests or live fallback in E2E",
+          "passed": true
+        },
+        {
+          "name": "Installed layout, backup and startup registration remain unchanged",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

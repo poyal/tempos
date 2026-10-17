@@ -18,4 +18,12 @@ MIT License. 원문 라이선스는 `third_party/nlohmann/LICENSE.MIT`입니다.
 
 Windows 설치 EXE는 [NSIS](https://nsis.sourceforge.io/) Unicode 도구로 만듭니다. 설치·제거 엔진은 zlib/libpng 라이선스, LZMA 압축 모듈은 Common Public License 1.0을 따릅니다. 배포한 도구의 전체 고지는 설치 폴더의 `licenses/NSIS.txt`에 포함합니다. Tempos의 설치 그림은 기존 앱 아이콘과 자체 생성 배경을 사용합니다.
 
-FlaUI.UIA3 5.0.0 (MIT), Microsoft .NET SDK 및 Windows/Visual Studio SDK는 개발과 테스트에 사용합니다. FlaUI와 .NET 런타임은 Tempos 배포 ZIP에 포함하지 않습니다. 각 도구의 라이선스는 해당 배포본과 패키지에 유지합니다.
+FlaUI.UIA3 5.0.0 (MIT), Microsoft .NET SDK 및 Windows/Visual Studio SDK는 개발과 테스트에 사용합니다. FlaUI는 배포하지 않습니다. 기본 Tempos.exe는 네이티브 앱이며, 선택 설치하는 센서 도우미에는 .NET 런타임을 포함합니다.
+
+## 선택 설치하는 CPU 센서 도우미
+
+Tempos.Sensors.Setup.exe에는 LibreHardwareMonitorLib 0.9.6(MPL-2.0), .NET 10.0.12 런타임 및 고정한 전이 의존성을 포함합니다. LibreHardwareMonitor 원본 소스는 [고정 커밋](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/tree/3d331e3370efb858411f19511373eff65a218701)에서 제공하며 라이브러리 소스를 수정하지 않았습니다.
+
+서명된 PawnIO 2.2.0 공식 설치 파일도 포함합니다. 라이선스는 GPL-2.0-or-later이며 공식 [설치 배포본](https://github.com/namazso/PawnIO.Setup/releases/tag/2.2.0), [드라이버 소스](https://github.com/namazso/PawnIO/tree/5cdf470831fdfff3f7f1d06363ca6b230f3bf35a), [모듈 소스](https://github.com/namazso/PawnIO.Modules)를 참조하세요. 빌드 시 설치 파일의 SHA-256과 Authenticode 서명을 검증합니다.
+
+고정 버전·출처·해시는 `third_party/sensors/dependencies.json`과 `sensors/Tempos.Sensors/packages.lock.json`에 있습니다. 센서 설치 폴더의 `licenses`에 원문 라이선스·외부 고지·패키지 메타데이터와 의존성 목록을 함께 배포합니다. 센서 제거는 공유 PawnIO 드라이버를 제거하지 않습니다.

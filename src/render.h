@@ -44,6 +44,7 @@ private:
   void text(const std::wstring &, float x, float y, float width, float height, float size = 16,
             bool bold = false, uint32_t color = 0xffffff,
             DWRITE_TEXT_ALIGNMENT align = DWRITE_TEXT_ALIGNMENT_LEADING, bool wrap = false);
+  void modelText(const std::wstring &, float x, float y, float width, float height, float size = 12);
   void line(float x, float y, float x2, float y2, uint32_t color = 0xffffff, float alpha = .25f,
             float stroke = 1);
   void dot(float x, float y, float radius, uint32_t color, float alpha = 1);

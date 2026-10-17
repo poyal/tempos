@@ -12,7 +12,8 @@ internal static partial class Program
         {
             if (kind > 0) NativeButton(1203);
             NativeCombo(1201, kind); NativeButton(1202);
-            Element(1305).AsTextBox().Text = "0"; NativeButton(1316);
+            Check(SendText(GetDlgItem(Window.Properties.NativeWindowHandle, 1305), 0xC, 0, "0") != 0,
+                  "Native background transparency input"); NativeButton(1316);
             Check(Visible(1310) == (kind == 0), $"Kind {kind}: seconds only for clock");
             Check(Visible(1311) == new[] {2, 3, 4, 6}.Contains(kind), $"Kind {kind}: graph only for metrics");
             Check(Visible(1312) == (kind == 1) && Visible(1314) == (kind == 1) && Visible(1320) == (kind == 1), $"Kind {kind}: weather-only controls");
@@ -95,6 +96,19 @@ internal static partial class Program
             }
             if (kind == 1)
             {
+                NativeCombo(1300, 3); NativeButton(1316);
+                WeatherScenario(new() { ["dailyCount"] = 3 }); WaitWeather("open-meteo", 1, 21);
+                WaitDailyCount(2);
+                Check(WeatherWindows().All(w => w["weatherDays"]!.AsArray().Count == 2),
+                      "Partial HTTP daily forecast retains missing future days");
+                VisibleWidgets("design-weather-daily-partial", 1, true);
+                WeatherScenario(new() { ["dailyCount"] = 0 }); WaitWeather("open-meteo", 1, 21);
+                WaitDailyCount(0);
+                Check(WeatherWindows().All(w => w["weatherDays"]!.AsArray().Count == 0),
+                      "Absent daily forecast does not invent values");
+                VisibleWidgets("design-weather-daily-missing", 1, true);
+                WeatherScenario(new()); WaitWeather("open-meteo", 1, 21);
+                WaitDailyCount(4);
                 NativeCombo(1300, 2); NativeButton(1316);
                 for (int scenario = 0; scenario <= 8; scenario++)
                 {
@@ -103,7 +117,7 @@ internal static partial class Program
                 }
                 Element(1312).AsCheckBox().IsChecked = false; NativeButton(1316);
                 VisibleWidgets("design-weather-fixed", 1, true);
-                Element(1305).AsTextBox().Text = "100";
+                SendText(GetDlgItem(Window.Properties.NativeWindowHandle, 1305), 0xC, 0, "100");
                 Element(1312).AsCheckBox().IsChecked = true; NativeButton(1316);
                 SendMessage(Window.Properties.NativeWindowHandle, 0x111, 1902, 0);
                 VisibleWidgets("design-weather-transparent", 1);

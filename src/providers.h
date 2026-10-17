@@ -1,6 +1,7 @@
 #pragma once
 #include "model.h"
 #include "http.h"
+#include "temperature.h"
 #include <pdh.h>
 #include <map>
 namespace tempos {
@@ -27,7 +28,7 @@ public:
   LocalMetrics();
   ~LocalMetrics();
   Snapshot read(Kind kind, const std::wstring &source);
-  std::vector<Device> devices(Kind kind);
+  std::vector<Device> devices(Kind kind, bool availableOnly = true);
   void reset();
   void retain(bool cpu, bool gpu, bool network);
 
@@ -57,10 +58,11 @@ std::wstring providerKey(const Widget &widget, WeatherProvider provider = Weathe
 class ProviderService {
 public:
   using RemoteRead = std::function<Snapshot(const Widget &, std::stop_token, WeatherProvider)>;
-  ProviderService(HWND notify, RemoteRead remote, bool fixture = false);
+  using TemperatureRead = std::function<TemperatureReading(Kind)>;
+  ProviderService(HWND notify, RemoteRead remote, bool fixture = false, TemperatureRead temperature = {});
   ~ProviderService();
   void configure(const std::vector<Widget> &widgets, bool paused, bool energySaving = false,
-                 WeatherProvider provider = WeatherProvider::Kma);
+                 WeatherProvider provider = WeatherProvider::Kma, bool cpuTemperature = false);
   std::shared_ptr<const Snapshot> snapshot(const Widget &widget);
   std::vector<Device> devices(Kind kind);
   void refresh();
@@ -85,10 +87,13 @@ private:
   std::condition_variable_any cv_;
   std::map<std::wstring, Entry> entries_;
   LocalMetrics local_;
+  CpuTemperatureClient cpuTemperature_;
   WorkQueue remoteQueue_{2};
   RemoteRead remote_;
+  TemperatureRead temperatureFixture_;
   HWND notify_{};
   bool paused_ = false, fixture_ = false;
+  bool cpuTemperatureEnabled_ = false;
   WeatherProvider weatherProvider_ = WeatherProvider::Kma;
   uint64_t generation_ = 0;
   std::jthread thread_;

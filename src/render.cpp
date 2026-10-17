@@ -149,6 +149,26 @@ void Renderer::line(float x, float y, float x2, float y2, uint32_t rgb, float al
   brush_->SetColor(color(rgb, alpha));
   context_->DrawLine({x, y}, {x2, y2}, brush_.Get(), stroke);
 }
+void Renderer::modelText(const std::wstring &value, float x, float y, float width, float height, float size) {
+  // Measure the complete single line before choosing its font; only exceptionally long
+  // names use the normal ellipsis, never the old half-card text box.
+  while (size > 11) {
+    ComPtr<IDWriteTextFormat> format;
+    ComPtr<IDWriteTextLayout> layout;
+    DWRITE_TEXT_METRICS metrics{};
+    if (FAILED(write_->CreateTextFormat(L"Segoe UI", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
+                                       DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
+                                       size, L"ko-KR", &format)))
+      break;
+    format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+    if (FAILED(write_->CreateTextLayout(value.c_str(), UINT32(value.size()), format.Get(),
+                                       width, height, &layout)) ||
+        FAILED(layout->GetMetrics(&metrics)) || metrics.widthIncludingTrailingWhitespace <= width)
+      break;
+    size -= .5f;
+  }
+  text(value, x, y, width, height, size);
+}
 void Renderer::dot(float x, float y, float radius, uint32_t rgb, float alpha) {
   brush_->SetColor(color(rgb, alpha));
   context_->FillEllipse(D2D1::Ellipse({x, y}, radius, radius), brush_.Get());
@@ -479,6 +499,14 @@ std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
     if (s->weather) {
       double temperature = w.fahrenheit ? s->weather->temperature * 1.8 + 32 : s->weather->temperature;
       out += L" " + number(temperature) + (w.fahrenheit ? L"°F " : L"°C ") + s->weather->condition;
+      if (w.size == Size::L) {
+        out += L" · 앞으로 4일";
+        for (const auto &day : s->weather->days) {
+          auto degrees = [&](double value) { return number(w.fahrenheit ? value * 1.8 + 32 : value); };
+          out += L" · " + dateLabel(localDate(day.time, L"Asia/Seoul")) + L" 최고 " + degrees(day.high) +
+                 L"° 최저 " + degrees(day.low) + L"° 강수 " + number(day.probability) + L"%";
+        }
+      }
     }
   } else if (w.kind == Kind::Disk && w.size == Size::L) {
     out += L" 전체 " + std::to_wstring(s->disks.size()) + L"개 드라이브";
@@ -508,6 +536,14 @@ std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
     if (w.kind == Kind::Disk)
       out += L" 사용자 가용 " + formatBytes(s->secondary, w.binaryDisk);
   }
+  if (w.kind == Kind::Cpu || w.kind == Kind::Gpu) {
+    out += L" " + s->title;
+    if (validTemperature(s->temperature, monotonic(), w.interval))
+      out += L" 온도 " + number(s->temperature.celsius) + L"°C";
+    else
+      out += L" 온도 — · " + temperatureReason(s->temperature.status == TemperatureStatus::Ready
+                                                   ? TemperatureStatus::Stale : s->temperature.status);
+  }
   out += L" " + s->message;
   return out;
 }
@@ -519,7 +555,8 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   std::wstring place = w.region;
   if (auto p = place.find_last_of(L' '); p != std::wstring::npos)
     place = place.substr(p + 1);
-  text(place, pad, w.size == Size::Slim ? 8 : 16, w.size == Size::S ? 80.f : e.width - 2 * pad, 24,
+  text(place, pad, w.size == Size::Slim ? 8 : 16,
+       w.size == Size::S ? 80.f : w.size == Size::Slim ? 92.f : e.width - 2 * pad - (stale ? 70.f : 0.f), 24,
        w.size == Size::Slim ? 13 : 15);
   if (!d || !std::isfinite(d->temperature)) {
     text(s ? s->message : L"날씨 불러오는 중", pad, w.size == Size::Slim ? 28 : 57, e.width - 2 * pad,
@@ -528,37 +565,52 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   }
   double temperature = w.fahrenheit ? d->temperature * 1.8 + 32 : d->temperature;
   float size = w.size == Size::Slim ? 28 : w.size == Size::S ? 42 : 52;
-  text(number(temperature) + L"°", w.size == Size::Slim ? 115.f : pad, w.size == Size::Slim ? 14.f : 43,
-       e.width - pad, 64, size, true);
+  const auto degrees = number(temperature) + L"°";
+  float temperatureWidth = w.size == Size::Slim ? 90.f : w.size == Size::S ? 120.f :
+                           degrees.size() >= 4 ? 146.f : 110.f;
+  text(degrees, w.size == Size::Slim ? 115.f : pad, w.size == Size::Slim ? 14.f : 43,
+       temperatureWidth, 64, size, true);
   float iconX = w.size == Size::S ? 121.f : e.width - 52, iconY = w.size == Size::S      ? 30.f
                                                                   : w.size == Size::Slim ? 30.f
                                                                                          : 65.f;
   weatherIcon(d->state, d->night, iconX, iconY, w.size == Size::S ? .5f : w.size == Size::Slim ? .7f : 1.f);
-  if (w.size != Size::Slim) {
-    text(d->condition, pad, 103, w.size == Size::S ? 120.f : 99.f, 23, 13);
+  if (w.size == Size::Slim) {
+    text(d->condition, pad, 34, 92, 20, 12);
+  } else {
+    if (w.size == Size::S)
+      text(d->condition, pad, 112, 120, 23, 13);
+    else
+      text(d->condition, pad, 120, 93, 22, 13);
     if (w.size != Size::S) {
       text(L"최저 " + number(w.fahrenheit ? d->low * 1.8 + 32 : d->low) + L"°   최고 " +
                number(w.fahrenheit ? d->high * 1.8 + 32 : d->high) + L"°",
-           125, 106, e.width - 143, 22, 13);
+           117, 120, e.width - pad - 117, 22, 13, false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
       if (w.size == Size::L) {
         line(pad, 147, e.width - pad, 147);
-        text(L"시간별 예보 · 강수 확률", pad, 157, e.width - 2 * pad, 22, 12);
-        for (size_t i = 0; i < d->hours.size() && i < 4; ++i) {
+        const auto today = localMidnight(localDate(nowUnix(), L"Asia/Seoul"), L"Asia/Seoul");
+        const wchar_t *weekdays[]{L"일", L"월", L"화", L"수", L"목", L"금", L"토"};
+        for (size_t i = 0; i < 4; ++i) {
           float x = pad + float(i) * (e.width - 2 * pad) / 4;
-          auto &h = d->hours[i];
-          Widget korea = w;
-          korea.timezone = L"Asia/Seoul";
-          korea.twelveHour = false;
-          text(timeLabel(h.time, korea), x, 188, 70, 20, 12);
-          auto local = localTime(h.time, korea.timezone);
-          auto sun = sunriseSunset(localDate(h.time, korea.timezone), w.latitude, w.longitude);
-          double hour = duration<double, std::ratio<3600>>(local - floor<days>(local)).count();
-          bool night = std::isfinite(sun.first) && std::isfinite(sun.second) &&
-                       (hour < sun.first || hour >= sun.second);
-          weatherIcon(h.state, night, x + 28, 220, .38f);
-          text(number(w.fahrenheit ? h.temperature * 1.8 + 32 : h.temperature) + L"°", x, 242, 70, 28, 21,
-               true);
-          text(std::isfinite(h.probability) ? number(h.probability) + L"%" : L"—", x, 278, 70, 20, 12);
+          const auto time = today + (int64_t(i) + 1) * 86400;
+          const auto date = localDate(time, L"Asia/Seoul");
+          auto label = i == 0 ? std::wstring(L"내일") :
+              std::to_wstring(unsigned(date.month())) + L"/" + std::to_wstring(unsigned(date.day()));
+          label += L" (" + std::wstring(weekdays[std::chrono::weekday{sys_days{date}}.c_encoding()]) + L")";
+          text(label, x, 167, 70, 20, 11);
+          const auto found = std::find_if(d->days.begin(), d->days.end(),
+                                         [time](const auto &day) { return day.time == time; });
+          if (found == d->days.end()) {
+            text(L"—", x, 205, 70, 25, 18);
+            text(L"예보 없음", x, 265, 70, 20, 11);
+            continue;
+          }
+          const auto &day = *found;
+          weatherIcon(day.state, false, x + 28, 205, .38f);
+          auto forecastDegrees = [&](double value) { return number(w.fahrenheit ? value * 1.8 + 32 : value) + L"°"; };
+          text(L"최고 " + forecastDegrees(day.high), x, 237, 70, 24, 14, true);
+          text(L"최저 " + forecastDegrees(day.low), x, 266, 70, 20, 12);
+          text(L"강수 " + (std::isfinite(day.probability) ? number(day.probability) + L"%" : L"—"),
+               x, 295, 70, 20, 11);
         }
       }
     }
@@ -619,9 +671,8 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
     return;
   }
   if (w.size == Size::S) {
-    text(std::to_wstring(unsigned(today.day())), 20, 49, 120, 59, 42, true);
-    text(std::to_wstring(int(today.year())) + L"년 " + std::to_wstring(unsigned(today.month())) + L"월", 20,
-         108, 120, 21, 12);
+    text(std::to_wstring(unsigned(today.month())) + L"월", 20, 93, 44, 24, 16);
+    text(std::to_wstring(unsigned(today.day())), 68, 61, 72, 62, 46, true);
     if (events.empty())
       text(emptyLabel, 20, 133, 120, 22, 11);
     else
@@ -730,6 +781,7 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
         dot(center, cy + 26, 2, 0x82d9ff);
     }
   if (xl) {
+    line(pad, top - header, e.width - pad, top - header);
     line(e.width - pad, top - header, e.width - pad, top + grid.weeks * cellH);
     line(pad, top + grid.weeks * cellH, e.width - pad, top + grid.weeks * cellH);
     for (auto &seg : segments)
@@ -813,36 +865,55 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
   auto usage = [&](float x, float y, float length, double percent) {
     bar(x, y, length, 5, 0xffffff, .2f, 2);
     if (std::isfinite(percent))
-      bar(x, y, length * float(std::clamp(percent, 0., 100.) / 100), 5, 0xffffff, .9f, 2);
+      bar(x, y, length * float(std::clamp(percent, 0., 100.) / 100), 5,
+          highContrast_ ? foreground_ : design::metricColor(
+              w.kind == Kind::Cpu || w.kind == Kind::Gpu ? design::Metric::Load : design::Metric::Capacity,
+              percent, data->status == Status::Ready), .9f, 2);
   };
+  const auto usageColor = design::metricColor(
+      w.kind == Kind::Cpu || w.kind == Kind::Gpu ? design::Metric::Load : design::Metric::Capacity,
+      data->value, data->status == Status::Ready);
   if (w.kind == Kind::Cpu || w.kind == Kind::Gpu || w.kind == Kind::Memory) {
-    text(number(data->value) + L"%", slim ? 47.f : pad, slim ? 31.f : 49.f,
-         slim     ? 119.f
+    const bool thermal = w.kind != Kind::Memory;
+    if (w.graph && !compact)
+      text(L"최근 60초", 214, slim ? 10.f : 18.f, 102, 20, slim ? 11.f : 12.f,
+           false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
+    text(number(data->value) + L"%", slim ? 47.f : pad, slim ? 31.f : medium && thermal ? 73.f : 49.f,
+         slim     ? (thermal ? 72.f : 119.f)
          : medium ? 146.f
                   : width,
-         slim ? 34.f : 59.f, slim ? 26.f : 42.f, true);
-    if (!slim)
-      text(w.kind == Kind::Memory
-               ? formatBytes(data->total - data->available) + L" / " + formatBytes(data->total)
-               : data->title,
-           pad, 111, medium ? 146.f : width, 23, compact ? 11.f : 12.f);
+         slim ? 29.f : 55.f, slim ? 24.f : 42.f, true, usageColor);
+    if (thermal) {
+      const bool measured = validTemperature(data->temperature, monotonic(), w.interval);
+      auto label = measured ? number(data->temperature.celsius) + L"°C" : L"—";
+      text(label, slim ? 123.f : medium ? 128.f : pad,
+           slim ? 38.f : medium ? 103.f : 104.f,
+           slim ? 56.f : medium ? 46.f : width, 21, slim || medium ? 12.f : 14.f, false,
+           design::metricColor(design::Metric::Temperature, data->temperature.celsius, measured));
+    }
+    auto footer = thermal ? data->title :
+                  formatBytes(data->total - data->available) + L" / " + formatBytes(data->total);
+    if (!thermal || (!slim && !compact))
+      modelText(footer, slim ? 17.f : pad,
+              slim ? 55.f : compact ? 137.f : medium ? 134.f : 302.f,
+              slim ? 302.f : width, slim || compact ? 15.f : 21.f,
+              slim || compact ? 11.f : 12.f);
     if (w.graph && !compact) {
       if (slim)
-        graph(data->history, 184, 22, 132, 30, 0xffffff);
+        graph(data->history, 192, 32, 124, 18, 0xffffff);
       else if (medium) {
-        line(176, 56, 176, 140);
-        graph(data->history, 192, 58, 124, 53, 0xffffff);
-        text(L"최근 60초", 192, 123, 124, 22, 12);
+        line(176, 56, 176, 122);
+        graph(data->history, 192, 58, 124, 62, 0xffffff);
       } else {
-        graph(data->history, pad, 164, width, 98, 0xffffff);
-        text(L"최근 60초", pad, 272, width, 20, 12);
-        text(L"평균 " + number(data->history.average(monotonic()).value_or(NAN)) + L"%", pad, 301, 143, 24,
+        graph(data->history, pad, 151, width, 105, 0xffffff);
+        text(L"평균 " + number(data->history.average(monotonic()).value_or(NAN)) + L"%", pad, 272, 143, 24,
              15);
-        text(L"최대 " + number(data->history.maximum(monotonic()).value_or(NAN)) + L"%", 173, 301, 143, 24,
+        text(L"최대 " + number(data->history.maximum(monotonic()).value_or(NAN)) + L"%", 173, 272, 143, 24,
              15);
       }
     } else
-      usage(slim ? 184.f : pad, slim ? 43.f : 139.f, slim ? 132.f : width, data->value);
+      usage(slim ? 192.f : pad, slim ? 42.f : (compact || medium) ? 126.f : 151.f,
+            slim ? 124.f : width, data->value);
   } else if (w.kind == Kind::System) {
     auto uptime = int64_t(std::max(0., std::isfinite(data->value) ? data->value : 0.));
     auto duration = std::to_wstring(uptime / 86400) + L"일 " + std::to_wstring(uptime / 3600 % 24) + L"시간";
@@ -919,13 +990,14 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
       text(incoming, pad, 57, summary, 36, compact ? 17.f : medium ? 19.f : 27.f, true);
       text(outgoing, pad, 99, summary, 30, compact ? 15.f : medium ? 17.f : 22.f, false, 0xc3ffe9);
       if (w.graph && !compact) {
-        float x = medium ? 192.f : pad, y = medium ? 58.f : 164.f, gw = medium ? 124.f : width,
-              gh = medium ? 53.f : 98.f;
+        float x = medium ? 192.f : pad, y = medium ? 76.f : 164.f, gw = medium ? 124.f : width,
+              gh = medium ? 64.f : 98.f;
         if (medium)
           line(176, 56, 176, 140);
         graph(data->history, x, y, gw, gh, 0xffffff, maximum);
         graph(data->history2, x, y, gw, gh, 0xc3ffe9, maximum);
-        text(L"최근 60초", x, medium ? 123.f : 272.f, gw, 22, 12);
+        text(L"최근 60초", 214, 18, 102, 20, 12, false, 0xffffff,
+             DWRITE_TEXT_ALIGNMENT_TRAILING);
       }
       if (w.size == Size::L)
         text(w.source.empty() ? L"전체 네트워크 · ↓ 수신 / ↑ 송신" : data->title, pad, 301, width, 23, 12);
@@ -975,7 +1047,7 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
       text(L"여유 " + available, 143, 13, 173, 28, 17, true);
       usage(143, 48, 173, data->value);
     } else if (compact) {
-      text(number(data->value) + L"%", pad, 49, width, 58, 42, true);
+      text(number(data->value) + L"%", pad, 49, width, 58, 42, true, usageColor);
       text(L"사용", pad, 101, width, 23, 13);
       text(available + L" 여유", pad, 121, width, 20, 11);
       usage(pad, 144, width, data->value);
@@ -987,7 +1059,7 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
                formatBytes(data->total, w.binaryDisk),
            204, 61, 112, 23, 12);
       usage(204, 96, 112, data->value);
-      text(number(data->value) + L"% 사용", 204, 117, 112, 23, 14);
+      text(number(data->value) + L"% 사용", 204, 117, 112, 23, 14, false, usageColor);
     }
   }
 }

@@ -177,6 +177,14 @@ FunctionEnd
 
 Section "Uninstall"
   !insertmacro CheckRunning
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TemposSensors" "InstallLocation"
+  StrCmp $0 "" sensors_done
+  IfSilent sensors_done
+  MessageBox MB_YESNO|MB_DEFBUTTON2 "CPU 온도 센서 도우미도 제거할까요? 관리자 승인이 필요하며 공유 PawnIO 드라이버는 유지됩니다." IDNO sensors_done
+  ExecShellWait "runas" "$INSTDIR\Tempos.Sensors.Setup.exe" "/REMOVE" SW_SHOWNORMAL $0
+  StrCmp $0 0 sensors_done
+  MessageBox MB_OK "센서 도우미가 남아 있습니다. Windows 설치된 앱에서 'Tempos 센서 도우미'를 제거할 수 있습니다."
+  sensors_done:
   # Remove only startup commands pointing at this install. Preserve another copy.
   ReadRegStr $0 HKCU "${RUN_KEY}" "Tempos"
   StrLen $1 '$\"$INSTDIR\Tempos.exe$\"'

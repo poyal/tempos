@@ -38,6 +38,18 @@ inline HttpClient::Transport weatherFixture(const std::filesystem::path &root) {
         hourly["weather_code"].push_back(code);
         hourly["precipitation_probability"].push_back(10 * i);
       }
+      Json daily = {{"time", Json::array()}, {"temperature_2m_min", Json::array()},
+                    {"temperature_2m_max", Json::array()}, {"weather_code", Json::array()},
+                    {"precipitation_probability_max", Json::array()}};
+      const auto midnight = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+      const int codes[]{0, 0, 2, 61, 3};
+      for (int i = 0; i < std::clamp(options.value("dailyCount", 5), 0, 5); ++i) {
+        daily["time"].push_back(midnight + i * 86400);
+        daily["temperature_2m_min"].push_back(16 - i);
+        daily["temperature_2m_max"].push_back(24 - i);
+        daily["weather_code"].push_back(codes[i]);
+        daily["precipitation_probability_max"].push_back(i == 3 ? 80 : i * 10);
+      }
       Json body = {{"current",
                     {{"time", now - options.value("age", 0)},
                      {"temperature_2m", options.value("temperature", 21)},
@@ -46,10 +58,7 @@ inline HttpClient::Transport weatherFixture(const std::filesystem::path &root) {
                      {"weather_code", code},
                      {"is_day", 1}}},
                    {"hourly", hourly},
-                   {"daily",
-                    {{"time", Json::array({localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul")})},
-                     {"temperature_2m_min", Json::array({16})},
-                     {"temperature_2m_max", Json::array({24})}}}};
+                   {"daily", daily}};
       return {200, 0, body.dump(), 0};
     }
     if (host != L"apihub.kma.go.kr")
@@ -62,6 +71,17 @@ inline HttpClient::Transport weatherFixture(const std::filesystem::path &root) {
                          {"obsrValue", pair.second},
                          {"baseDate", base.date},
                          {"baseTime", base.time}});
+    } else if (path.find(L"getVilageFcst") != std::wstring::npos) {
+      const auto midnight = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+      for (int i = 0; i < std::clamp(options.value("dailyCount", 5), 0, 5); ++i) {
+        auto text = rfc3339(midnight + i * 86400 + 9 * 3600);
+        auto date = text.substr(0, 4) + text.substr(5, 2) + text.substr(8, 2);
+        for (auto pair : {std::pair{"TMN", std::to_string(14 - i)}, {"TMX", std::to_string(23 - i)},
+                         {"SKY", std::string(i == 2 ? "4" : "1")}, {"PTY", std::string(i == 3 ? "1" : "0")},
+                         {"POP", std::to_string(i == 3 ? 80 : i * 10)}})
+          items.push_back({{"category", pair.first}, {"fcstValue", pair.second},
+                           {"fcstDate", date}, {"fcstTime", "1200"}});
+      }
     } else {
       for (int i = 0; i <= 6; ++i) {
         auto text = rfc3339(now / 3600 * 3600 + i * 3600 + 9 * 3600);

@@ -84,11 +84,19 @@ internal static partial class Program
             {
                 var point = new Point(w!["x"]!.GetValue<int>() + w["width"]!.GetValue<int>() / 2, w["y"]!.GetValue<int>() + w["height"]!.GetValue<int>() / 2);
                 var actual = WindowFromPoint(point);
+                if (actual != WidgetHandle(w) &&
+                    (stage.StartsWith("design-") || stage.StartsWith("layout-example-")))
+                {
+                    // Capture preparation: raise only this test's widget above transient desktop UI.
+                    SetWindowPos(WidgetHandle(w), new nint(-1), 0, 0, 0, 0, 0x13);
+                    Thread.Sleep(300);
+                    actual = WindowFromPoint(point);
+                }
                 var cls = new StringBuilder(128); GetClassName(actual, cls, cls.Capacity);
                 Check(actual == WidgetHandle(w), stage + ": desktop hit test kind " + w["kind"] + " (hit " + cls + ")");
             }
             var first = windows.First();
-            if (stage.StartsWith("clock-") || stage.StartsWith("design-")) CaptureWidget(stage, first!);
+            if (stage.StartsWith("clock-") || stage.StartsWith("design-") || stage.StartsWith("layout-example-")) CaptureWidget(stage, first!);
             else Screenshot(stage);
         }
         finally { ShowWindow(Window.Properties.NativeWindowHandle, 5); }

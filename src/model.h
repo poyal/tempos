@@ -30,6 +30,14 @@ std::wstring newId();
 enum class Kind { Clock, Weather, Cpu, Gpu, Memory, System, Network, Disk, Calendar };
 enum class Size { S, Slim, M, L, XL };
 enum class Status { Loading, Ready, Stale, Unavailable, Error };
+enum class TemperatureStatus { Disabled, Loading, Ready, Unsupported, Unavailable, Stale };
+struct TemperatureReading {
+  double celsius = NAN;
+  TemperatureStatus status = TemperatureStatus::Unsupported;
+  double sampledAt{};
+};
+bool validTemperature(const TemperatureReading &, double now, int interval);
+std::wstring temperatureReason(TemperatureStatus);
 enum class WeatherProvider { Kma, OpenMeteo };
 enum class WeatherState {
   Unknown,
@@ -92,6 +100,7 @@ struct Settings {
   int version = 1, theme = 1;
   WeatherProvider weatherProvider = WeatherProvider::OpenMeteo;
   bool edit = false, hidden = false;
+  bool cpuTemperatureEnabled = false;
   std::vector<Widget> widgets;
 };
 bool validateWidget(Widget &widget);
@@ -133,6 +142,11 @@ struct WeatherHour {
   int sky{}, rain{};
   WeatherState state = WeatherState::Unknown;
 };
+struct WeatherDay {
+  int64_t time{}; // Korea local midnight, represented as Unix seconds.
+  double low = NAN, high = NAN, probability = NAN;
+  WeatherState state = WeatherState::Unknown;
+};
 struct WeatherData {
   double temperature = NAN, low = NAN, high = NAN, humidity = NAN, wind = NAN;
   int sky{}, rain{};
@@ -141,6 +155,7 @@ struct WeatherData {
   WeatherState state = WeatherState::Unknown;
   std::wstring condition;
   std::vector<WeatherHour> hours;
+  std::vector<WeatherDay> days;
 };
 struct Event {
   std::wstring id, calendar, title;
@@ -164,6 +179,7 @@ struct Snapshot {
   std::wstring title, detail, extra, message;
   double value = NAN, secondary = NAN, total = NAN, available = NAN;
   double sampledAt{};
+  TemperatureReading temperature;
   History history, history2;
   std::vector<DiskVolume> disks;
   std::shared_ptr<const WeatherData> weather;

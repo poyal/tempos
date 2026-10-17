@@ -23,6 +23,8 @@ internal static partial class Program
     [DllImport("user32.dll", SetLastError = true)] static extern bool GetCursorPos(out Point point);
     [DllImport("user32.dll", SetLastError = true)] static extern nint OpenInputDesktop(uint flags, bool inherit, uint access);
     [DllImport("user32.dll")] static extern bool CloseDesktop(nint desktop);
+    [DllImport("user32.dll", EntryPoint = "SendMessageW", CharSet = CharSet.Unicode)]
+    static extern nint ReadComboText(nint hwnd, uint message, nint index, System.Text.StringBuilder text);
 
     static bool DesktopMouse(Point point, uint flags)
     {
@@ -60,6 +62,21 @@ internal static partial class Program
             Check(match.Success && double.Parse(match.Groups["value"].Value, System.Globalization.CultureInfo.InvariantCulture) is >= 0 and <= 100,
                 "Actual system counter returns a valid percentage: kind " + kind);
         }
+        // Production live-API checks must never trigger an optional driver install.
+        // TestHost only flips the isolated profile flag and never launches setup.
+        if (!LiveApis) { Tab(2); NativeButton(1510); Tab(0); }
+        Thread.Sleep(3000);
+        foreach (int kind in new[] {2, 3})
+        {
+            var item = State()["windows"]!.AsArray().First(w => w!["kind"]!.GetValue<int>() == kind)!;
+            if (item["temperatureC"] is JsonValue value)
+                Check(value.GetValue<double>() is > 0 and <= 150 && Summary(kind).Contains("°C"),
+                    "Actual local temperature reaches the widget: kind " + kind);
+            else
+                Skip("Actual local temperature: kind " + kind,
+                    "No valid sensor reading; status " + item["temperatureStatus"] +
+                    ". This suite never installs a driver or sensor service.");
+        }
         SelectWidget(6); NativeCombo(1300, 3); NativeButton(1316); Thread.Sleep(3000);
         Check(Settings()["widgets"]![6]!["source"]!.GetValue<string>() == "", "Actual network uses aggregate interface counters");
         Check(Regex.IsMatch(Summary(6), @"\d+(?:\.\d+)? (?:Kbps|Mbps|Gbps|bps)"), "Actual aggregate receive/send rates are available");
@@ -70,6 +87,34 @@ internal static partial class Program
             "Large disk widget includes every ready local drive reported by Windows");
         Check(Regex.IsMatch(disks, @"\d+(?:\.\d+)? (?:GB|TB|GiB|TiB)"), "Actual disk capacity is available");
         Check(!IsWindowVisible(GetDlgItem(Window.Properties.NativeWindowHandle, 1313)), "Large disk hides the individual volume selector");
+        NativeCombo(1300, 2); NativeButton(1316); SelectWidget(7);
+        var picker = GetDlgItem(Window.Properties.NativeWindowHandle, 1313);
+        int choices = (int)SendMessage(picker, 0x146, 0, 0);
+        Check(choices > 1, "Disk picker contains at least one available local drive");
+        var offered = new List<string>();
+        for (int i = 1; i < choices; i++)
+        {
+            var name = new System.Text.StringBuilder(1024);
+            ReadComboText(picker, 0x148, i, name);
+            offered.Add(name.ToString());
+            var driveName = Regex.Match(name.ToString(), @"^[A-Za-z]:\\").Value;
+            if (driveName.Length > 0)
+                Check(new DriveInfo(driveName).IsReady, "Disk picker only offers a ready local drive: " + driveName);
+        }
+        CaptureSettings("windows-disk-picker");
+        File.WriteAllText(Path.Combine(Data, "disk-picker-items.json"), JsonSerializer.Serialize(offered));
+        var management = Window.Properties.NativeWindowHandle;
+        SetWindowPos(management, new nint(-1), 0, 0, 0, 0, 0x13);
+        try
+        {
+            SendMessage(picker, 0x14F, 1, 0); Thread.Sleep(200);
+            Check(SendMessage(picker, 0x157, 0, 0) != 0, "Available-drive selection list opens");
+            GetClientRect(management, out var bounds);
+            var pickerOrigin = Point.Empty; ClientToScreen(management, ref pickerOrigin); bounds.Location = pickerOrigin;
+            Screenshot("windows-disk-picker-expanded", bounds);
+        }
+        finally { SendMessage(picker, 0x14F, 0, 0); SetWindowPos(management, new nint(-2), 0, 0, 0, 0, 0x13); }
+        NativeCombo(1300, 3); NativeButton(1316);
 
         var until = DateTime.UtcNow.AddSeconds(40);
         JsonNode weather;
@@ -97,7 +142,7 @@ internal static partial class Program
                 double scale = capture.Width / 336.0;
                 int whitePixels = 0;
                 // Only the graph plot, excluding its baseline, title and legend.
-                for (int y = (int)(58 * scale); y < (int)(110 * scale); y++)
+                for (int y = (int)(58 * scale); y < (int)(119 * scale); y++)
                     for (int x = (int)(192 * scale); x < (int)(316 * scale); x++)
                     {
                         var pixel = capture.GetPixel(x, y);
@@ -107,8 +152,26 @@ internal static partial class Program
             }
         }
         SelectWidget(0); NativeCombo(1300, 2); NativeButton(1316);
-        var clock = State()["windows"]![0]!;
+        var dragState = State();
+        var clock = dragState["windows"]![0]!;
         var origin = new Point(clock["x"]!.GetValue<int>() + 80, clock["y"]!.GetValue<int>() + 70);
+        Rectangle Bounds(JsonNode w) => new(w["x"]!.GetValue<int>(), w["y"]!.GetValue<int>(),
+            w["width"]!.GetValue<int>(), w["height"]!.GetValue<int>());
+        var occupied = dragState["windows"]!.AsArray().Skip(1).Select(w =>
+        { var area = Bounds(w!); area.Inflate(32, 32); return area; }).ToArray();
+        var monitor = dragState["monitors"]!.AsArray().First(m => origin.X >= m!["left"]!.GetValue<int>() &&
+            origin.X < m["right"]!.GetValue<int>() && origin.Y >= m["top"]!.GetValue<int>() && origin.Y < m["bottom"]!.GetValue<int>())!;
+        Rectangle? destination = null;
+        var clockBounds = Bounds(clock);
+        for (int y = monitor["top"]!.GetValue<int>() + 32; y + clockBounds.Height < monitor["bottom"]!.GetValue<int>() - 32 && destination is null; y += 32)
+            for (int x = monitor["left"]!.GetValue<int>() + 32; x + clockBounds.Width < monitor["right"]!.GetValue<int>() - 32; x += 32)
+            {
+                var candidate = new Rectangle(x, y, clockBounds.Width, clockBounds.Height);
+                if (Math.Abs(x - clockBounds.X) < 64 && Math.Abs(y - clockBounds.Y) < 64) continue;
+                if (!occupied.Any(area => area.IntersectsWith(candidate))) { destination = candidate; break; }
+            }
+        Check(destination is not null, "OS drag destination has space without overlapping another widget");
+        var dragEnd = new Point(destination!.Value.X + 80, destination.Value.Y + 70);
         bool hadCursor = GetCursorPos(out var oldCursor);
         bool buttonDown = false;
         try
@@ -135,10 +198,12 @@ internal static partial class Program
                 var before = Settings()["widgets"]![0]!.DeepClone();
                 buttonDown = DesktopMouse(origin, 2); Check(buttonDown, "OS mouse button-down delivered");
                 Thread.Sleep(100);
-                Check(DesktopMouse(new Point(origin.X + 96, origin.Y + 64), 0), "OS pointer movement delivered");
+                Check(DesktopMouse(dragEnd, 0), "OS pointer movement delivered");
                 Thread.Sleep(200);
-                DesktopMouse(new Point(origin.X + 96, origin.Y + 64), 4); buttonDown = false; Thread.Sleep(300);
-                Check(Settings()["widgets"]![0]!["x"]!.GetValue<double>() != before["x"]!.GetValue<double>(), "Real input drag changes saved clock position");
+                DesktopMouse(dragEnd, 4); buttonDown = false; Thread.Sleep(300);
+                Check(Settings()["widgets"]![0]!["x"]!.GetValue<double>() != before["x"]!.GetValue<double>() ||
+                      Settings()["widgets"]![0]!["y"]!.GetValue<double>() != before["y"]!.GetValue<double>(),
+                      "Real input drag changes saved clock position");
             }
         }
         finally

@@ -192,7 +192,8 @@ std::vector<Json> WeatherService::fetch(const Widget &w, int product, std::stop_
                           ? (category == "T1H" || category == "PTY" || category == "REH" || category == "WSD")
                       : product == 1
                           ? (category == "T1H" || category == "SKY" || category == "PTY" || category == "POP")
-                          : (category == "TMN" || category == "TMX");
+                          : (category == "TMN" || category == "TMX" || category == "SKY" ||
+                             category == "PTY" || category == "POP");
         if (!needed)
           continue;
         Json compact = Json::object();
@@ -242,6 +243,62 @@ static int64_t forecastTime(const Json &j) {
   return parseRfc3339(date.substr(0, 4) + "-" + date.substr(4, 2) + "-" + date.substr(6, 2) + "T" +
                       time.substr(0, 2) + ":" + time.substr(2, 2) + ":00+09:00");
 }
+std::vector<WeatherDay> parseKmaDays(const std::vector<Json> &items, int64_t now) {
+  const auto today = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+  std::map<int64_t, WeatherDay> days;
+  std::map<int64_t, WeatherHour> hours;
+  auto severity = [](WeatherState state) {
+    switch (state) {
+    case WeatherState::Thunder: return 9;
+    case WeatherState::Sleet: return 8;
+    case WeatherState::Snow: return 7;
+    case WeatherState::Showers: return 6;
+    case WeatherState::Rain: return 5;
+    case WeatherState::Drizzle: return 4;
+    case WeatherState::Overcast: return 3;
+    case WeatherState::Cloudy: return 2;
+    case WeatherState::Clear: return 1;
+    default: return 0;
+    }
+  };
+  for (const auto &item : items) {
+    const auto time = forecastTime(item);
+    if (time <= 0)
+      continue;
+    const auto midnight = localMidnight(localDate(time, L"Asia/Seoul"), L"Asia/Seoul");
+    if (midnight <= today || midnight > today + 4 * 86400)
+      continue;
+    const auto category = item.value("category", std::string{});
+    const double value = kmaNumber(item.value("fcstValue", Json{}));
+    if (!std::isfinite(value))
+      continue;
+    auto &day = days[midnight];
+    day.time = midnight;
+    if (category == "TMN" && value >= -100 && value <= 70)
+      day.low = value;
+    else if (category == "TMX" && value >= -100 && value <= 70)
+      day.high = value;
+    else if (category == "POP" && value >= 0 && value <= 100)
+      day.probability = std::isfinite(day.probability) ? std::max(day.probability, value) : value;
+    else if (category == "SKY" && (value == 1 || value == 3 || value == 4))
+      hours[time].sky = int(value);
+    else if (category == "PTY" && value >= 0 && value <= 7 && value == std::floor(value))
+      hours[time].rain = int(value);
+  }
+  for (auto &[time, hour] : hours) {
+    auto &day = days.at(localMidnight(localDate(time, L"Asia/Seoul"), L"Asia/Seoul"));
+    auto state = kmaWeatherState(hour.rain, hour.sky);
+    if (severity(state) > severity(day.state))
+      day.state = state;
+  }
+  std::vector<WeatherDay> result;
+  for (auto &[time, day] : days) {
+    if (day.low > day.high)
+      day.low = day.high = NAN;
+    result.push_back(day);
+  }
+  return result;
+}
 Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProvider provider) {
   std::lock_guard g(mutex_);
   if (provider == WeatherProvider::OpenMeteo)
@@ -278,6 +335,19 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProv
                 saved.humidity = value;
               else
                 saved.wind = value;
+            }
+          if (v.contains("days") && v["days"].is_array() && v["days"].size() <= 4)
+            for (const auto &entry : v["days"]) {
+              WeatherDay day;
+              day.time = entry.at("time").get<int64_t>();
+              const auto today = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+              if (day.time <= today || day.time > today + 4 * 86400)
+                continue;
+              day.low = entry["low"].is_number() ? entry["low"].get<double>() : NAN;
+              day.high = entry["high"].is_number() ? entry["high"].get<double>() : NAN;
+              day.probability = entry["probability"].is_number() ? entry["probability"].get<double>() : NAN;
+              day.state = WeatherState(std::clamp(entry.value("state", 0), 0, int(WeatherState::Thunder)));
+              saved.days.push_back(day);
             }
           last_[wide(v.at("id").get<std::string>())] = saved;
         }
@@ -352,7 +422,9 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProv
         }
       };
       try {
-        temperatures(fetch(w, 2, stop, now));
+        auto daily = fetch(w, 2, stop, now);
+        temperatures(daily);
+        d.days = parseKmaDays(daily, now);
         if (!std::isfinite(d.low) || !std::isfinite(d.high)) {
           auto day = floor<days>(sys_seconds{seconds{now}} + 9h);
           auto earliest = duration_cast<seconds>((day + 2h + 10min - 9h).time_since_epoch()).count();
@@ -377,7 +449,11 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProv
     if (!fixture_) {
       Json cache = Json::array();
       for (auto &[key, value] : last_)
-        if (now - value.fetched < 86400)
+        if (now - value.fetched < 86400) {
+          Json days = Json::array();
+          for (const auto &day : value.days)
+            days.push_back({{"time", day.time}, {"low", day.low}, {"high", day.high},
+                            {"probability", day.probability}, {"state", int(day.state)}});
           cache.push_back({{"id", utf8(key)},
                            {"fetched", value.fetched},
                            {"observed", value.observed},
@@ -387,7 +463,9 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProv
                            {"humidity", value.humidity},
                            {"wind", value.wind},
                            {"sky", value.sky},
-                           {"rain", value.rain}});
+                           {"rain", value.rain},
+                           {"days", std::move(days)}});
+        }
       store_.savePrivate(L"weather-cache", cache);
     }
     s.status = now - d.observed > 7200 ? Status::Stale : Status::Ready;
@@ -407,6 +485,8 @@ Snapshot WeatherService::read(const Widget &w, std::stop_token stop, WeatherProv
     if (now < blockedUntil_)
       s.message = blockedMessage_;
   }
+  const auto today = localMidnight(localDate(now, L"Asia/Seoul"), L"Asia/Seoul");
+  std::erase_if(d.days, [today](const auto &day) { return day.time <= today; });
   s.weather = std::make_shared<WeatherData>(std::move(d));
   return s;
 }

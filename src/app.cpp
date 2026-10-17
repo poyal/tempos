@@ -227,12 +227,20 @@ int App::run() {
       std::min(size.bottom - size.top, screen.rcWork.bottom - screen.rcWork.top), SWP_NOMOVE | SWP_NOZORDER);
   font_ = CreateFontW(-MulDiv(14, dpi, 96), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
+  ProviderService::TemperatureRead temperatureFixture;
+#ifdef TEMPOS_TEST_HOST
+  temperatureFixture = [this](Kind kind) {
+    auto response = boundedRead(store_.root() / L"sensor-scenario.json", 4096);
+    return parseCpuTemperature(response.value_or(Json{{"version", 1}, {"status", "ready"},
+        {"celsius", kind == Kind::Cpu ? 45 : 52}, {"ageMs", 0}}.dump()), monotonic());
+  };
+#endif
   providers_ = std::make_unique<ProviderService>(
       main_,
       [this](const Widget &w, std::stop_token stop, WeatherProvider provider) {
         return w.kind == Kind::Weather ? weather_.read(w, stop, provider) : calendar_.read(w, stop);
       },
-      fixture_);
+      fixture_, std::move(temperatureFixture));
   WTSRegisterSessionNotification(main_, NOTIFY_FOR_THIS_SESSION);
   tray(true);
   rebuild();
@@ -395,6 +403,10 @@ void App::buildSettings() {
   label(L"트레이 아이콘을 ^ 영역에 둘지는 Windows 작업표시줄 설정에서 지정합니다.", 27, 379, 777, 2);
   label(L"정렬 모드에서는 드래그 이동과 투명한 위젯 복구가 가능합니다.", 27, 429, 777, 2);
   label(L"일정과 인증정보는 레이아웃 내보내기에 포함되지 않습니다.", 27, 462, 777, 2);
+  check(L"CPU 온도 표시 · 처음에는 센서 도우미 설치 필요", 27, 493, 777, 1510, 2);
+  create(L"STATIC", L"", 0, 27, 525, 777, 24, 1511, 2);
+  button(L"센서 도우미 설치 / 복구", 27, 559, 365, 1512, 2);
+  button(L"센서 도우미 제거", 408, 559, 392, 1513, 2);
   button(L"Tempos 종료", 27, 615, 773, 1507, 2);
   create(L"STATIC", L"", 0, 27, 71, 777, 23, 1621, 3);
   check(L"시계 · 오전 / 오후 12시간 표시", 27, 120, 777, 1600, 3);
@@ -411,7 +423,90 @@ void App::buildSettings() {
   button(L"표시 옵션 적용", 27, 615, 773, 1620, 3);
   create(L"STATIC", L"", 0, 22, 695, 802, 26, 1999, -1);
   selectTab(0);
+  sensorControls();
   updateViewport();
+}
+void App::sensorControls() {
+  if (!control(1510)) return;
+  SendMessageW(control(1510), BM_SETCHECK, settings_.cpuTemperatureEnabled ? BST_CHECKED : BST_UNCHECKED, 0);
+  std::wstring state = settings_.cpuTemperatureEnabled ? L"CPU 온도 수집 켜짐" : L"CPU 온도 꺼짐 · 설치 시 관리자 승인 필요";
+  if (settings_.cpuTemperatureEnabled && providers_)
+    for (const auto &widget : settings_.widgets)
+      if (widget.kind == Kind::Cpu) {
+        auto data = providers_->snapshot(widget);
+        state = temperatureReason(data->temperature.status);
+        if (validTemperature(data->temperature, monotonic(), widget.interval))
+          state += L" · " + number(data->temperature.celsius) + L"°C";
+        break;
+      }
+  if (sensorSetup_) state = L"센서 도우미 설치 프로그램이 실행 중입니다.";
+  SetWindowTextW(control(1511), state.c_str());
+  for (int id : {1510, 1512, 1513}) EnableWindow(control(id), !sensorSetup_);
+}
+static bool sensorServiceRunning() {
+  auto manager = OpenSCManagerW(nullptr, nullptr, SC_MANAGER_CONNECT);
+  if (!manager) return false;
+  auto service = OpenServiceW(manager, L"TemposSensors", SERVICE_QUERY_STATUS);
+  SERVICE_STATUS status{};
+  bool running = service && QueryServiceStatus(service, &status) && status.dwCurrentState == SERVICE_RUNNING;
+  if (service) CloseServiceHandle(service);
+  CloseServiceHandle(manager);
+  return running;
+}
+void App::startSensorSetup(bool removing) {
+  if (sensorSetup_) return;
+  sensorRemoving_ = removing;
+#ifdef TEMPOS_TEST_HOST
+  // TestHost never installs/removes a service or driver, including --live-system.
+  DWORD result = ERROR_CANCELLED;
+  if (auto bytes = boundedRead(store_.root() / L"sensor-setup-scenario.json", 4096)) {
+    try { result = Json::parse(*bytes).at("exitCode").get<DWORD>(); } catch (...) {}
+  }
+  completeSensorSetup(result);
+#else
+  wchar_t module[32768]{};
+  if (!GetModuleFileNameW(nullptr, module, DWORD(std::size(module)))) return;
+  auto exe = std::filesystem::path(module).parent_path() / L"Tempos.Sensors.Setup.exe";
+  if (!std::filesystem::is_regular_file(exe)) {
+    status(L"센서 설치 프로그램이 없어요. 센서 구성요소가 포함된 배포본을 사용하세요.");
+    sensorControls();
+    return;
+  }
+  SHELLEXECUTEINFOW info{sizeof info};
+  info.fMask = SEE_MASK_NOCLOSEPROCESS;
+  info.hwnd = main_;
+  info.lpVerb = L"runas";
+  info.lpFile = exe.c_str();
+  info.lpParameters = removing ? L"/REMOVE" : nullptr;
+  info.nShow = SW_SHOWNORMAL;
+  if (!ShellExecuteExW(&info) || !info.hProcess) {
+    completeSensorSetup(GetLastError());
+    return;
+  }
+  sensorSetup_ = info.hProcess;
+  SetTimer(main_, 2, 500, nullptr);
+  sensorControls();
+#endif
+}
+void App::completeSensorSetup(DWORD result) {
+  bool success = result == ERROR_SUCCESS;
+#ifndef TEMPOS_TEST_HOST
+  if (success && !sensorRemoving_) success = sensorServiceRunning();
+#endif
+  if (success) {
+    auto next = settings_;
+    next.cpuTemperatureEnabled = !sensorRemoving_;
+    if (commit(std::move(next))) {
+      configure();
+      providers_->invalidate(Kind::Cpu);
+      status(sensorRemoving_ ? L"센서 도우미를 제거했어요. 공유 PawnIO 드라이버는 유지합니다."
+                             : L"센서 도우미를 설치하고 CPU 온도를 켰어요.");
+    }
+  } else
+    status(result == ERROR_CANCELLED || result == 2 ? L"센서 설치를 취소했어요. 기존 설정을 유지합니다."
+           : result == ERROR_SUCCESS_REBOOT_REQUIRED ? L"센서 설치 후 Windows 재시작이 필요합니다. 재시작 후 CPU 온도를 켜세요."
+           : L"센서 도우미 설치 실패 · 기존 설정을 유지합니다. 설치 / 복구로 다시 시도하세요.");
+  sensorControls();
 }
 void App::weatherControls() {
   SendMessageW(control(1403), CB_SETCURSEL, int(settings_.weatherProvider), 0);
@@ -439,6 +534,7 @@ void App::selectTab(int tab) {
           std::find(account.selected.begin(), account.selected.end(), c.id) != account.selected.end(), i);
     }
   }
+  if (tab == 2) sensorControls();
   if (tab == 3) {
     auto *w = find(selected_);
     for (int id : {1600, 1601, 1602, 1603, 1604, 1610, 1611, 1612, 1613, 1614, 1620})
@@ -969,7 +1065,7 @@ void App::configure() {
   SYSTEM_POWER_STATUS power{};
   bool saving = GetSystemPowerStatus(&power) && power.SystemStatusFlag == 1;
   providers_->configure(active, settings_.hidden || suspended_ || sessionLocked_, saving,
-                        settings_.weatherProvider);
+                         settings_.weatherProvider, settings_.cpuTemperatureEnabled);
 }
 void App::draw(WidgetWindow &window) {
   auto *w = find(window.id);
@@ -991,6 +1087,26 @@ void App::draw(WidgetWindow &window) {
                     : w->kind == Kind::Disk ? L"C:\\"
                                             : L"Ethernet 2 · Realtek PCIe";
     sample->detail = L"Windows 11 Pro 24H2";
+    if (w->kind == Kind::Cpu || w->kind == Kind::Gpu)
+      sample->temperature = {w->kind == Kind::Cpu ? 45. : 52., TemperatureStatus::Ready, monotonic()};
+    if (designCase_ == 30) sample->temperature = {};
+    if (designCase_ == 31) {
+      sample->value = 100;
+      sample->temperature = {105, TemperatureStatus::Ready, monotonic()};
+      sample->title = w->kind == Kind::Cpu ? L"AMD Ryzen 7 9700X 8-Core Processor" :
+                                           L"NVIDIA GeForce RTX 4070 Ti SUPER";
+    }
+    if (designCase_ == 32) sample->temperature = {NAN, TemperatureStatus::Stale, 0};
+    if (designCase_ >= 33 && designCase_ <= 36) {
+      // Explicit design examples, not sensor/API integration fixtures.
+      sample->value = designCase_ == 35 ? 79 : designCase_ == 33 ? 80 : 95;
+      sample->temperature = {designCase_ == 35 ? 79. : designCase_ == 33 ? 80. : 90.,
+                            designCase_ == 36 ? TemperatureStatus::Stale : TemperatureStatus::Ready,
+                            monotonic()};
+      sample->status = designCase_ == 36 ? Status::Stale : Status::Ready;
+      sample->total = 1e12;
+      sample->available = sample->secondary = sample->total * (100 - sample->value) / 100;
+    }
     sample->extra = L"AMD Ryzen 9 9950X 16-Core Processor\nNVIDIA GeForce RTX 5070 Ti";
     if (w->kind == Kind::System)
       sample->value = 93840;
@@ -1046,7 +1162,7 @@ void App::draw(WidgetWindow &window) {
       sample->status = Status::Error;
       sample->message = L"장치를 찾을 수 없음 · 설정에서 다시 선택하세요";
     }
-    if (w->kind == Kind::Disk && designCase_ >= 20) {
+    if (w->kind == Kind::Disk && designCase_ >= 20 && designCase_ <= 23) {
       sample->disks.clear();
       int count = designCase_ == 20 ? 8 : designCase_ == 21 ? 1 : designCase_ == 22 ? 0 : 6;
       for (int i = 0; i < count; ++i)
@@ -1225,7 +1341,8 @@ void App::command(int id, int notification) {
     });
     return;
   }
-  if (fixture_ && ((id >= 1900 && id <= 1912) || (id >= 1920 && id <= 1923))) {
+  if (fixture_ && ((id >= 1900 && id <= 1912) || (id >= 1920 && id <= 1923) ||
+                  (id >= 1930 && id <= 1936))) {
     designCase_ = id == 1912 ? -1 : id - 1900;
     for (auto &window : windows_)
       draw(*window);
@@ -1382,6 +1499,7 @@ void App::command(int id, int notification) {
           if (!content)
             throw std::runtime_error("read");
           auto imported = readSettings(Json::parse(*content));
+          imported.cpuTemperatureEnabled = settings_.cpuTemperatureEnabled;
           if (!commit(std::move(imported)))
             return;
           rebuild();
@@ -1391,7 +1509,22 @@ void App::command(int id, int notification) {
         status(L"파일을 처리할 수 없어요. 형식과 권한을 확인하세요.");
       }
     }
-  } else if (id == 1505)
+  } else if (id == 1510) {
+    if (checked(1510)) {
+#ifndef TEMPOS_TEST_HOST
+      if (!sensorServiceRunning()) { startSensorSetup(false); return; }
+#endif
+    }
+    auto next = settings_;
+    next.cpuTemperatureEnabled = checked(1510);
+    if (commit(std::move(next))) {
+      configure();
+      providers_->invalidate(Kind::Cpu);
+    }
+    sensorControls();
+  } else if (id == 1512 || id == 1513)
+    startSensorSetup(id == 1513);
+  else if (id == 1505)
     diagnose();
   else if (id == 1506)
     ShellExecuteW(main_, L"open", store_.root().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
@@ -1451,9 +1584,19 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
   case WM_TIMER:
     if (w == 1)
       tick();
+    else if (w == 2 && sensorSetup_) {
+      DWORD code = STILL_ACTIVE;
+      if (GetExitCodeProcess(sensorSetup_, &code) && code != STILL_ACTIVE) {
+        KillTimer(main_, 2);
+        CloseHandle(sensorSetup_);
+        sensorSetup_ = nullptr;
+        completeSensorSetup(code);
+      }
+    }
     return 0;
   case WM_TEMPOS_DATA:
     tick();
+    if (tab_ == 2) sensorControls();
     return 0;
   case WM_ACTION:
     EnableWindow(control(1412), TRUE);
@@ -1781,6 +1924,18 @@ void App::diagnose() {
       j["windows"].back()["weatherStatus"] = int(data->status);
       j["windows"].back()["weatherTemperature"] = data->weather ? Json(data->weather->temperature) : Json();
       j["windows"].back()["weatherState"] = data->weather ? int(data->weather->state) : 0;
+      auto &days = j["windows"].back()["weatherDays"] = Json::array();
+      if (data->weather)
+        for (const auto &day : data->weather->days)
+          days.push_back({{"time", day.time}, {"low", day.low}, {"high", day.high},
+                          {"probability", day.probability}, {"state", int(day.state)}});
+    }
+    if (w && (w->kind == Kind::Cpu || w->kind == Kind::Gpu)) {
+      auto data = providers_->snapshot(*w);
+      j["windows"].back()["temperatureC"] = validTemperature(data->temperature, monotonic(), w->interval)
+                                               ? Json(data->temperature.celsius) : Json();
+      j["windows"].back()["temperatureStatus"] = int(data->temperature.status);
+      j["windows"].back()["temperatureSampledAt"] = data->temperature.sampledAt;
     }
     if (w && w->kind == Kind::Calendar) {
       auto data = providers_->snapshot(*w);

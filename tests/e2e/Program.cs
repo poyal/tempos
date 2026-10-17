@@ -151,7 +151,7 @@ internal static partial class Program
                 throw new ArgumentException("E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.");
             if (LiveApis && !Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("Live API integration requires an explicit production Tempos.exe path.");
-            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--design" or "--startup" or "--readme"))
+            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--design" or "--startup" or "--readme" or "--temperature"))
                 throw new ArgumentException("Mock-only suites cannot run as live API integration.");
             if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
                 throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
@@ -161,6 +161,7 @@ internal static partial class Program
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
             if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, !LiveApis || args.Contains("--allow-location-to-open-meteo")); return 0; }
+            if (args.Contains("--temperature")) { TemperatureLayout(ref app, exe); return 0; }
             if (args.Contains("--api-mock")) { ApiMock(ref app, exe); return 0; }
             if (args.Contains("--readme")) { ReadmeScreenshots(ref app, exe); return 0; }
             if (args.Contains("--ui-review")) { UiReview(ref app, exe); return 0; }

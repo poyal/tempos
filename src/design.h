@@ -13,6 +13,16 @@ inline constexpr float headerY = 17;
 inline constexpr float titleSize = 16;
 inline constexpr float compactTitleSize = 14;
 inline constexpr float smallTextContrast = 4.5f;
+// Display emphasis, not manufacturer thermal limits or a hardware fault verdict.
+enum class Metric { Temperature, Load, Capacity };
+inline constexpr uint32_t metricWhite = 0xffffff, metricOrange = 0xffcf8a, metricRed = 0xffa0a0;
+inline uint32_t metricColor(Metric metric, double value, bool fresh = true) {
+  if (!fresh || !std::isfinite(value) || value < 0 ||
+      value > (metric == Metric::Temperature ? 150. : 100.))
+    return metricWhite;
+  const double high = metric == Metric::Load ? 95. : 90.;
+  return value >= high ? metricRed : value >= 80 ? metricOrange : metricWhite;
+}
 inline double whiteContrast(uint32_t rgb) {
   auto linear = [](int value) {
     double c = value / 255.;

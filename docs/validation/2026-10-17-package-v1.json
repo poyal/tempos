@@ -1,0 +1,15 @@
+{
+  "createdAt": "2026-10-17T13:55:06.2946343+09:00",
+  "installer": "artifacts/Tempos-0.1.1-win-x64.exe",
+  "installerSha256": "C695A67747C69C25821FB9BC04B2C999F6D1C1D9CC9599B8684B2C18764F488B",
+  "zip": "artifacts/Tempos-0.1.1-win-x64.zip",
+  "zipSha256": "5714C9C1F1C7C28B6B6832FD41838074D78B25441CFCBE5F8CC0C07D8AA54A04",
+  "executableSha256": "583C3FA5C0A1877F21A774A97225C9A0C0873F2D2CD680E651D0D9E510B06F7F",
+  "sensorSetupSha256": "3949CE6E903137CBE05B8800EEA8B3A83D211237D50678E9AEAB2D85084ED4A2",
+  "reportSha256": "DC994462769B3C25906F01F5D97B31EDCBF63F98147FA3BCDAE5A3EC76C310D9",
+  "installerLifecycle": "SKIP: existing installed Tempos is running; protected by AGENTS.md",
+  "serviceDriverInstallation": "not performed",
+  "apiBoundary": "mock",
+  "sourceCommit": "aca672dd5f66cc3337d1cd691073ffd0efc8f619",
+  "sourceDirty": true
+}

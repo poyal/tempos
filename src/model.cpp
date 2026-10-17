@@ -51,6 +51,21 @@ std::wstring number(double value, int decimals) {
   s << std::fixed << std::setprecision(decimals) << value;
   return s.str();
 }
+bool validTemperature(const TemperatureReading &reading, double now, int interval) {
+  return reading.status == TemperatureStatus::Ready && std::isfinite(reading.celsius) &&
+         reading.celsius > 0 && reading.celsius <= 150 && reading.sampledAt > 0 &&
+         now >= reading.sampledAt && now - reading.sampledAt <= std::max(5, interval * 2);
+}
+std::wstring temperatureReason(TemperatureStatus status) {
+  switch (status) {
+  case TemperatureStatus::Disabled: return L"CPU 온도 꺼짐 · 앱 설정에서 활성화";
+  case TemperatureStatus::Loading: return L"온도 측정 중";
+  case TemperatureStatus::Ready: return L"온도 수집 정상";
+  case TemperatureStatus::Unsupported: return L"지원되는 온도 센서 없음";
+  case TemperatureStatus::Stale: return L"온도 갱신 지연";
+  default: return L"온도 조회 실패 · 센서 도우미와 장치 상태 확인";
+  }
+}
 std::wstring formatBytes(double v, bool binary) {
   if (!std::isfinite(v) || v < 0)
     return L"—";
