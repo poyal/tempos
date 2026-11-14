@@ -7,6 +7,7 @@
 #include <dxgi1_2.h>
 #include <wrl/client.h>
 #include <map>
+#include <tuple>
 namespace tempos {
 using Microsoft::WRL::ComPtr;
 struct RasterSurface {
@@ -41,6 +42,8 @@ public:
 
 private:
   bool surface(HWND, RenderSurface &);
+  ComPtr<ID2D1Bitmap> background(Extent, UINT width, UINT height, float dpi,
+                                uint32_t top, uint32_t bottom, float alpha, const Widget &, const Snapshot *);
   void text(const std::wstring &, float x, float y, float width, float height, float size = 16,
             bool bold = false, uint32_t color = 0xffffff,
             DWRITE_TEXT_ALIGNMENT align = DWRITE_TEXT_ALIGNMENT_LEADING, bool wrap = false);
@@ -52,7 +55,8 @@ private:
   void graph(const History &, float x, float y, float width, float height, uint32_t color, double max = 100);
   void icon(Kind, float x, float y, float size = 20);
   void heading(const Widget &, const std::wstring &title);
-  void content(const Widget &, const Snapshot *, Extent);
+  void content(const Widget &, const Snapshot *, Extent, bool decorationsCached = false);
+  void metricDecorations(const Widget &, const Snapshot &, Extent);
   void weatherIcon(WeatherState state, bool night, float x, float y, float scale = 1);
   void weatherBackdrop(const WeatherData &, Extent, bool sunset);
   void calendar(const Widget &, const Snapshot *, Extent);
@@ -70,6 +74,16 @@ private:
   ComPtr<IDWriteFactory> write_;
   ComPtr<ID2D1SolidColorBrush> brush_;
   std::map<std::pair<int, bool>, ComPtr<IDWriteTextFormat>> fonts_;
+  using LayoutKey = std::tuple<std::wstring, float, float, int, bool, int, bool>;
+  std::map<LayoutKey, ComPtr<IDWriteTextLayout>> layouts_;
+  std::deque<LayoutKey> layoutOrder_;
+  std::map<std::tuple<std::wstring, float, float, float>, float> modelSizes_;
+  using BackgroundKey = std::tuple<float, float, UINT, UINT, float, uint32_t, uint32_t, float,
+                                   int, int, bool, bool, uint32_t, std::wstring>;
+  struct Background { ComPtr<ID2D1Bitmap> bitmap; size_t bytes; };
+  std::map<BackgroundKey, Background> backgrounds_;
+  std::deque<BackgroundKey> backgroundOrder_;
+  size_t backgroundBytes_ = 0;
   bool software_ = false;
   bool raster_ = false;
   bool highContrast_ = false;

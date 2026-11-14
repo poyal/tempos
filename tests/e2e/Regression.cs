@@ -97,6 +97,15 @@ internal static partial class Program
                     actual = WindowFromPoint(point);
                 }
                 var cls = new StringBuilder(128); GetClassName(actual, cls, cls.Capacity);
+                GetWindowThreadProcessId(actual, out var hitOwner);
+                if (actual != WidgetHandle(w) && hitOwner != ProcessId &&
+                    (w["extendedStyle"]!.GetValue<long>() & 8) == 0 &&
+                    cls.ToString() != "WorkerW" && cls.ToString() != "Progman" && cls.ToString() != "SHELLDLL_DefView")
+                {
+                    var reason = stage + ": desktop hit test obscured by external window " + cls;
+                    Skip(stage + ": desktop hit test", reason);
+                    continue;
+                }
                 Check(actual == WidgetHandle(w), stage + ": desktop hit test kind " + w["kind"] + " (hit " + cls + ")");
             }
             var first = windows.First();
@@ -182,6 +191,22 @@ internal static partial class Program
         for (int i = 0; i < 64; i++)
         {
             NativeCombo(1201, 0); NativeButton(1202);
+            if (Settings()["widgets"]!.AsArray().Count == i)
+            {
+                Check(Element(1999).Name.Contains("빈 공간"), "Physical capacity reports no space");
+                var imported = Settings().DeepClone();
+                var widgets = imported["widgets"]!.AsArray();
+                var template = widgets[0]!.DeepClone();
+                while (widgets.Count < 64) {
+                    var parked = template.DeepClone();
+                    parked["id"] = "capacity-import-" + widgets.Count;
+                    widgets.Add(parked);
+                }
+                var file = Path.Combine(Data, "capacity-import.json");
+                File.WriteAllText(file, imported.ToJsonString());
+                Tab(2); FileDialog(1504, file); Tab(0);
+                break;
+            }
             Check(Settings()["widgets"]!.AsArray().Count == i + 1, "Capacity add " + (i + 1));
             NativeCombo(1300, 0); NativeButton(1316);
         }
@@ -189,12 +214,16 @@ internal static partial class Program
         Check(Ids(saved).Distinct().Count() == 64, "64 duplicate-kind widgets have distinct identities");
         NativeButton(1202);
         Check(Element(1999).Name.Contains("64") && JsonNode.DeepEquals(saved, Settings()), "65th add rejected without changing layout");
-        VisibleWidgets("capacity-full", 64);
-        Restart(ref app, exe); VisibleWidgets("capacity-restarted", 64);
+        Check(State()["windows"]!.AsArray().Count == 64, "64 widgets retained including parked windows");
+        Restart(ref app, exe);
+        Check(JsonNode.DeepEquals(saved, Settings()) && State()["windows"]!.AsArray().Count == 64,
+              "64 widgets including parked windows survive restart");
         for (int i = 0; i < 64; i++) NativeButton(1203);
         Check(Settings()["widgets"]!.AsArray().Count == 0 && State()["windows"]!.AsArray().Count == 0, "Removing all widgets releases native windows");
         Check(!Element(1316).IsEnabled, "Apply disabled without selected widget");
-        Tab(3); Check(!Element(1620).IsEnabled, "Display options disabled without selected widget");
+        Tab(3);
+        var displayApply = GetDlgItem(Window.Properties.NativeWindowHandle, 1620);
+        Check(displayApply != 0 && !IsWindowEnabled(displayApply), "Display options disabled without selected widget");
         Restart(ref app, exe);
         Check(Element(1200).AsListBox().Items.Length == 0 && State()["windows"]!.AsArray().Count == 0, "Empty layout remains empty after restart");
         Tab(0); NativeCombo(1201, 8); NativeButton(1202);
@@ -264,7 +293,7 @@ internal static partial class Program
         Quit(app!); app = null;
         File.WriteAllText(Path.Combine(Data, "settings.json"), "{broken");
         app = Start(exe);
-        Check(Element(1999).Name.Contains("복구"), "Corrupt settings displays recovery warning");
+        Check(StartupStatus.Contains("복구"), "Corrupt settings displays recovery warning");
         Check(Element(1200).AsListBox().Items.Length == 5 && Directory.GetFiles(Data, "settings.corrupt.*.json").Length == 1, "Corrupt settings retained for diagnosis and backup restored");
         NativeButton(1316);
         Check(JsonNode.DeepEquals(backup, Settings()), "Recovery preserves full last-good layout");
@@ -378,6 +407,7 @@ internal static partial class Program
         imported["widgets"] = new JsonArray(Enumerable.Range(0, 64).Select(i => { var w = template.DeepClone(); w["id"] = "relocated-" + i; return w; }).ToArray());
         var file = Path.Combine(Data, "relocated.json");
         File.WriteAllText(file, imported.ToJsonString()); Tab(2); FileDialog(1504, file);
+        Check(Ids(Settings()).SequenceEqual(Ids(imported)), "Disconnected-monitor import loads the requested 64 identities");
         var visible = State()["windows"]!.AsArray().Where(w => w!["placed"]!.GetValue<bool>()).Select(w => w!["id"]!.GetValue<string>()).ToHashSet();
         Check(visible.Count > 0 && visible.Count < 64, "Disconnected-monitor layout exposes parked widgets when screens are full");
         imported["widgets"] = new JsonArray(imported["widgets"]!.AsArray().Where(w => visible.Contains(w!["id"]!.GetValue<string>())).Select(w => w!.DeepClone()).ToArray());

@@ -65,9 +65,11 @@ struct Extent {
 struct Box {
   float x{}, y{}, w{}, h{};
 };
+inline constexpr int gridStep = 8;
 Extent extent(Size size, int scale = 100);
 bool overlaps(const Box &a, const Box &b, float gap = 16.f);
 float snap(float value);
+std::optional<Box> nearestPosition(Extent area, Box desired, const std::vector<Box> &occupied);
 std::optional<Box> freePosition(Extent area, Extent size, const std::vector<Box> &occupied);
 
 struct Palette {

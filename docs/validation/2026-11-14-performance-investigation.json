@@ -1,0 +1,263 @@
+{
+  "date": "2026-11-14",
+  "status": "Investigation complete; no product optimization adopted",
+  "productCodeChanged": false,
+  "productionTestHostSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+  "priorFormalResult": {
+    "report": "test-results/performance-exclusive-final-five-30min-20261114-054436/report.json",
+    "rawCpuMsPerSecond": 4.903732951436,
+    "limit": 4,
+    "requiredReductionPercent": 18.429489541663415,
+    "stillUnresolved": true
+  },
+  "wicExperiment": {
+    "implementation": "Isolated WIC bitmap render targets, bounded target pool, CopyPixels to existing layered-window DIB; update intervals unchanged",
+    "decision": "Rejected: no observed full-app CPU improvement in either candidate run",
+    "procedure": "Sequential baseline/candidate/candidate/baseline; 60 seconds warmup and at least 120 seconds actual samples each; no overlapping build or UI tests",
+    "limitation": "Diagnostic short runs on one active desktop, not a new 30-minute qualification or a statistical causal estimate",
+    "baselineWeightedRawCpuMsPerSecond": 4.5353288265993665,
+    "candidateWeightedRawCpuMsPerSecond": 4.929366847157762,
+    "observedIncreasePercent": 8.688190771248848,
+    "runs": [
+      {
+        "label": "baseline-1",
+        "report": "test-results\\performance-wic-diagnostic-baseline-1-20261114-122934\\report.json",
+        "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+        "warmupSeconds": 60,
+        "sampleSeconds": 120.62618570000001,
+        "rawCpuMsPerSecond": 4.663166597996806,
+        "privateBytes": 19275776,
+        "workingSetBytes": 44847104,
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "visibleBefore": 5,
+        "visibleAfter": 5,
+        "passed": false,
+        "failedChecks": [
+          "Raw CPU ms/second"
+        ]
+      },
+      {
+        "label": "wic-1",
+        "report": "test-results\\performance-wic-diagnostic-wic-1-20261114-123236\\report.json",
+        "sha256": "A5F99630CC69736A1728F643CA6D46A04290D0D056362106F1887C1DF8944BD3",
+        "warmupSeconds": 60,
+        "sampleSeconds": 120.3479454,
+        "rawCpuMsPerSecond": 4.803779558333864,
+        "privateBytes": 19320832,
+        "workingSetBytes": 45289472,
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "visibleBefore": 5,
+        "visibleAfter": 5,
+        "passed": false,
+        "failedChecks": [
+          "Raw CPU ms/second"
+        ]
+      },
+      {
+        "label": "wic-2",
+        "report": "test-results\\performance-wic-diagnostic-wic-2-20261114-123537\\report.json",
+        "sha256": "A5F99630CC69736A1728F643CA6D46A04290D0D056362106F1887C1DF8944BD3",
+        "warmupSeconds": 60,
+        "sampleSeconds": 120.5552044,
+        "rawCpuMsPerSecond": 5.0547382258015565,
+        "privateBytes": 19288064,
+        "workingSetBytes": 45281280,
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "visibleBefore": 5,
+        "visibleAfter": 5,
+        "passed": false,
+        "failedChecks": [
+          "Raw CPU ms/second"
+        ]
+      },
+      {
+        "label": "baseline-2",
+        "report": "test-results\\performance-wic-diagnostic-baseline-2-20261114-123839\\report.json",
+        "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+        "warmupSeconds": 60,
+        "sampleSeconds": 120.5360413,
+        "rawCpuMsPerSecond": 4.407395450110904,
+        "privateBytes": 19075072,
+        "workingSetBytes": 44625920,
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "visibleBefore": 5,
+        "visibleAfter": 5,
+        "passed": false,
+        "failedChecks": [
+          "Raw CPU ms/second"
+        ]
+      }
+    ],
+    "ui": {
+      "manifest": "test-results/full-validation-20261114-122850/manifest.json",
+      "pass": 91,
+      "fail": 0,
+      "skip": 0,
+      "exactFixedExampleImageMatches": 9,
+      "comparison": "test-results/wic-pixel-comparison.json"
+    }
+  },
+  "gpuBufferExperiment": {
+    "result": "Reusing a sufficiently sized buffer reduces formatter work; not yet implemented in the product",
+    "report": "test-results/pdh-buffer-cost.json",
+    "script": ".tools/pdh-cost.ps1",
+    "method": {
+      "testClass": "GPU formatted-counter API microbenchmark",
+      "apiMode": "no external HTTP APIs",
+      "systemMode": "real local Windows GPU PDH",
+      "snapshot": "One collected snapshot, exact named counter values verified after every block",
+      "scope": "Formatter only; excludes collection, rendering, timers and full app CPU",
+      "rows": [
+        {
+          "round": 0,
+          "reuse": false,
+          "iterations": 500,
+          "calls": 1000,
+          "cycles": 409265789,
+          "elapsedMs": 128.5376,
+          "items": 286
+        },
+        {
+          "round": 0,
+          "reuse": true,
+          "iterations": 500,
+          "calls": 500,
+          "cycles": 171915692,
+          "elapsedMs": 54.4746,
+          "items": 286
+        },
+        {
+          "round": 0,
+          "reuse": true,
+          "iterations": 500,
+          "calls": 500,
+          "cycles": 169104177,
+          "elapsedMs": 53.0563,
+          "items": 286
+        },
+        {
+          "round": 0,
+          "reuse": false,
+          "iterations": 500,
+          "calls": 1000,
+          "cycles": 301559413,
+          "elapsedMs": 94.5926,
+          "items": 286
+        },
+        {
+          "round": 1,
+          "reuse": false,
+          "iterations": 500,
+          "calls": 1000,
+          "cycles": 292866956,
+          "elapsedMs": 91.8409,
+          "items": 286
+        },
+        {
+          "round": 1,
+          "reuse": true,
+          "iterations": 500,
+          "calls": 500,
+          "cycles": 168106682,
+          "elapsedMs": 52.741400000000006,
+          "items": 286
+        },
+        {
+          "round": 1,
+          "reuse": true,
+          "iterations": 500,
+          "calls": 500,
+          "cycles": 176929052,
+          "elapsedMs": 55.537000000000006,
+          "items": 286
+        },
+        {
+          "round": 1,
+          "reuse": false,
+          "iterations": 500,
+          "calls": 1000,
+          "cycles": 296827273,
+          "elapsedMs": 93.961,
+          "items": 286
+        },
+        {
+          "round": 2,
+          "reuse": false,
+          "iterations": 500,
+          "calls": 1000,
+          "cycles": 293845630,
+          "elapsedMs": 92.1628,
+          "items": 286
+        },
+        {
+          "round": 2,
+          "reuse": true,
+          "iterations": 500,
+          "calls": 500,
+          "cycles": 168203078,
+          "elapsedMs": 52.7843,
+          "items": 286
+        },
+        {
+          "round": 2,
+          "reuse": true,
+          "iterations": 500,
+          "calls": 500,
+          "cycles": 168428434,
+          "elapsedMs": 52.823800000000006,
+          "items": 286
+        },
+        {
+          "round": 2,
+          "reuse": false,
+          "iterations": 500,
+          "calls": 1000,
+          "cycles": 292310266,
+          "elapsedMs": 91.65990000000001,
+          "items": 286
+        }
+      ]
+    },
+    "baselineMedianCyclesPerRead": 590672.9029999999,
+    "reuseMedianCyclesPerRead": 337532.61100000003,
+    "cycleReductionPercent": 42.85625609610874,
+    "baselineMedianElapsedMsPerRead": 0.1861238,
+    "reuseMedianElapsedMsPerRead": 0.1058801,
+    "scope": "Only formatting of one fixed real GPU counter snapshot; collection, parsing, UI rendering, changing instances and app scheduling excluded",
+    "estimate": {
+      "defaultIntervalSeconds": 2,
+      "elapsedMsSavedPerSecond": 0.040121849999999994,
+      "qualification": "Extrapolation of microbenchmark wall time, not measured full-app CPU savings; insufficient by itself to establish the 4 ms/second budget"
+    },
+    "implementationConstraints": [
+      "Reuse existing capacity only on success",
+      "On insufficient buffer, probe again with zero size; the returned size from a failed nonzero-buffer call is not reliable",
+      "Handle PDH_MORE_DATA and documented PDH_INVALID_ARGUMENT behavior, bounded retries and the existing 2 MiB limit",
+      "Test changing instance counts, empty counters, invalid status, errors and real Windows counters"
+    ],
+    "apiDocumentation": "https://learn.microsoft.com/en-us/windows/win32/api/pdh/nf-pdh-pdhgetformattedcounterarrayw"
+  },
+  "otherCandidates": [
+    {
+      "candidate": "Reduce GPU engine-name string allocation and duplicate map lookups",
+      "evidence": "src/providers.cpp gpuEngineKey and LocalMetrics::gpu; phase-profile-20261114-054024 aggregation about 11.45 ms per 60 seconds",
+      "status": "Not implemented or benchmarked as an alternative"
+    },
+    {
+      "candidate": "Bounded raster cache for repeated large percentage text, keeping changing graphs current",
+      "evidence": "Text layouts are already cached, but DrawTextLayout still rasterizes dynamic values",
+      "status": "Hypothesis only; requires exact pixels for color, DPI, position and transparency plus resource stress tests"
+    }
+  ],
+  "isolation": {
+    "externalApis": "HTTP-boundary mocks in TestHost; GPU microbenchmark makes no external HTTP calls",
+    "installedAppStillRunning": true,
+    "ownedTestHostsRemaining": 0,
+    "performanceHarnessProtection": "All four runs completed with only CPU-budget failures; original settings, backup and startup registration compared in finally"
+  },
+  "publicMetadataNote": "Machine names, hardware display identifiers, installed process identifiers and absolute workspace paths are redacted; original local test-results are unchanged."
+}

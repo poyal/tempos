@@ -28,6 +28,7 @@ template <class F> void throws(F fn, const char *name) {
 void weatherTests();
 void apiMockTests();
 void temperatureTests();
+void placementTests();
 int liveWeatherProbe();
 void memoryHistoryRegression() {
   Widget memory;
@@ -51,10 +52,34 @@ void memoryHistoryRegression() {
 int main(int argc, char **argv) {
   CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   try {
+    if (argc == 2 && std::string_view(argv[1]) == "--profile-local") {
+      LocalMetrics metrics;
+      std::array<double, 3> cpu{}, wall{};
+      auto threadCpu = [] {
+        FILETIME created{}, exited{}, kernel{}, user{};
+        GetThreadTimes(GetCurrentThread(), &created, &exited, &kernel, &user);
+        return double((uint64_t(kernel.dwHighDateTime) << 32) | kernel.dwLowDateTime) / 10000. +
+               double((uint64_t(user.dwHighDateTime) << 32) | user.dwLowDateTime) / 10000.;
+      };
+      for (int sample = 0; sample < 31; ++sample) {
+        int index = 0;
+        for (auto kind : {Kind::Cpu, Kind::Gpu, Kind::Memory}) {
+          auto t = monotonic(), c = threadCpu();
+          auto result = metrics.read(kind, L"");
+          if (sample) { cpu[index] += threadCpu() - c; wall[index] += (monotonic() - t) * 1000; }
+          ++index;
+        }
+        std::this_thread::sleep_for(1s);
+      }
+      std::cout << Json{{"samples", 30}, {"kinds", {"cpu", "gpu", "memory"}},
+                        {"totalCpuMilliseconds", cpu}, {"totalWallMilliseconds", wall}}.dump(2) << "\n";
+      return 0;
+    }
     if (argc == 2 && std::string_view(argv[1]) == "--live-weather")
       return liveWeatherProbe();
     memoryHistoryRegression();
     temperatureTests();
+    placementTests();
     if (argc == 2 && std::string_view(argv[1]) == "--memory-history")
       return 0;
     Widget diskWidget;

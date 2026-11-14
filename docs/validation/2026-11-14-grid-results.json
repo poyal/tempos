@@ -1,0 +1,976 @@
+{
+  "generated": "2026-11-14T08:33:32.2502400+09:00",
+  "allPlannedRunsFinished": true,
+  "overallPassed": false,
+  "releaseSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+  "asanSha256": "72CE5A5F51558664778C92B3152302EEE5021C24577A4FB209730828E9B85442",
+  "nativeChecks": 9575,
+  "sensorChecks": 22,
+  "apiMode": "mock",
+  "realApiIntegrationPerformed": false,
+  "functional": {
+    "modes": 28,
+    "pass": 4083,
+    "fail": 0,
+    "skip": 55
+  },
+  "functionalIncludingSoak": {
+    "modes": 29,
+    "pass": 7299,
+    "fail": 0,
+    "skip": 55
+  },
+  "functionalRuns": [
+    {
+      "mode": "legacy-grid",
+      "folder": "test-results\\e2e-20261114-043353-923",
+      "exit": 0,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "edit-mode",
+      "folder": "test-results\\e2e-20261114-043403-982",
+      "exit": 0,
+      "pass": 279,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "interaction",
+      "folder": "test-results\\e2e-20261114-043423-194",
+      "exit": 0,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "drag-performance",
+      "folder": "test-results\\e2e-20261114-043442-785",
+      "exit": 0,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "geometry-matrix",
+      "folder": "test-results\\e2e-20261114-043554-976",
+      "exit": 0,
+      "pass": 711,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "shell-actions",
+      "folder": "test-results\\e2e-20261114-043703-651",
+      "exit": 0,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "persistence",
+      "folder": "test-results\\e2e-20261114-043708-297",
+      "exit": 0,
+      "pass": 281,
+      "fail": 0,
+      "skip": 48,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "options",
+      "folder": "test-results\\e2e-20261114-043750-346",
+      "exit": 0,
+      "pass": 86,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "failures",
+      "folder": "test-results\\e2e-20261114-043821-044",
+      "exit": 0,
+      "pass": 140,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "capacity",
+      "folder": "test-results\\e2e-20261114-043908-265",
+      "exit": 0,
+      "pass": 84,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "placement",
+      "folder": "test-results\\e2e-20261114-043959-390",
+      "exit": 0,
+      "pass": 60,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "api-mock",
+      "folder": "test-results\\e2e-20261114-044012-161",
+      "exit": 0,
+      "pass": 68,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "weather",
+      "folder": "test-results\\e2e-20261114-044030-576",
+      "exit": 0,
+      "pass": 74,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "startup",
+      "folder": "test-results\\e2e-20261114-044105-362 시작 옵션",
+      "exit": 0,
+      "pass": 25,
+      "fail": 0,
+      "skip": 1,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "isolation",
+      "folder": "test-results\\e2e-20261114-044113-498",
+      "exit": 0,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "clock-layout",
+      "folder": "test-results\\e2e-20261114-044116-143",
+      "exit": 0,
+      "pass": 118,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "matrix",
+      "folder": "test-results\\e2e-20261114-044134-375",
+      "exit": 0,
+      "pass": 174,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "behavior",
+      "folder": "test-results\\e2e-20261114-044253-276",
+      "exit": 0,
+      "pass": 33,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "temperature",
+      "folder": "test-results\\e2e-20261114-044324-311",
+      "exit": 0,
+      "pass": 509,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "ui-review",
+      "folder": "test-results\\e2e-20261114-044443-778",
+      "exit": 0,
+      "pass": 502,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "design",
+      "folder": "test-results\\e2e-20261114-044600-794",
+      "exit": 0,
+      "pass": 577,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "visual",
+      "folder": "test-results\\e2e-20261114-044751-160",
+      "exit": 0,
+      "pass": 13,
+      "fail": 0,
+      "skip": 3,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "windows-real",
+      "folder": "test-results\\e2e-20261114-044757-879",
+      "exit": 0,
+      "pass": 53,
+      "fail": 0,
+      "skip": 1,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "layout",
+      "folder": "test-results\\e2e-20261114-044826-267",
+      "exit": 0,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "readme",
+      "folder": "test-results\\e2e-20261114-044835-404",
+      "exit": 0,
+      "pass": 57,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "smoke",
+      "folder": "test-results\\e2e-20261114-044902-537",
+      "exit": 0,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "stress",
+      "folder": "test-results\\e2e-20261114-044905-200",
+      "exit": 0,
+      "pass": 21,
+      "fail": 0,
+      "skip": 2,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    },
+    {
+      "mode": "render-cache",
+      "folder": "test-results\\e2e-20261114-054300-509",
+      "exit": 0,
+      "pass": 91,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+    }
+  ],
+  "addressSanitizer": {
+    "modes": 4,
+    "pass": 420,
+    "fail": 0,
+    "skip": 0
+  },
+  "addressSanitizerRuns": [
+    {
+      "mode": "legacy-grid",
+      "folder": "test-results\\e2e-20261114-050531-297",
+      "exit": 0,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "72CE5A5F51558664778C92B3152302EEE5021C24577A4FB209730828E9B85442"
+    },
+    {
+      "mode": "edit-mode",
+      "folder": "test-results\\e2e-20261114-050545-726",
+      "exit": 0,
+      "pass": 279,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "72CE5A5F51558664778C92B3152302EEE5021C24577A4FB209730828E9B85442"
+    },
+    {
+      "mode": "interaction",
+      "folder": "test-results\\e2e-20261114-050608-759",
+      "exit": 0,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "72CE5A5F51558664778C92B3152302EEE5021C24577A4FB209730828E9B85442"
+    },
+    {
+      "mode": "render-cache",
+      "folder": "test-results\\e2e-20261114-054405-576",
+      "exit": 0,
+      "pass": 91,
+      "fail": 0,
+      "skip": 0,
+      "sha256": "72CE5A5F51558664778C92B3152302EEE5021C24577A4FB209730828E9B85442"
+    }
+  ],
+  "soakRun": {
+    "mode": "soak",
+    "folder": "test-results\\e2e-20261114-063143-562",
+    "exit": 0,
+    "pass": 3216,
+    "fail": 0,
+    "skip": 0,
+    "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F"
+  },
+  "soak": {
+    "targetSeconds": 7200,
+    "actualSeconds": 7200.3852919,
+    "cycles": 600,
+    "restarts": 9,
+    "processLifetimes": 10,
+    "inputDesktopVerified": true,
+    "maximumVerificationGapSeconds": 14.335885,
+    "sleepPrevention": "scoped-display-and-system-request"
+  },
+  "soakResources": {
+    "maximumPrivateBytes": 20856832,
+    "maximumHandles": 369,
+    "maximumGdi": 53,
+    "maximumUser": 127,
+    "source": "test-results/e2e-20261114-063143-562/soak-progress.json"
+  },
+  "comparisonLimit": "Initial baseline actual durations were 59.5816/60.6653/59.7633 seconds. Later runs accumulate at least 60 actual sampled seconds. Short-run median difference is observational, not a causal or passing-budget claim.",
+  "performance": {
+    "five": {
+      "source": "test-results/performance-exclusive-final-five-30min-20261114-054436/report.json",
+      "result": {
+        "started": "2026-11-14T05:44:36.4912108+09:00",
+        "completed": "2026-11-14T06:19:37.5487302+09:00",
+        "executableSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+        "windows": "10.0.26300.0",
+        "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+        "warmupSeconds": 300,
+        "sampleSeconds": 1800,
+        "intervalSeconds": 1,
+        "logicalProcessors": 12,
+        "count": 1778,
+        "averageCpuPercent": 0.040864441261966825,
+        "p95CpuPercent": 0.12976146081457832,
+        "averageRawCpuMsPerSecond": 4.903732951436019,
+        "maximumPrivateBytes": 19685376,
+        "maximumWorkingSet": 45375488,
+        "privateGrowth": -24576,
+        "handleGrowth": 6,
+        "gdiGrowth": 0,
+        "userGrowth": 1,
+        "actualSampleSeconds": 1800.2866566,
+        "maximumSampleIntervalSeconds": 1.0803414999999745,
+        "inputDesktopVerified": true,
+        "sleepPrevention": "scoped-display-and-system-request",
+        "budget": "Five",
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "testClass": "isolated-performance",
+        "allowParked": false,
+        "initialVisibleCount": 5,
+        "standardDuration": true,
+        "maximumThreads": 17,
+        "finalVisibleCount": 5,
+        "checks": [
+          {
+            "name": "Average CPU percent",
+            "actual": 0.040864441261966825,
+            "limit": 0.1,
+            "passed": true
+          },
+          {
+            "name": "P95 CPU percent",
+            "actual": 0.12976146081457832,
+            "limit": 0.3,
+            "passed": true
+          },
+          {
+            "name": "Raw CPU ms/second",
+            "actual": 4.903732951436019,
+            "limit": 4,
+            "passed": false
+          },
+          {
+            "name": "Private bytes",
+            "actual": 19685376,
+            "limit": 33554432,
+            "passed": true
+          },
+          {
+            "name": "Working set",
+            "actual": 45375488,
+            "limit": 50331648,
+            "passed": true
+          },
+          {
+            "name": "Widgets remain visible",
+            "passed": true
+          }
+        ],
+        "passed": false
+      }
+    },
+    "nine": {
+      "source": "test-results/performance-exclusive-final-nine-20261114-061937/report.json",
+      "result": {
+        "started": "2026-11-14T06:19:37.8282480+09:00",
+        "completed": "2026-11-14T06:25:40.1443500+09:00",
+        "executableSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+        "windows": "10.0.26300.0",
+        "profile": "Nine M widgets, default intervals, real local Windows providers, mocked external APIs",
+        "warmupSeconds": 300,
+        "sampleSeconds": 60,
+        "intervalSeconds": 1,
+        "logicalProcessors": 12,
+        "count": 60,
+        "averageCpuPercent": 0.051460610374085544,
+        "p95CpuPercent": 0.25422241052306993,
+        "averageRawCpuMsPerSecond": 6.175273244890265,
+        "maximumPrivateBytes": 21168128,
+        "maximumWorkingSet": 47898624,
+        "privateGrowth": 8192,
+        "handleGrowth": 0,
+        "gdiGrowth": 0,
+        "userGrowth": 0,
+        "actualSampleSeconds": 60.726057800000035,
+        "maximumSampleIntervalSeconds": 1.0276802000000202,
+        "inputDesktopVerified": true,
+        "sleepPrevention": "scoped-display-and-system-request",
+        "budget": "Nine",
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "testClass": "isolated-performance",
+        "allowParked": false,
+        "initialVisibleCount": 9,
+        "standardDuration": false,
+        "maximumThreads": 17,
+        "finalVisibleCount": 9,
+        "checks": [
+          {
+            "name": "Average CPU percent",
+            "actual": 0.051460610374085544,
+            "limit": 0.2,
+            "passed": true
+          },
+          {
+            "name": "Private bytes",
+            "actual": 21168128,
+            "limit": 50331648,
+            "passed": true
+          },
+          {
+            "name": "Working set",
+            "actual": 47898624,
+            "limit": 75497472,
+            "passed": true
+          },
+          {
+            "name": "Widgets remain visible",
+            "passed": true
+          }
+        ],
+        "passed": true
+      }
+    },
+    "dense": {
+      "source": "test-results/performance-exclusive-final-64-20261114-062540/report.json",
+      "result": {
+        "started": "2026-11-14T06:25:40.5821087+09:00",
+        "completed": "2026-11-14T06:31:43.0564442+09:00",
+        "executableSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+        "windows": "10.0.26300.0",
+        "profile": "64 S widgets, default intervals, screen-capacity parking allowed, real local Windows providers, mocked external APIs",
+        "warmupSeconds": 300,
+        "sampleSeconds": 60,
+        "intervalSeconds": 1,
+        "logicalProcessors": 12,
+        "count": 60,
+        "averageCpuPercent": 0.23795469838764413,
+        "p95CpuPercent": 0.5163625629904425,
+        "averageRawCpuMsPerSecond": 28.554563806517297,
+        "maximumPrivateBytes": 23158784,
+        "maximumWorkingSet": 53108736,
+        "privateGrowth": 36864,
+        "handleGrowth": 0,
+        "gdiGrowth": 0,
+        "userGrowth": 0,
+        "actualSampleSeconds": 60.73897720000002,
+        "maximumSampleIntervalSeconds": 1.0277267000000165,
+        "inputDesktopVerified": true,
+        "sleepPrevention": "scoped-display-and-system-request",
+        "budget": "None",
+        "apiMode": "mock",
+        "systemMode": "windows-real",
+        "testClass": "isolated-performance",
+        "allowParked": true,
+        "initialVisibleCount": 50,
+        "standardDuration": false,
+        "maximumThreads": 14,
+        "finalVisibleCount": 50,
+        "checks": [
+          {
+            "name": "Widgets remain visible",
+            "passed": true
+          }
+        ],
+        "passed": true
+      }
+    },
+    "before": [
+      {
+        "source": "test-results/performance-before-1-20261114-004854/report.json",
+        "result": {
+          "started": "2026-11-14T00:48:54.8245646+09:00",
+          "completed": "2026-11-14T00:54:55.9107752+09:00",
+          "executableSha256": "30856565778B0F6A0B592A3921E1C96A078E0A1D4B08B27A1F1A166BD9351A7A",
+          "windows": "10.0.26300.0",
+          "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+          "warmupSeconds": 300,
+          "sampleSeconds": 60,
+          "intervalSeconds": 1,
+          "logicalProcessors": 12,
+          "count": 59,
+          "averageCpuPercent": 0.03496607534026126,
+          "p95CpuPercent": 0.12968687537613338,
+          "averageRawCpuMsPerSecond": 4.195929040831351,
+          "maximumPrivateBytes": 18436096,
+          "maximumWorkingSet": 44056576,
+          "privateGrowth": -40960,
+          "handleGrowth": -2,
+          "gdiGrowth": 0,
+          "userGrowth": 0,
+          "actualSampleSeconds": 59.581560499999966,
+          "budget": "Five",
+          "apiMode": "mock",
+          "systemMode": "windows-real",
+          "testClass": "isolated-performance",
+          "standardDuration": false,
+          "maximumThreads": 19,
+          "checks": [
+            {
+              "name": "Average CPU percent",
+              "actual": 0.03496607534026126,
+              "limit": 0.1,
+              "passed": true
+            },
+            {
+              "name": "P95 CPU percent",
+              "actual": 0.12968687537613338,
+              "limit": 0.3,
+              "passed": true
+            },
+            {
+              "name": "Raw CPU ms/second",
+              "actual": 4.195929040831351,
+              "limit": 4,
+              "passed": false
+            },
+            {
+              "name": "Private bytes",
+              "actual": 18436096,
+              "limit": 33554432,
+              "passed": true
+            },
+            {
+              "name": "Working set",
+              "actual": 44056576,
+              "limit": 50331648,
+              "passed": true
+            },
+            {
+              "name": "Widgets remain visible",
+              "passed": true
+            }
+          ],
+          "passed": false
+        }
+      },
+      {
+        "source": "test-results/performance-before-2-20261114-005458/report.json",
+        "result": {
+          "started": "2026-11-14T00:54:58.9307299+09:00",
+          "completed": "2026-11-14T01:01:00.4321821+09:00",
+          "executableSha256": "30856565778B0F6A0B592A3921E1C96A078E0A1D4B08B27A1F1A166BD9351A7A",
+          "windows": "10.0.26300.0",
+          "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+          "warmupSeconds": 300,
+          "sampleSeconds": 60,
+          "intervalSeconds": 1,
+          "logicalProcessors": 12,
+          "count": 60,
+          "averageCpuPercent": 0.047219434679845386,
+          "p95CpuPercent": 0.12967534174370396,
+          "averageRawCpuMsPerSecond": 5.666332161581447,
+          "maximumPrivateBytes": 18432000,
+          "maximumWorkingSet": 44150784,
+          "privateGrowth": -155648,
+          "handleGrowth": -2,
+          "gdiGrowth": 0,
+          "userGrowth": 0,
+          "actualSampleSeconds": 60.66534580000001,
+          "budget": "Five",
+          "apiMode": "mock",
+          "systemMode": "windows-real",
+          "testClass": "isolated-performance",
+          "standardDuration": false,
+          "maximumThreads": 19,
+          "checks": [
+            {
+              "name": "Average CPU percent",
+              "actual": 0.047219434679845386,
+              "limit": 0.1,
+              "passed": true
+            },
+            {
+              "name": "P95 CPU percent",
+              "actual": 0.12967534174370396,
+              "limit": 0.3,
+              "passed": true
+            },
+            {
+              "name": "Raw CPU ms/second",
+              "actual": 5.666332161581447,
+              "limit": 4,
+              "passed": false
+            },
+            {
+              "name": "Private bytes",
+              "actual": 18432000,
+              "limit": 33554432,
+              "passed": true
+            },
+            {
+              "name": "Working set",
+              "actual": 44150784,
+              "limit": 50331648,
+              "passed": true
+            },
+            {
+              "name": "Widgets remain visible",
+              "passed": true
+            }
+          ],
+          "passed": false
+        }
+      },
+      {
+        "source": "test-results/performance-before-3-20261114-010101/report.json",
+        "result": {
+          "started": "2026-11-14T01:01:01.4416970+09:00",
+          "completed": "2026-11-14T01:07:02.4812282+09:00",
+          "executableSha256": "30856565778B0F6A0B592A3921E1C96A078E0A1D4B08B27A1F1A166BD9351A7A",
+          "windows": "10.0.26300.0",
+          "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+          "warmupSeconds": 300,
+          "sampleSeconds": 60,
+          "intervalSeconds": 1,
+          "logicalProcessors": 12,
+          "count": 59,
+          "averageCpuPercent": 0.06100458502094676,
+          "p95CpuPercent": 0.2584147021278224,
+          "averageRawCpuMsPerSecond": 7.320550202513611,
+          "maximumPrivateBytes": 18378752,
+          "maximumWorkingSet": 43950080,
+          "privateGrowth": -32768,
+          "handleGrowth": -2,
+          "gdiGrowth": 0,
+          "userGrowth": 0,
+          "actualSampleSeconds": 59.763267499999984,
+          "budget": "Five",
+          "apiMode": "mock",
+          "systemMode": "windows-real",
+          "testClass": "isolated-performance",
+          "allowParked": false,
+          "initialVisibleCount": 5,
+          "standardDuration": false,
+          "maximumThreads": 18,
+          "finalVisibleCount": 5,
+          "checks": [
+            {
+              "name": "Average CPU percent",
+              "actual": 0.06100458502094676,
+              "limit": 0.1,
+              "passed": true
+            },
+            {
+              "name": "P95 CPU percent",
+              "actual": 0.2584147021278224,
+              "limit": 0.3,
+              "passed": true
+            },
+            {
+              "name": "Raw CPU ms/second",
+              "actual": 7.320550202513611,
+              "limit": 4,
+              "passed": false
+            },
+            {
+              "name": "Private bytes",
+              "actual": 18378752,
+              "limit": 33554432,
+              "passed": true
+            },
+            {
+              "name": "Working set",
+              "actual": 43950080,
+              "limit": 50331648,
+              "passed": true
+            },
+            {
+              "name": "Widgets remain visible",
+              "passed": true
+            }
+          ],
+          "passed": false
+        }
+      }
+    ],
+    "after": [
+      {
+        "source": "test-results/performance-optimized-after-1-20261114-042737/report.json",
+        "result": {
+          "started": "2026-11-14T04:27:38.0283239+09:00",
+          "completed": "2026-11-14T04:33:40.1600915+09:00",
+          "executableSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+          "windows": "10.0.26300.0",
+          "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+          "warmupSeconds": 300,
+          "sampleSeconds": 60,
+          "intervalSeconds": 1,
+          "logicalProcessors": 12,
+          "count": 60,
+          "averageCpuPercent": 0.025720271681591893,
+          "p95CpuPercent": 0.1290298265099243,
+          "averageRawCpuMsPerSecond": 3.086432601791027,
+          "maximumPrivateBytes": 18997248,
+          "maximumWorkingSet": 44761088,
+          "privateGrowth": 8192,
+          "handleGrowth": 0,
+          "gdiGrowth": 0,
+          "userGrowth": 0,
+          "actualSampleSeconds": 60.749747100000036,
+          "maximumSampleIntervalSeconds": 1.0404282999999737,
+          "inputDesktopVerified": true,
+          "sleepPrevention": "scoped-display-and-system-request",
+          "budget": "Five",
+          "apiMode": "mock",
+          "systemMode": "windows-real",
+          "testClass": "isolated-performance",
+          "allowParked": false,
+          "initialVisibleCount": 5,
+          "standardDuration": false,
+          "maximumThreads": 15,
+          "finalVisibleCount": 5,
+          "checks": [
+            {
+              "name": "Average CPU percent",
+              "actual": 0.025720271681591893,
+              "limit": 0.1,
+              "passed": true
+            },
+            {
+              "name": "P95 CPU percent",
+              "actual": 0.1290298265099243,
+              "limit": 0.3,
+              "passed": true
+            },
+            {
+              "name": "Raw CPU ms/second",
+              "actual": 3.086432601791027,
+              "limit": 4,
+              "passed": true
+            },
+            {
+              "name": "Private bytes",
+              "actual": 18997248,
+              "limit": 33554432,
+              "passed": true
+            },
+            {
+              "name": "Working set",
+              "actual": 44761088,
+              "limit": 50331648,
+              "passed": true
+            },
+            {
+              "name": "Widgets remain visible",
+              "passed": true
+            }
+          ],
+          "passed": true
+        }
+      },
+      {
+        "source": "test-results/performance-optimized-after-2-20261114-050651/report.json",
+        "result": {
+          "started": "2026-11-14T05:06:51.7692312+09:00",
+          "completed": "2026-11-14T05:12:54.2108718+09:00",
+          "executableSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+          "windows": "10.0.26300.0",
+          "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+          "warmupSeconds": 300,
+          "sampleSeconds": 60,
+          "intervalSeconds": 1,
+          "logicalProcessors": 12,
+          "count": 60,
+          "averageCpuPercent": 0.05355214370882556,
+          "p95CpuPercent": 0.258352661419328,
+          "averageRawCpuMsPerSecond": 6.426257245059067,
+          "maximumPrivateBytes": 19079168,
+          "maximumWorkingSet": 44871680,
+          "privateGrowth": -45056,
+          "handleGrowth": 0,
+          "gdiGrowth": 0,
+          "userGrowth": 0,
+          "actualSampleSeconds": 60.78577080000002,
+          "maximumSampleIntervalSeconds": 1.0401489000000197,
+          "inputDesktopVerified": true,
+          "sleepPrevention": "scoped-display-and-system-request",
+          "budget": "Five",
+          "apiMode": "mock",
+          "systemMode": "windows-real",
+          "testClass": "isolated-performance",
+          "allowParked": false,
+          "initialVisibleCount": 5,
+          "standardDuration": false,
+          "maximumThreads": 15,
+          "finalVisibleCount": 5,
+          "checks": [
+            {
+              "name": "Average CPU percent",
+              "actual": 0.05355214370882556,
+              "limit": 0.1,
+              "passed": true
+            },
+            {
+              "name": "P95 CPU percent",
+              "actual": 0.258352661419328,
+              "limit": 0.3,
+              "passed": true
+            },
+            {
+              "name": "Raw CPU ms/second",
+              "actual": 6.426257245059067,
+              "limit": 4,
+              "passed": false
+            },
+            {
+              "name": "Private bytes",
+              "actual": 19079168,
+              "limit": 33554432,
+              "passed": true
+            },
+            {
+              "name": "Working set",
+              "actual": 44871680,
+              "limit": 50331648,
+              "passed": true
+            },
+            {
+              "name": "Widgets remain visible",
+              "passed": true
+            }
+          ],
+          "passed": false
+        }
+      },
+      {
+        "source": "test-results/performance-optimized-after-3-20261114-052050/report.json",
+        "result": {
+          "started": "2026-11-14T05:20:51.0532953+09:00",
+          "completed": "2026-11-14T05:26:52.7167968+09:00",
+          "executableSha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+          "windows": "10.0.26300.0",
+          "profile": "Five M widgets, default intervals, real system providers, weather key absent",
+          "warmupSeconds": 300,
+          "sampleSeconds": 60,
+          "intervalSeconds": 1,
+          "logicalProcessors": 12,
+          "count": 60,
+          "averageCpuPercent": 0.03850881645037619,
+          "p95CpuPercent": 0.1291037858931247,
+          "averageRawCpuMsPerSecond": 4.621057974045143,
+          "maximumPrivateBytes": 19152896,
+          "maximumWorkingSet": 44879872,
+          "privateGrowth": -28672,
+          "handleGrowth": -2,
+          "gdiGrowth": 0,
+          "userGrowth": 0,
+          "actualSampleSeconds": 60.86268590000003,
+          "maximumSampleIntervalSeconds": 1.0711442999999576,
+          "inputDesktopVerified": true,
+          "sleepPrevention": "scoped-display-and-system-request",
+          "budget": "Five",
+          "apiMode": "mock",
+          "systemMode": "windows-real",
+          "testClass": "isolated-performance",
+          "allowParked": false,
+          "initialVisibleCount": 5,
+          "standardDuration": false,
+          "maximumThreads": 16,
+          "finalVisibleCount": 5,
+          "checks": [
+            {
+              "name": "Average CPU percent",
+              "actual": 0.03850881645037619,
+              "limit": 0.1,
+              "passed": true
+            },
+            {
+              "name": "P95 CPU percent",
+              "actual": 0.1291037858931247,
+              "limit": 0.3,
+              "passed": true
+            },
+            {
+              "name": "Raw CPU ms/second",
+              "actual": 4.621057974045143,
+              "limit": 4,
+              "passed": false
+            },
+            {
+              "name": "Private bytes",
+              "actual": 19152896,
+              "limit": 33554432,
+              "passed": true
+            },
+            {
+              "name": "Working set",
+              "actual": 44879872,
+              "limit": 50331648,
+              "passed": true
+            },
+            {
+              "name": "Widgets remain visible",
+              "passed": true
+            }
+          ],
+          "passed": false
+        }
+      }
+    ],
+    "beforeMedianMsPerSecond": 5.666332161581447,
+    "afterMedianMsPerSecond": 4.621057974045143,
+    "medianImprovementPercent": 18.447104012422965
+  },
+  "installedProcessStillRunning": true,
+  "exclusions": [
+    "live external APIs",
+    "installer/uninstaller on installed application",
+    "actual logoff/logon",
+    "global Show Desktop",
+    "unsupported temperature sensors",
+    "physical mixed-DPI monitor reconnect"
+  ],
+  "publicMetadataNote": "Machine names, hardware display identifiers, installed process identifiers and absolute workspace paths are redacted; original local test-results are unchanged."
+}

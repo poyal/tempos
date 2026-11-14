@@ -97,7 +97,8 @@ Extent extent(Size s, int scale) {
     i = 2;
   auto e = sizes[i];
   float f = scale / 100.f;
-  return {e.width * f, e.height * f};
+  return {std::ceil(e.width * f / gridStep) * gridStep,
+          std::ceil(e.height * f / gridStep) * gridStep};
 }
 std::vector<int> intervals(Kind k) {
   switch (k) {
@@ -137,11 +138,67 @@ bool overlaps(const Box &u, const Box &b, float gap) {
   return u.x < b.x + b.w + gap && u.x + u.w + gap > b.x && u.y < b.y + b.h + gap && u.y + u.h + gap > b.y;
 }
 float snap(float v) {
-  return std::round(v / 4.f) * 4.f;
+  return std::round(v / gridStep) * gridStep;
+}
+std::optional<Box> nearestPosition(Extent area, Box desired, const std::vector<Box> &occupied) {
+  if (!std::isfinite(area.width) || !std::isfinite(area.height) ||
+      !std::isfinite(desired.x) || !std::isfinite(desired.y) ||
+      !std::isfinite(desired.w) || !std::isfinite(desired.h) || desired.w <= 0 || desired.h <= 0)
+    return {};
+  const float maxX = std::floor((area.width - 16 - desired.w) / gridStep) * gridStep;
+  const float maxY = std::floor((area.height - 16 - desired.h) / gridStep) * gridStep;
+  if (maxX < 16 || maxY < 16) return {};
+  // A closest feasible point is either the rounded request or a boundary of
+  // an obstacle/work area. Enumerating those coordinates avoids a pixel scan.
+  std::vector<float> xs{16, maxX, std::clamp(snap(desired.x), 16.f, maxX)};
+  std::vector<float> ys{16, maxY, std::clamp(snap(desired.y), 16.f, maxY)};
+  xs.push_back(std::clamp(std::floor(desired.x / gridStep) * gridStep, 16.f, maxX));
+  ys.push_back(std::clamp(std::floor(desired.y / gridStep) * gridStep, 16.f, maxY));
+  for (const auto &b : occupied) {
+    xs.push_back(std::floor((b.x - desired.w - 16) / gridStep) * gridStep);
+    xs.push_back(std::ceil((b.x + b.w + 16) / gridStep) * gridStep);
+    ys.push_back(std::floor((b.y - desired.h - 16) / gridStep) * gridStep);
+    ys.push_back(std::ceil((b.y + b.h + 16) / gridStep) * gridStep);
+  }
+  auto unique = [](auto &values) {
+    std::sort(values.begin(), values.end());
+    values.erase(std::unique(values.begin(), values.end()), values.end());
+  };
+  unique(xs); unique(ys);
+  std::optional<Box> best;
+  double distance = INFINITY;
+  for (float y : ys) for (float x : xs) {
+    if (x < 16 || y < 16 || x > maxX || y > maxY) continue;
+    Box candidate{x, y, desired.w, desired.h};
+    double dx = double(x) - desired.x, dy = double(y) - desired.y;
+    double d = dx * dx + dy * dy;
+    if (d >= distance || std::any_of(occupied.begin(), occupied.end(),
+        [&](const auto &b) { return overlaps(candidate, b); })) continue;
+    best = candidate;
+    distance = d;
+  }
+  return best;
 }
 std::optional<Box> freePosition(Extent area, Extent s, const std::vector<Box> &occupied) {
-  for (float x = 16; x + s.width <= area.width - 16; x += 4)
-    for (float y = 16; y + s.height <= area.height - 16; y += 4) {
+  if (!std::isfinite(area.width) || !std::isfinite(area.height) ||
+      !std::isfinite(s.width) || !std::isfinite(s.height) || s.width <= 0 || s.height <= 0)
+    return {};
+  // Preserve column-first order without scanning every grid
+  // point. The first free interval begins at the margin or an obstacle's far edge.
+  std::vector<float> xs{16}, ys{16};
+  for (const auto &b : occupied) {
+    xs.push_back(std::ceil((b.x + b.w + 16) / gridStep) * gridStep);
+    ys.push_back(std::ceil((b.y + b.h + 16) / gridStep) * gridStep);
+  }
+  auto unique = [](auto &v) {
+    std::sort(v.begin(), v.end());
+    v.erase(std::unique(v.begin(), v.end()), v.end());
+  };
+  unique(xs); unique(ys);
+  for (float x : xs)
+    for (float y : ys) {
+      if (x < 16 || y < 16 || x + s.width > area.width - 16 || y + s.height > area.height - 16)
+        continue;
       Box b{x, y, s.width, s.height};
       if (std::none_of(occupied.begin(), occupied.end(), [&](auto &u) { return overlaps(u, b); }))
         return b;
@@ -279,10 +336,13 @@ std::vector<Placement> arrangeWidgets(const std::vector<Widget> &widgets,
     auto &w = widgets[i];
     for (size_t pass = 0; pass < 2 && !p.visible; ++pass)
       for (size_t index = 0; index < screens.size(); ++index) {
-        bool preferred = screens[index].id == w.monitor;
+        bool preferred = screens[index].id == w.monitor || (w.monitor.empty() && screens[index].primary);
         if ((pass == 0) != preferred)
           continue;
-        auto position = freePosition(area(index), extent(w.size, w.scale), occupied[index]);
+        auto size = extent(w.size, w.scale);
+        auto position = preferred
+                            ? nearestPosition(area(index), {w.x, w.y, size.width, size.height}, occupied[index])
+                            : freePosition(area(index), size, occupied[index]);
         if (!position)
           continue;
         p.monitor = screens[index].id;

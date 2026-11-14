@@ -22,12 +22,14 @@ static LRESULT CALLBACK gridProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     FillRect(dc, &r, static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH)));
     HPEN pen = CreatePen(PS_SOLID, 1, RGB(150, 180, 220));
     auto old = SelectObject(dc, pen);
-    int step = MulDiv(16, GetDpiForWindow(hwnd), 96);
-    for (int x = 0; x < r.right; x += step) {
+    const UINT dpi = GetDpiForWindow(hwnd);
+    for (int dip = 0; MulDiv(dip, dpi, 96) < r.right; dip += gridStep) {
+      int x = MulDiv(dip, dpi, 96);
       MoveToEx(dc, x, 0, nullptr);
       LineTo(dc, x, r.bottom);
     }
-    for (int y = 0; y < r.bottom; y += step) {
+    for (int dip = 0; MulDiv(dip, dpi, 96) < r.bottom; dip += gridStep) {
+      int y = MulDiv(dip, dpi, 96);
       MoveToEx(dc, 0, y, nullptr);
       LineTo(dc, r.right, y);
     }
@@ -790,7 +792,7 @@ bool App::place(Widget &w, bool keep) {
       proposed.y + proposed.h <= area.height - 16 &&
       !std::any_of(occupied.begin(), occupied.end(), [&](auto &box) { return overlaps(box, proposed); });
   if (!keep || !valid) {
-    auto position = freePosition(area, size, occupied);
+    auto position = keep ? nearestPosition(area, proposed, occupied) : freePosition(area, size, occupied);
     if (!position)
       return false;
     w.x = position->x;
@@ -934,6 +936,12 @@ void App::removeSelected() {
   status(L"위젯을 제거했어요.");
 }
 void App::rebuild() {
+  for (auto &window : windows_) {
+    if (window->dragging) {
+      window->dragging = false;
+      if (GetCapture() == window->hwnd) ReleaseCapture();
+    }
+  }
   monitors_ = monitors();
   for (auto hwnd : grids_)
     DestroyWindow(hwnd);
@@ -1010,7 +1018,6 @@ void App::position(WidgetWindow &window) {
   window.currentMonitor = mi->id;
   window.dpi = mi->dpi;
   auto extentDip = extent(w->size, w->scale);
-  float factor = mi->dpi / 96.f;
   window.displayX = placement->box.x;
   window.displayY = placement->box.y;
   HWND parent = w->topmost || settings_.edit ? nullptr : desktopHost();
@@ -1044,14 +1051,18 @@ void App::position(WidgetWindow &window) {
   if (w->clickThrough && !settings_.edit)
     ex |= WS_EX_TRANSPARENT;
   SetWindowLongPtrW(window.hwnd, GWL_EXSTYLE, ex);
-  POINT origin{mi->work.left + LONG(window.displayX * factor), mi->work.top + LONG(window.displayY * factor)};
+  int left = MulDiv(int(window.displayX), mi->dpi, 96);
+  int top = MulDiv(int(window.displayY), mi->dpi, 96);
+  int right = MulDiv(int(window.displayX + extentDip.width), mi->dpi, 96);
+  int bottom = MulDiv(int(window.displayY + extentDip.height), mi->dpi, 96);
+  POINT origin{mi->work.left + left, mi->work.top + top};
   if (parent)
     ScreenToClient(parent, &origin);
   SetWindowPos(window.hwnd,
                parent           ? HWND_TOP
                : topmost        ? HWND_TOPMOST
                                 : HWND_BOTTOM,
-               origin.x, origin.y, LONG(extentDip.width * factor), LONG(extentDip.height * factor),
+               origin.x, origin.y, right - left, bottom - top,
                SWP_NOACTIVATE | SWP_FRAMECHANGED);
 }
 void App::configure() {
@@ -1575,6 +1586,30 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
   case WM_COMMAND:
     command(LOWORD(w), HIWORD(w));
     return 0;
+#ifdef TEMPOS_TEST_HOST
+  case WM_COPYDATA: {
+    // Batch native input on this UI thread so real queued pointer messages cannot
+    // interleave with a synthetic drag. Actual SendInput E2E remains separate.
+    struct DragInput { HWND target; int fromX, fromY, toX, toY, move; };
+    auto copy = reinterpret_cast<const COPYDATASTRUCT *>(l);
+    if (!copy || copy->dwData != 0x544d5044 || copy->cbData != sizeof(DragInput) || !copy->lpData)
+      return 0;
+    auto input = *static_cast<const DragInput *>(copy->lpData);
+    if (std::none_of(windows_.begin(), windows_.end(), [&](const auto &window) { return window->hwnd == input.target; }))
+      return 0;
+    for (int value : {input.fromX, input.fromY, input.toX, input.toY})
+      if (value < -32768 || value > 32767) return 0;
+    SendMessageW(input.target, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(input.fromX, input.fromY));
+    LARGE_INTEGER frequency{}, start{}, moved{}, dropped{};
+    QueryPerformanceFrequency(&frequency); QueryPerformanceCounter(&start);
+    if (input.move) SendMessageW(input.target, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(input.toX, input.toY));
+    QueryPerformanceCounter(&moved);
+    SendMessageW(input.target, WM_LBUTTONUP, 0, MAKELPARAM(input.fromX, input.fromY));
+    QueryPerformanceCounter(&dropped);
+    auto micros = [&](LONGLONG ticks) { return uint64_t(ticks * 1000000 / frequency.QuadPart); };
+    return LRESULT((micros(dropped.QuadPart - moved.QuadPart) << 32) | (micros(moved.QuadPart - start.QuadPart) + 1));
+  }
+#endif
   case WM_NOTIFY:
     if (reinterpret_cast<NMHDR *>(l)->idFrom == 1000 && reinterpret_cast<NMHDR *>(l)->code == TCN_SELCHANGE) {
       selectTab(TabCtrl_GetCurSel(control(1000)));
@@ -1716,6 +1751,8 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     scrollSettings(hwnd, SB_VERT, GetScrollPos(hwnd, SB_VERT) - GET_WHEEL_DELTA_WPARAM(w) * 42 / 120);
     return 0;
   case WM_CLOSE:
+    settings_.edit = false;
+    rebuild();
     ShowWindow(hwnd, SW_HIDE);
     return 0;
   case WM_QUERYENDSESSION:
@@ -1804,14 +1841,19 @@ LRESULT App::widgetMessage(WidgetWindow &window, UINT msg, WPARAM wp, LPARAM lp)
         candidate.x = snap((r.left - mi->work.left) * 96.f / mi->dpi);
         candidate.y = snap((r.top - mi->work.top) * 96.f / mi->dpi);
         if (place(candidate)) {
-          auto next = settings_;
-          next.widgets[size_t(w - settings_.widgets.data())] = candidate;
-          commit(std::move(next));
+          bool monitorChanged = candidate.monitor != w->monitor;
+          if (monitorChanged || candidate.x != w->x || candidate.y != w->y) {
+            auto next = settings_;
+            next.widgets[size_t(w - settings_.widgets.data())] = candidate;
+            if (commit(std::move(next)) && monitorChanged && selected_ == window.id)
+              SendMessageW(control(1304), CB_SETCURSEL, mi - monitors_.begin(), 0);
+          }
+        } else {
+          status(L"위젯을 놓을 빈 공간이 없어요. 기존 위치를 유지합니다.");
         }
       }
       position(window);
       draw(window);
-      loadControls();
     }
     return 0;
   case WM_CAPTURECHANGED:

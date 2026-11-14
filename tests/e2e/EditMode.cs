@@ -8,6 +8,13 @@ using App = FlaUI.Core.Application;
 internal static partial class Program
 {
     [DllImport("user32.dll")] static extern nint GetWindow(nint window, uint command);
+    [StructLayout(LayoutKind.Sequential)] struct GuiThreadState
+    {
+        public uint Size, Flags;
+        public nint Active, Focus, Capture, MenuOwner, MoveSize, Caret;
+        public Rectangle CaretBounds;
+    }
+    [DllImport("user32.dll")] static extern bool GetGUIThreadInfo(uint thread, ref GuiThreadState state);
     static void EditModeCycles(ref App? app, string exe)
     {
         var userFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Tempos");
@@ -61,6 +68,39 @@ internal static partial class Program
             }
         }
         Check(JsonNode.DeepEquals(saved, Settings()), "Repeated edit toggles preserve complete test layout");
+        for (int cycle = 0; cycle < 20; cycle++)
+        {
+            NativeButton(1204);
+            Check(OwnedWindow("Tempos.Grid") != 0, "Close cycle: grid created");
+            var management = Window.Properties.NativeWindowHandle;
+            GetWindowThreadProcessId(management, out var owner);
+            Check(owner == ProcessId, "Close targets isolated TestHost only");
+            SendMessage(management, 0x10, 0, 0);
+            Check(!IsWindowVisible(management), "Settings close hides window");
+            Check(OwnedWindow("Tempos.Grid") == 0, "Settings close destroys edit grid");
+            ShowWindow(management, 5);
+            Check(OwnedWindow("Tempos.Grid") == 0, "Settings reopen keeps editing off");
+            Check(JsonNode.DeepEquals(saved, Settings()), "Close preserves saved layout");
+        }
+        foreach (bool closeDuringDrag in new[] { false, true })
+        {
+            NativeButton(1204);
+            var widget = WidgetHandle(State()["windows"]![0]!);
+            uint thread = GetWindowThreadProcessId(widget, out var owner);
+            Check(owner == ProcessId, "Capture test targets isolated widget");
+            SendMessage(widget, 0x201, 1, (nint)((20 << 16) | 20));
+            var gui = new GuiThreadState { Size = (uint)Marshal.SizeOf<GuiThreadState>() };
+            Check(GetGUIThreadInfo(thread, ref gui) && gui.Capture == widget, "Drag captures owned window");
+            SendMessage(widget, 0x200, 1, (nint)((36 << 16) | 36));
+            if (closeDuringDrag) SendMessage(Window.Properties.NativeWindowHandle, 0x10, 0, 0);
+            else SendMessage(widget, 0x1F, 0, 0);
+            Check(GetGUIThreadInfo(thread, ref gui) && gui.Capture == 0, "Cancel/close releases drag capture");
+            Check(JsonNode.DeepEquals(saved, Settings()), "Cancelled drag does not persist temporary location");
+            if (closeDuringDrag) {
+                Check(OwnedWindow("Tempos.Grid") == 0, "Close during drag removes grid");
+                ShowWindow(Window.Properties.NativeWindowHandle, 5);
+            } else NativeButton(1204);
+        }
         Restart(ref app, exe);
         Check(JsonNode.DeepEquals(saved, Settings()), "Test layout survives restart after repeated edit toggles");
         SelectWidget(0); Element(1309).AsCheckBox().IsChecked = true; NativeButton(1316);

@@ -34,7 +34,8 @@ internal static partial class Program
             var before = Settings().DeepClone();
             var handle = WidgetHandle(State()["windows"]![0]!);
             ShowWindow(Window.Properties.NativeWindowHandle, 0);
-            foreach (uint message in new uint[] {0x201, 0x202, 0x203, 0x204, 0x205, 0x206, 0x7B, 0x100})
+            foreach (uint message in new uint[] {0x201, 0x202, 0x203, 0x204, 0x205, 0x206,
+                                                 0x207, 0x208, 0x209, 0x20A, 0x7B, 0x100, 0x101, 0x102})
                 SendMessage(handle, message, 0, (nint)((30 << 16) | 30));
             Thread.Sleep(150);
             Check(!IsWindowVisible(Window.Properties.NativeWindowHandle) && OwnedWindow("Tempos.Details") == 0,

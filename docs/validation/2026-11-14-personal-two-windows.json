@@ -1,0 +1,247 @@
+{
+  "date": "2026-11-14",
+  "testClass": "two-device-five-widget-performance",
+  "policyVersion": "personal-two-windows-v1",
+  "binarySha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+  "scope": "Five M widgets, default intervals, actual local Windows collectors, HTTP-boundary mocked external APIs; separate 5-minute warmup and 30-minute measurement on each PC",
+  "twoDevicePerformancePassed": true,
+  "records": [
+    {
+      "role": "current",
+      "report": "test-results/performance-personal-v1-local-five-30min-20261114-133231/report.json",
+      "device": {
+        "name": "redacted",
+        "cpu": "Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz",
+        "logicalProcessors": 12,
+        "monitors": [
+          {
+            "bottom": 1032,
+            "dpi": 96,
+            "left": 0,
+            "primary": true,
+            "right": 1920,
+            "top": 0
+          }
+        ]
+      },
+      "windows": "10.0.26300.0",
+      "started": "2026-11-14T13:32:31.5700320+09:00",
+      "completed": "2026-11-14T14:07:34.2346393+09:00",
+      "warmupSeconds": 300,
+      "actualSampleSeconds": 1800.9598342,
+      "sampleCount": 1783,
+      "maximumSampleIntervalSeconds": 1.054387800000029,
+      "averageRawCpuMsPerSecond": 4.979983356477235,
+      "averageCpuPercent": 0.04149986130397696,
+      "p95CpuPercent": 0.13007824208341845,
+      "maximumPrivateBytes": 19607552,
+      "maximumWorkingSet": 45297664,
+      "checks": [
+        {
+          "name": "Average CPU percent",
+          "actual": 0.04149986130397696,
+          "limit": 0.1,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "P95 CPU percent",
+          "actual": 0.13007824208341845,
+          "limit": 0.3,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Raw CPU ms/second",
+          "actual": 4.979983356477235,
+          "limit": 10,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Private bytes",
+          "actual": 19607552,
+          "limit": 33554432,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Working set",
+          "actual": 45297664,
+          "limit": 50331648,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Widgets remain visible",
+          "passed": true
+        }
+      ],
+      "optimizationTargets": [
+        {
+          "name": "Raw CPU optimization target ms/second",
+          "actual": 4.979983356477235,
+          "limit": 4,
+          "passed": false,
+          "valid": true
+        }
+      ],
+      "optimizationTargetsMet": false,
+      "devicePerformanceQualified": true
+    },
+    {
+      "role": "other-windows",
+      "report": "test-results/remote-personal-v1-20261114/report.json",
+      "device": {
+        "name": "redacted",
+        "cpu": "AMD Ryzen 7 9700X 8-Core Processor             ",
+        "logicalProcessors": 16,
+        "monitors": [
+          {
+            "bottom": 2088,
+            "dpi": 144,
+            "left": 0,
+            "primary": true,
+            "right": 3840,
+            "top": 0
+          },
+          {
+            "bottom": 3240,
+            "dpi": 120,
+            "left": 1902,
+            "primary": false,
+            "right": 3822,
+            "top": 2160
+          }
+        ]
+      },
+      "windows": "10.0.26300.0",
+      "started": "2026-11-14T13:50:06.2368407+09:00",
+      "completed": "2026-11-14T14:25:08.1272726+09:00",
+      "warmupSeconds": 300,
+      "actualSampleSeconds": 1800.4089787999999,
+      "sampleCount": 1780,
+      "maximumSampleIntervalSeconds": 1.0353637000000049,
+      "averageRawCpuMsPerSecond": 1.8658954935000795,
+      "averageCpuPercent": 0.011661846834375498,
+      "p95CpuPercent": 0.09633504377513362,
+      "maximumPrivateBytes": 24838144,
+      "maximumWorkingSet": 36167680,
+      "checks": [
+        {
+          "name": "Average CPU percent",
+          "actual": 0.011661846834375498,
+          "limit": 0.1,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "P95 CPU percent",
+          "actual": 0.09633504377513362,
+          "limit": 0.3,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Raw CPU ms/second",
+          "actual": 1.8658954935000795,
+          "limit": 10,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Private bytes",
+          "actual": 24838144,
+          "limit": 33554432,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Working set",
+          "actual": 36167680,
+          "limit": 50331648,
+          "passed": true,
+          "valid": true
+        },
+        {
+          "name": "Widgets remain visible",
+          "passed": true
+        }
+      ],
+      "optimizationTargets": [
+        {
+          "name": "Raw CPU optimization target ms/second",
+          "actual": 1.8658954935000795,
+          "limit": 4,
+          "passed": true,
+          "valid": true
+        }
+      ],
+      "optimizationTargetsMet": true,
+      "devicePerformanceQualified": true
+    }
+  ],
+  "currentPcAdditionalValidation": {
+    "manifest": "test-results/full-validation-20261114-140845/manifest.json",
+    "modes": [
+      "drag-performance",
+      "windows-real"
+    ],
+    "passedChecks": 74,
+    "failedChecks": 0,
+    "skippedChecks": 2,
+    "skips": [
+      {
+        "name": "Actual local temperature: kind 2",
+        "passed": null,
+        "skipped": true,
+        "reason": "No valid sensor reading; status 2. This suite never installs a driver or sensor service."
+      },
+      {
+        "name": "Actual local temperature: kind 3",
+        "passed": null,
+        "skipped": true,
+        "reason": "No valid sensor reading; status 3. This suite never installs a driver or sensor service."
+      }
+    ],
+    "dragOne": {
+      "testClass": "native-message-batch-drag-performance",
+      "widgets": 1,
+      "warmupCycles": 100,
+      "cycles": 1000,
+      "moveP95Milliseconds": 0.862,
+      "dropP95Milliseconds": 64.686,
+      "roundTripP95Milliseconds": 66.7189,
+      "moveMaximumMilliseconds": 1.286,
+      "dropMaximumMilliseconds": 204.565
+    },
+    "drag64": {
+      "testClass": "native-message-batch-drag-performance",
+      "widgets": 64,
+      "warmupCycles": 100,
+      "cycles": 1000,
+      "moveP95Milliseconds": 0.308,
+      "dropP95Milliseconds": 2.051,
+      "roundTripP95Milliseconds": 2.6929,
+      "moveMaximumMilliseconds": 0.505,
+      "dropMaximumMilliseconds": 2.881
+    }
+  },
+  "isolation": {
+    "remoteTemporaryTaskRemoved": true,
+    "remainingOwnedTestHosts": 0,
+    "remoteSession": 1,
+    "remoteAudit": "test-results/remote-personal-v1-20261114/remote-audit.json",
+    "externalApiMode": "mock",
+    "productBinaryChanged": false,
+    "installedAppsUpdatedOrStopped": false
+  },
+  "limits": [
+    "This verifies the default five-widget performance profile on two PCs, not every layout or the nine-widget profile",
+    "New drag and Windows-real functional checks ran on the current PC only; the other PC was performance-only",
+    "Three short repeats for per-PC future regression baselines have not been completed under this new policy",
+    "Battery, power and temperature suitability cannot be inferred from app CPU alone",
+    "Prior failed and interrupted runs are preserved and not reclassified"
+  ],
+  "publicMetadataNote": "Machine names, hardware display identifiers, installed process identifiers and absolute workspace paths are redacted; original local test-results are unchanged."
+}

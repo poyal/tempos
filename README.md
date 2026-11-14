@@ -22,6 +22,8 @@
 
 화면은 **0.1.2 · 2026-10-17** 소스로 실행한 앱의 예제입니다. 날씨·일정·장치명·측정값은 촬영용 자료이며 실제 계정이나 현재 위치를 사용하지 않았습니다. 이미지를 누르면 크게 볼 수 있습니다. [전체 화면과 촬영 조건](docs/screenshots.md#manual-20261017).
 
+**v0.1.3**에서는 스냅 간격과 표시 격자를 8 DIP로 통일하고, 배율에 따른 위젯 크기와 네 변의 정렬을 보정했습니다. 오른쪽 경계에서 위치가 튀거나 설정창을 닫아도 격자가 남는 문제를 수정했습니다. 기존 화면 예제와 격자 간격·일부 위젯 외곽 크기가 다를 수 있습니다. [변경 사항](docs/releases/v0.1.3.md).
+
 ## 어떤 위젯이 있나요?
 
 | 위젯 | 확인할 수 있는 정보 | 주요 설정 |
@@ -518,7 +520,7 @@ Tempos를 종료한 뒤 **Windows 설정 → 앱 → 설치된 앱 → Tempos �
 
 - [상세 사용 안내](docs/user-guide.md) · [날씨 서비스](docs/weather.md) · [CPU·GPU 온도](docs/sensors.md)
 - [전체 화면과 촬영 조건](docs/screenshots.md) · [최신 화면 촬영·검증 기록](docs/validation/2026-10-17-readme.md)
-- [0.1.2 릴리즈 노트](docs/releases/v0.1.2.md) · [개발 안내](docs/development.md) · [E2E 안내](docs/e2e.md)
+- [0.1.3 릴리즈 노트](docs/releases/v0.1.3.md) · [개발 안내](docs/development.md) · [E2E 안내](docs/e2e.md)
 - [검증 기록](docs/verification.md) · [레이아웃 변경 보고서](docs/validation/2026-10-17-layout-report.html) · [문서 모음](docs/README.md) · [외부 구성요소 고지](THIRD_PARTY_NOTICES.md)
 
 제작자 **Poyal** · [GitHub](https://github.com/poyal/tempos) · [문의·오류 신고](https://github.com/poyal/tempos/issues)

@@ -23,6 +23,7 @@ internal static partial class Program
     [DllImport("user32.dll")] static extern nint WindowFromPoint(Point point);
     [DllImport("user32.dll")] static extern bool GetWindowRect(nint window, out Rectangle rectangle);
     [DllImport("user32.dll")] static extern bool IsWindowVisible(nint window);
+    [DllImport("user32.dll")] static extern bool IsWindowEnabled(nint window);
     [DllImport("user32.dll")] static extern bool IsIconic(nint window);
     [DllImport("user32.dll")] static extern nint GetDlgItem(nint dialog, int id);
     [DllImport("user32.dll", EntryPoint = "SendMessageW", CharSet = CharSet.Unicode)] static extern nint SendText(nint window, uint msg, nint w, string text);
@@ -35,6 +36,7 @@ internal static partial class Program
     static readonly Dictionary<int, AutomationElement> Controls = [];
     static string Root = "", Data = "";
     static int ProcessId;
+    static string StartupStatus = "";
     static bool Live;
     static bool LiveApis;
     static bool DesktopToggled;
@@ -58,7 +60,15 @@ internal static partial class Program
     static void Button(int id) { var element = Element(id); Console.WriteLine($"BUTTON {id} {element.Name} offscreen={element.IsOffscreen}"); element.AsButton().Invoke(); Thread.Sleep(500); if (id != 1507) Console.WriteLine($"STATUS {Element(1999).Name}"); }
     static void Combo(int id, int index) { Element(id).AsComboBox().Select(index); Thread.Sleep(100); }
     static void Tab(int index) { var tab = Element(1000).AsTab(); tab.TabItems[index].Patterns.SelectionItem.Pattern.Select(); Thread.Sleep(300); Console.WriteLine($"TAB {index} selected={tab.SelectedTabItemIndex} bounds={tab.BoundingRectangle}"); }
-    static JsonObject Settings() => JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "settings.json")))!.AsObject();
+    static JsonObject Settings()
+    {
+        for (int attempt = 0; ; attempt++)
+        {
+            try { return JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "settings.json")))!.AsObject(); }
+            catch (IOException e) when (attempt < 50 && (e.HResult & 0xffff) is 32 or 33)
+            { Thread.Sleep(100); }
+        }
+    }
     static JsonObject Diagnostic() { Tab(2); Button(1505); return JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "diagnostics.json")))!.AsObject(); }
     static nint WidgetHandle(JsonNode item) => (nint)item["handle"]!.GetValue<long>();
     static void NativeCombo(int id, int index)
@@ -83,10 +93,21 @@ internal static partial class Program
         var nativeName = GetDlgItem(handle, 1152);
         if (nativeName != 0) { Check(SendText(nativeName, 0xC, 0, file) != 0, "Native file name entered"); PostMessage(handle, 0x111, 1, 0); Thread.Sleep(1000); return; }
         var name = dialog.FindFirstDescendant(c => c.ByAutomationId("FileNameControlHost")) ?? dialog.FindFirstDescendant(c => c.ByAutomationId("1148"));
-        var edit = name?.FindFirstDescendant(c => c.ByControlType(FlaUI.Core.Definitions.ControlType.Edit)) ?? dialog.FindFirstDescendant(c => c.ByAutomationId("1152"));
+        var edit = name?.ControlType == FlaUI.Core.Definitions.ControlType.Edit ? name :
+            name?.FindFirstDescendant(c => c.ByControlType(FlaUI.Core.Definitions.ControlType.Edit)) ??
+            dialog.FindFirstDescendant(c => c.ByAutomationId("1152"));
         Check(edit != null, "File name control found");
-        edit!.AsTextBox().Text = file;
-        var accept = GetDlgItem(handle, 1); Check(accept != 0, "File dialog accept button found"); PostMessage(accept, 0xF5, 0, 0);
+        edit!.Focus();
+        GetWindowThreadProcessId(GetForegroundWindow(), out var foregroundOwner);
+        Check(foregroundOwner == ProcessId, "Filename input targets the owned test dialog");
+        edit.AsTextBox().Enter(file);
+        for (int wait = 0; wait < 100 && edit.AsTextBox().Text != file; wait++) Thread.Sleep(100);
+        Check(edit.AsTextBox().Text == file, "File name control retains requested path");
+        Thread.Sleep(300);
+        var accept = GetDlgItem(handle, 1); Check(accept != 0, "File dialog accept button found");
+        Automation.FromHandle(accept).Focus();
+        Thread.Sleep(100);
+        PostMessage(accept, 0xF5, 0, 0);
         for (int i = 0; i < 100 && IsWindowVisible(handle); i++) Thread.Sleep(100);
         Check(!IsWindowVisible(handle), "File dialog completed");
         // Dialog closure precedes the app's import/save handler completing.
@@ -118,6 +139,8 @@ internal static partial class Program
             if (window != null)
             {
                 Window = window;
+                // Diagnostic export updates the status label; preserve startup warnings first.
+                StartupStatus = Element(1999).Name;
                 try {
                     var state = State();
                     Check(state["apiMode"]?.GetValue<string>() == (LiveApis ? "live" : "mock"), "API boundary matches the requested test class");
@@ -173,6 +196,8 @@ internal static partial class Program
             app = Start(exe);
             if (args.Contains("--isolation")) { Isolation(ref app, exe); return 0; }
             if (args.Contains("--edit-mode")) { EditModeCycles(ref app, exe); return 0; }
+            if (args.Contains("--shell-actions")) { ShellActions(ref app, exe); return 0; }
+            if (args.Contains("--drag-performance")) { DragPerformance(ref app); return 0; }
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
             if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, !LiveApis || args.Contains("--allow-location-to-open-meteo")); return 0; }
@@ -189,6 +214,7 @@ internal static partial class Program
             if (args.Contains("--capacity")) { Capacity(ref app, exe); return 0; }
             if (args.Contains("--clock-layout")) { ClockLayout(ref app); return 0; }
             if (args.Contains("--placement")) { Placement(ref app, exe); return 0; }
+            if (args.Contains("--legacy-grid")) { LegacyGrid(ref app, exe); return 0; }
             if (Live) { Thread.Sleep(4000); var state = Diagnostic(); foreach (var entry in state["windows"]!.AsArray().Where(x => new[] { 2, 3, 4 }.Contains(x!["kind"]!.GetValue<int>()))) { var summary = Automation.FromHandle(WidgetHandle(entry!)).Name; Console.WriteLine("LIVE " + summary); Check(summary.Contains('%'), "Live system usage available: " + entry!["kind"]); } Quit(app); app = null; return 0; }
             if (args.Contains("--layout")) { Tab(2); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI"); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 5, "Layout import through UI"); Quit(app); app = null; return 0; }
             if (args.Contains("--smoke"))
@@ -211,15 +237,40 @@ internal static partial class Program
                     var widget = WidgetHandle(entry);
                     // SendInput/SetCursorPos are unavailable in this automation session.
                     // Drive native mouse messages on the owned widget without moving the user's pointer.
-                    SendMessage(widget, 0x201, 1, (nint)((70 << 16) | 80));
-                    SendMessage(widget, 0x200, 1, (nint)((189 << 16) | 253));
-                    SendMessage(widget, 0x202, 0, (nint)((70 << 16) | 80));
+                    NativeDragBatch(widget, 80, 70, 253, 189);
                     ShowWindow(Window.Properties.NativeWindowHandle, 5);
                     Thread.Sleep(300); Tab(0);
                 }
+                int originalOpacity = Settings()["widgets"]![0]!["transparency"]!.GetValue<int>();
+                Element(1306).AsTextBox().Text = "23";
                 var before = Settings()["widgets"]![0]!.DeepClone(); DragCurrent(); var moved = Settings()["widgets"]![0]!;
+                Check(Element(1306).AsTextBox().Text == "23" && moved["transparency"]!.GetValue<int>() == originalOpacity,
+                      "Dragging preserves unapplied settings edits without persisting them");
+                Element(1306).AsTextBox().Text = originalOpacity.ToString();
                 Check(moved["x"]!.GetValue<double>() != before["x"]!.GetValue<double>(), "Native drag messages change saved position");
-                Check(moved["x"]!.GetValue<double>() % 4 == 0 && moved["y"]!.GetValue<double>() % 4 == 0, "Native drag messages snap to four-DIP grid");
+                Check(moved["x"]!.GetValue<double>() % 8 == 0 && moved["y"]!.GetValue<double>() % 8 == 0, "Native drag messages snap to eight-DIP grid");
+                for (int edge = 0; edge < 4; edge++)
+                {
+                    var state = Diagnostic(); var entry = state["windows"]![0]!;
+                    var monitor = state["monitors"]![0]!;
+                    int left = monitor["left"]!.GetValue<int>(), top = monitor["top"]!.GetValue<int>();
+                    int right = monitor["right"]!.GetValue<int>(), bottom = monitor["bottom"]!.GetValue<int>();
+                    int width = entry["width"]!.GetValue<int>(), height = entry["height"]!.GetValue<int>();
+                    var widget = WidgetHandle(entry);
+                    int x = edge == 0 ? left - 8 : edge == 1 ? right - width + 8 : left + 100;
+                    int y = edge == 2 ? top - 8 : edge == 3 ? bottom - height + 8 : top + 100;
+                    SetWindowPos(widget, 0, x, y, 0, 0, 0x15);
+                    NativeDragBatch(widget, 20, 20, 20, 20, false);
+                    var afterEdge = Diagnostic()["windows"]![0]!;
+                    int ax = afterEdge["x"]!.GetValue<int>(), ay = afterEdge["y"]!.GetValue<int>();
+                    Check(ax >= left && ay >= top && ax + width <= right && ay + height <= bottom,
+                          "Edge drop remains inside work area " + edge);
+                    int margin = (int)Math.Ceiling(20 * monitor["dpi"]!.GetValue<double>() / 96);
+                    Check(edge == 0 ? ax - left <= margin : edge == 1 ? right - ax - width <= margin :
+                          edge == 2 ? ay - top <= margin : bottom - ay - height <= margin,
+                          "Edge drop stays near requested edge instead of jumping " + edge);
+                }
+                Tab(0);
                 Element(1308).AsCheckBox().IsChecked = true; NativeButton(1316); before = Settings()["widgets"]![0]!.DeepClone(); DragCurrent();
                 Check(Settings()["widgets"]![0]!["x"]!.GetValue<double>() == before["x"]!.GetValue<double>() && Settings()["widgets"]![0]!["y"]!.GetValue<double>() == before["y"]!.GetValue<double>(), "Locked widget rejects native drag messages");
                 Button(1204); Element(1307).AsCheckBox().IsChecked = true; NativeButton(1316); var normal = Diagnostic(); Check((normal["windows"]![0]!["extendedStyle"]!.GetValue<long>() & 0x20) != 0, "Click-through enabled outside edit mode");
@@ -243,11 +294,17 @@ internal static partial class Program
             }
             if (args.Contains("--visual"))
             {
+                NativeButton(1316);
                 var visualState = Diagnostic(); Tab(0);
                 Button(1204); ShowWindow(Window.Properties.NativeWindowHandle, 0); Thread.Sleep(1000); Screenshot("edit-mode"); ShowWindow(Window.Properties.NativeWindowHandle, 5); Button(1204);
                 ShowWindow(Window.Properties.NativeWindowHandle, 0); Thread.Sleep(500); Screenshot("desktop-visual");
-                void DesktopVisible(string stage) { foreach (var entry in visualState["windows"]!.AsArray()) { var point = new Point(entry!["x"]!.GetValue<int>() + entry["width"]!.GetValue<int>() / 2, entry["y"]!.GetValue<int>() + entry["height"]!.GetValue<int>() / 2); Check(WindowFromPoint(point) == WidgetHandle(entry), stage + " widget " + entry["kind"]); } }
+                void DesktopVisible(string stage) { VisibleWidgets(stage, visualState["windows"]!.AsArray().Count, true); }
                 DesktopVisible("Desktop hit test");
+                if (Process.GetProcessesByName("Tempos").Length != 0) {
+                    Skip("Shell Show Desktop / physical Win+D", "Installed app is running; do not change the user's global desktop state.");
+                    ShowWindow(Window.Properties.NativeWindowHandle, 9);
+                    Quit(app); app = null; return 0;
+                }
                 ShowWindow(Window.Properties.NativeWindowHandle, 9); Thread.Sleep(300); ToggleDesktop();
                 if (IsIconic(Window.Properties.NativeWindowHandle) || !IsWindowVisible(Window.Properties.NativeWindowHandle))
                 {
@@ -296,6 +353,8 @@ internal static partial class Program
                 state = Diagnostic(); Check(state["trayRegistered"]!.GetValue<bool>(), "Tray re-registration message handled");
                 Quit(app); app = null; return 0;
             }
+            if (args.Contains("--geometry-matrix")) { GeometryMatrix(ref app, exe); return 0; }
+            if (args.Contains("--render-cache")) { RenderCache(ref app, exe); return 0; }
             if (args.Contains("--behavior"))
             {
                 for (int i = 0; i < 5; i++) NativeButton(1203);
@@ -330,6 +389,7 @@ internal static partial class Program
                 Tab(2); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 1, "Layout import restores widget");
                 Quit(app); app = null; return 0;
             }
+            if (args.Contains("--soak")) { Soak(ref app, exe); return 0; }
             if (args.Contains("--stress")) { Stress(ref app); return 0; }
             Button(1316); Check(File.Exists(Path.Combine(Data, "settings.json")), "Settings persisted by UI");
             for (int kind = 5; kind <= 8; kind++) { Combo(1201, kind); Button(1202); }
@@ -359,7 +419,7 @@ internal static partial class Program
         finally
         {
             if (DesktopToggled) { try { ToggleDesktop(); } catch { } }
-            if (app != null) { try { var dialog = OwnedWindow("#32770"); if (dialog != 0) { PostMessage(dialog, 0x10, 0, 0); Thread.Sleep(200); } PostMessage(Window.Properties.NativeWindowHandle, 0x111, 1507, 0); WaitExit(app, 5000); } catch { } app.Dispose(); }
+            if (app != null) { try { var dialog = OwnedWindow("#32770"); if (dialog != 0) { PostMessage(dialog, 0x10, 0, 0); Thread.Sleep(200); } PostMessage(Window.Properties.NativeWindowHandle, 0x111, 1507, 0); if (!WaitExit(app, 5000)) { using var owned = Process.GetProcessById(app.ProcessId); owned.Kill(); owned.WaitForExit(5000); } } catch { } app.Dispose(); }
             bool protectedProfileUnchanged = protectedProfile.Verify();
             Automation.Dispose(); File.WriteAllText(Path.Combine(Data, "results.json"), System.Text.Json.JsonSerializer.Serialize(new { started, completed = DateTimeOffset.Now, mode = args.FirstOrDefault(a => a.StartsWith("--")) ?? "full", testClass = args.Contains("--installer") ? "installer-lifecycle" : LiveApis ? "live-api-integration" : "e2e", apiMode = args.Contains("--installer") ? "not-exercised" : LiveApis ? "live" : "mock", systemMode = args.Contains("--installer") ? "clock-only" : Live || LiveApis ? "real" : "fixture", executable = Path.GetRelativePath(Root, exe), executableSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(exe))), results = Results }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
             if (!protectedProfileUnchanged) throw new InvalidOperationException("Installed profile changed during E2E; results recorded without restoring or overwriting user changes.");

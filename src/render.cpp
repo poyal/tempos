@@ -139,17 +139,36 @@ void Renderer::text(const std::wstring &value, float x, float y, float w, float 
     font->SetTrimming(&trimming, ellipsis.Get());
     it = fonts_.emplace(key, std::move(font)).first;
   }
-  it->second->SetTextAlignment(align);
-  it->second->SetWordWrapping(wrap ? DWRITE_WORD_WRAPPING_WRAP : DWRITE_WORD_WRAPPING_NO_WRAP);
   brush_->SetColor(color(rgb));
-  context_->DrawTextW(value.data(), UINT32(value.size()), it->second.Get(), D2D1::RectF(x, y, x + w, y + h),
-                      brush_.Get(), D2D1_DRAW_TEXT_OPTIONS_CLIP);
+  LayoutKey layoutKey{value, w, h, int(size * 10), bold, int(align), wrap};
+  auto cached = layouts_.find(layoutKey);
+  if (cached == layouts_.end()) {
+    it->second->SetTextAlignment(align);
+    it->second->SetWordWrapping(wrap ? DWRITE_WORD_WRAPPING_WRAP : DWRITE_WORD_WRAPPING_NO_WRAP);
+    ComPtr<IDWriteTextLayout> layout;
+    if (FAILED(write_->CreateTextLayout(value.data(), UINT32(value.size()), it->second.Get(), w, h, &layout)))
+      return;
+    // The cache owns no window/device resources and is bounded even for changing
+    // metrics, calendar titles and repeated imports. Color and origin aren't layout inputs.
+    if (layouts_.size() >= 256) {
+      layouts_.erase(layoutOrder_.front());
+      layoutOrder_.pop_front();
+    }
+    layoutOrder_.push_back(layoutKey);
+    cached = layouts_.emplace(std::move(layoutKey), std::move(layout)).first;
+  }
+  context_->DrawTextLayout({x, y}, cached->second.Get(), brush_.Get(), D2D1_DRAW_TEXT_OPTIONS_CLIP);
 }
 void Renderer::line(float x, float y, float x2, float y2, uint32_t rgb, float alpha, float stroke) {
   brush_->SetColor(color(rgb, alpha));
   context_->DrawLine({x, y}, {x2, y2}, brush_.Get(), stroke);
 }
 void Renderer::modelText(const std::wstring &value, float x, float y, float width, float height, float size) {
+  auto key = std::tuple{value, width, height, size};
+  if (auto found = modelSizes_.find(key); found != modelSizes_.end()) {
+    text(value, x, y, width, height, found->second);
+    return;
+  }
   // Measure the complete single line before choosing its font; only exceptionally long
   // names use the normal ellipsis, never the old half-card text box.
   while (size > 11) {
@@ -167,6 +186,8 @@ void Renderer::modelText(const std::wstring &value, float x, float y, float widt
       break;
     size -= .5f;
   }
+  if (modelSizes_.size() >= 128) modelSizes_.clear();
+  modelSizes_.emplace(std::move(key), size);
   text(value, x, y, width, height, size);
 }
 void Renderer::dot(float x, float y, float radius, uint32_t rgb, float alpha) {
@@ -182,19 +203,33 @@ void Renderer::graph(const History &history, float x, float y, float w, float h,
   double now = monotonic();
   if (max <= 0 || !std::isfinite(max))
     max = 1;
+  ComPtr<ID2D1PathGeometry> path;
+  ComPtr<ID2D1GeometrySink> sink;
+  if (SUCCEEDED(d2d_->CreatePathGeometry(&path))) path->Open(&sink);
   bool previous = false;
   D2D1_POINT_2F last{};
   for (auto &s : history.samples()) {
     if (!s.valid || !std::isfinite(s.value)) {
+      if (previous && sink) sink->EndFigure(D2D1_FIGURE_END_OPEN);
       previous = false;
       continue;
     }
     float px = x + float(std::clamp((s.end - now + 60) / 60, 0., 1.)) * w,
           py = y + h - float(std::clamp(s.value / max, 0., 1.)) * h;
-    if (previous)
+    if (sink) {
+      if (previous) sink->AddLine({px, py});
+      else sink->BeginFigure({px, py}, D2D1_FIGURE_BEGIN_HOLLOW);
+    } else if (previous)
       line(last.x, last.y, px, py, rgb, .95f, design::graphStroke);
     last = {px, py};
     previous = true;
+  }
+  if (sink) {
+    if (previous) sink->EndFigure(D2D1_FIGURE_END_OPEN);
+    if (SUCCEEDED(sink->Close())) {
+      brush_->SetColor(color(rgb, .95f));
+      context_->DrawGeometry(path.Get(), brush_.Get(), design::graphStroke);
+    }
   }
   line(x, y + h, x + w, y + h, rgb, .2f);
 }
@@ -804,7 +839,19 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
     }
   }
 }
-void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
+static bool metricDecorationsAvailable(const Widget &w, const Snapshot *data) {
+  return data && (data->status == Status::Ready || data->status == Status::Stale) &&
+         (w.kind == Kind::Cpu || w.kind == Kind::Gpu || w.kind == Kind::Memory);
+}
+void Renderer::metricDecorations(const Widget &w, const Snapshot &data, Extent e) {
+  const bool slim = w.size == Size::Slim, compact = w.size == Size::S, medium = w.size == Size::M;
+  if (w.graph && !compact)
+    text(L"최근 60초", 214, slim ? 10.f : 18.f, 102, 20, slim ? 11.f : 12.f,
+         false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
+  if ((w.kind == Kind::Cpu || w.kind == Kind::Gpu) && !slim && !compact)
+    modelText(data.title, 20, medium ? 134.f : 302.f, e.width - 40, 21, 12);
+}
+void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool decorationsCached) {
   const bool slim = w.size == Size::Slim, compact = w.size == Size::S, medium = w.size == Size::M;
   const float pad = 20, width = e.width - 40;
   std::wstring title(kindName(w.kind));
@@ -818,7 +865,7 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
       title = slim ? drive : L"디스크 " + drive;
     }
   }
-  heading(w, title);
+  if (!decorationsCached) heading(w, title);
   if (w.kind == Kind::Clock) {
     auto now = nowUnix();
     auto date = localDate(now, w.timezone);
@@ -875,9 +922,7 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
       data->value, data->status == Status::Ready);
   if (w.kind == Kind::Cpu || w.kind == Kind::Gpu || w.kind == Kind::Memory) {
     const bool thermal = w.kind != Kind::Memory;
-    if (w.graph && !compact)
-      text(L"최근 60초", 214, slim ? 10.f : 18.f, 102, 20, slim ? 11.f : 12.f,
-           false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
+    if (!decorationsCached) metricDecorations(w, *data, e);
     text(number(data->value) + L"%", slim ? 47.f : pad, slim ? 31.f : medium && thermal ? 73.f : 49.f,
          slim     ? (thermal ? 72.f : 119.f)
          : medium ? 146.f
@@ -891,10 +936,8 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
            slim ? 56.f : medium ? 46.f : width, 21, slim || medium ? 12.f : 14.f, false,
            design::metricColor(design::Metric::Temperature, data->temperature.celsius, measured));
     }
-    auto footer = thermal ? data->title :
-                  formatBytes(data->total - data->available) + L" / " + formatBytes(data->total);
-    if (!thermal || (!slim && !compact))
-      modelText(footer, slim ? 17.f : pad,
+    if (!thermal)
+      modelText(formatBytes(data->total - data->available) + L" / " + formatBytes(data->total), slim ? 17.f : pad,
               slim ? 55.f : compact ? 137.f : medium ? 134.f : 302.f,
               slim ? 302.f : width, slim || compact ? 15.f : 21.f,
               slim || compact ? 11.f : 12.f);
@@ -1064,17 +1107,71 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e) {
   }
 }
 
+ComPtr<ID2D1Bitmap> Renderer::background(Extent e, UINT width, UINT height, float dpi,
+                                        uint32_t top, uint32_t bottom, float alpha, const Widget &w, const Snapshot *data) {
+  const bool metrics = metricDecorationsAvailable(w, data);
+  BackgroundKey key{e.width, e.height, width, height, dpi, top, bottom, alpha,
+                    metrics ? int(w.kind) : -1, int(w.size), metrics && w.graph, highContrast_,
+                    highContrast_ ? foreground_ : 0xffffff,
+                    metrics && w.kind != Kind::Memory ? data->title : L""};
+  if (auto found = backgrounds_.find(key); found != backgrounds_.end())
+    return found->second.bitmap;
+  size_t bytes = size_t(width) * height * 4;
+  // Bound both count and pixels. Large/rare surfaces use the normal drawing path.
+  constexpr size_t budget = 4 * 1024 * 1024;
+  if (!bytes || bytes > 1024 * 1024) return {};
+  ComPtr<ID2D1BitmapRenderTarget> target;
+  D2D1_SIZE_F logical{e.width, e.height};
+  D2D1_SIZE_U physical{width, height};
+  if (FAILED(context_->CreateCompatibleRenderTarget(&logical, &physical, nullptr,
+      D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_NONE, &target))) return {};
+  target->SetDpi(dpi, dpi);
+  D2D1_GRADIENT_STOP stops[]{{0, color(top, alpha)}, {1, color(bottom, alpha)}};
+  ComPtr<ID2D1GradientStopCollection> collection;
+  ComPtr<ID2D1LinearGradientBrush> gradient;
+  if (FAILED(target->CreateGradientStopCollection(stops, 2, &collection)) ||
+      FAILED(target->CreateLinearGradientBrush(
+          D2D1::LinearGradientBrushProperties({0, 0}, {e.width * .7f, e.height}), collection.Get(), &gradient)))
+    return {};
+  target->BeginDraw();
+  target->Clear({0, 0, 0, 0});
+  target->FillRoundedRectangle(D2D1::RoundedRect(D2D1::RectF(1, 1, e.width - 1, e.height - 1),
+      design::radius, design::radius), gradient.Get());
+  if (metrics) {
+    // Compatible targets share resources with the parent. Keep dynamic values,
+    // history, temperature and memory totals outside this bounded static layer.
+    auto original = context_;
+    context_ = target;
+    heading(w, std::wstring(kindName(w.kind)));
+    metricDecorations(w, *data, e);
+    context_ = original;
+  }
+  if (FAILED(target->EndDraw())) return {};
+  ComPtr<ID2D1Bitmap> bitmap;
+  if (FAILED(target->GetBitmap(&bitmap))) return {};
+  while (!backgroundOrder_.empty() && (backgrounds_.size() >= 8 || backgroundBytes_ + bytes > budget)) {
+    auto oldest = backgrounds_.find(backgroundOrder_.front());
+    backgroundBytes_ -= oldest->second.bytes;
+    backgrounds_.erase(oldest);
+    backgroundOrder_.pop_front();
+  }
+  backgroundOrder_.push_back(key);
+  backgrounds_.emplace(std::move(key), Background{bitmap, bytes});
+  backgroundBytes_ += bytes;
+  return bitmap;
+}
+
 bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot *data, int theme, bool edit,
                     UINT dpi) {
   if (!ready() || !surface(hwnd, s))
     return false;
-  auto e = extent(w.size);
+  auto e = extent(w.size, w.scale);
+  e.width *= 100.f / w.scale;
+  e.height *= 100.f / w.scale;
   if (!raster_)
     gpuContext_->SetTarget(s.bitmap.Get());
   context_->SetDpi(float(dpi) * w.scale / 100, float(dpi) * w.scale / 100);
   context_->SetTransform(D2D1::Matrix3x2F::Identity());
-  context_->BeginDraw();
-  context_->Clear({0, 0, 0, 0});
   int index = w.theme < 0 ? theme : w.theme;
   auto palette = palettes()[std::clamp(index, 0, 8)];
   HIGHCONTRASTW highContrast{sizeof highContrast};
@@ -1133,6 +1230,14 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
   float alpha = highContrast_ ? 1.f : 1 - w.backgroundTransparency / 100.f;
   if (edit)
     alpha = std::max(.3f, alpha);
+  auto backdrop = !scene ? background(e, s.width, s.height, float(dpi) * w.scale / 100,
+                                      palette.top, palette.bottom, alpha, w, data) : ComPtr<ID2D1Bitmap>{};
+  context_->BeginDraw();
+  context_->Clear({0, 0, 0, 0});
+  if (backdrop) {
+    context_->DrawBitmap(backdrop.Get(), D2D1::RectF(0, 0, e.width, e.height), 1,
+                          D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
+  } else {
   ComPtr<ID2D1RoundedRectangleGeometry> mask;
   auto card = D2D1::RoundedRect(D2D1::RectF(1, 1, e.width - 1, e.height - 1), design::radius, design::radius);
   if (scene && FAILED(d2d_->CreateRoundedRectangleGeometry(card, &mask)))
@@ -1156,6 +1261,8 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
     weatherBackdrop(*data->weather, e, sunset);
     context_->PopLayer();
   }
+  }
+  auto card = D2D1::RoundedRect(D2D1::RectF(1, 1, e.width - 1, e.height - 1), design::radius, design::radius);
   if (edit) {
     brush_->SetColor(color(0xffffff, .85f));
     context_->DrawRoundedRectangle(card, brush_.Get(), 2);
@@ -1165,7 +1272,7 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
   else if (w.kind == Kind::Weather)
     weather(w, data, e);
   else
-    content(w, data, e);
+    content(w, data, e, backdrop && metricDecorationsAvailable(w, data));
 
   HRESULT hr = context_->EndDraw();
   if (!raster_)

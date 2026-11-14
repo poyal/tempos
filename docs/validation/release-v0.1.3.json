@@ -1,0 +1,760 @@
+{
+  "version": "0.1.3",
+  "date": "2026-11-14",
+  "buildBaseCommit": "fcc993cb028676c8ca834d0cbb4aad32af30c76c",
+  "buildHadUncommittedChanges": true,
+  "sourceReference": "v0.1.3 records the final source; candidate built before the release commit",
+  "environment": {
+    "cpu": "Intel Core i7-8700B",
+    "logicalProcessors": 12,
+    "windows": "10.0.26300",
+    "dpi": 96,
+    "toolchain": "MSVC 14.44.35207, .NET SDK 10.0.404"
+  },
+  "binaries": {
+    "releaseApp": "CB885C4928EA30583C77D6DE363EC14806687EE6C70E147FB6BAD5CB04849391",
+    "releaseTestHost": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+    "asanTestHost": "DA6EEB74EC4951078B0EBC06C4C3AC04D79B900D7C8B8CA99D7FC88ACA3C7E70",
+    "e2eHarness": "8238620D3F6FC1415EE25BF872442220930D04A1FB293A2B9DD432EB8F6108D3"
+  },
+  "native": {
+    "release": {
+      "pass": 9575,
+      "fail": 0,
+      "log": "test-results/release-v0.1.3-native-unit.log"
+    },
+    "asan": {
+      "pass": 9575,
+      "fail": 0,
+      "log": "test-results/release-v0.1.3-asan-build-unit.log"
+    }
+  },
+  "sensor": {
+    "pass": 22,
+    "fail": 0,
+    "log": "test-results/release-v0.1.3-sensors.log",
+    "driverInstallationPerformed": false
+  },
+  "performancePolicy": {
+    "pass": 25,
+    "concurrentlyWrittenAndReadSamples": 1000,
+    "fail": 0
+  },
+  "release": {
+    "manifest": "test-results/full-validation-20261114-150251/manifest.json",
+    "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+    "modes": 24,
+    "pass": 3977,
+    "fail": 0,
+    "skip": 53,
+    "runs": [
+      {
+        "mode": "edit-mode",
+        "folder": "test-results/e2e-20261114-150251-590",
+        "exit": 0,
+        "pass": 279,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:02:51.5840612+09:00",
+        "completed": "2026-11-14T15:03:09.4892128+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "interaction",
+        "folder": "test-results/e2e-20261114-150309-762",
+        "exit": 0,
+        "pass": 22,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:03:09.7554654+09:00",
+        "completed": "2026-11-14T15:03:27.6235301+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "drag-performance",
+        "folder": "test-results/e2e-20261114-150327-801",
+        "exit": 0,
+        "pass": 22,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:03:27.7937045+09:00",
+        "completed": "2026-11-14T15:04:38.8292422+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "geometry-matrix",
+        "folder": "test-results/e2e-20261114-150438-998",
+        "exit": 0,
+        "pass": 711,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:04:38.9917519+09:00",
+        "completed": "2026-11-14T15:05:29.8014956+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "render-cache",
+        "folder": "test-results/e2e-20261114-150529-994",
+        "exit": 0,
+        "pass": 91,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:05:29.9879117+09:00",
+        "completed": "2026-11-14T15:05:57.9578431+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "legacy-grid",
+        "folder": "test-results/e2e-20261114-150558-156",
+        "exit": 0,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:05:58.1500426+09:00",
+        "completed": "2026-11-14T15:06:08.5495644+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "shell-actions",
+        "folder": "test-results/e2e-20261114-150608-735",
+        "exit": 0,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:06:08.7287629+09:00",
+        "completed": "2026-11-14T15:06:13.2539281+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "persistence",
+        "folder": "test-results/e2e-20261114-150613-454",
+        "exit": 0,
+        "pass": 281,
+        "fail": 0,
+        "skip": 48,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:06:13.4480794+09:00",
+        "completed": "2026-11-14T15:06:55.9486428+09:00",
+        "skippedChecks": [
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          }
+        ]
+      },
+      {
+        "mode": "options",
+        "folder": "test-results/e2e-20261114-150656-129",
+        "exit": 0,
+        "pass": 86,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:06:56.1230361+09:00",
+        "completed": "2026-11-14T15:07:27.0573539+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "failures",
+        "folder": "test-results/e2e-20261114-150727-229",
+        "exit": 0,
+        "pass": 140,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:07:27.2233975+09:00",
+        "completed": "2026-11-14T15:08:18.961734+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "capacity",
+        "folder": "test-results/e2e-20261114-150819-168",
+        "exit": 0,
+        "pass": 84,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:08:19.16205+09:00",
+        "completed": "2026-11-14T15:09:09.5758075+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "placement",
+        "folder": "test-results/e2e-20261114-150909-745",
+        "exit": 0,
+        "pass": 60,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:09:09.7388232+09:00",
+        "completed": "2026-11-14T15:09:23.0233487+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "api-mock",
+        "folder": "test-results/e2e-20261114-150923-230",
+        "exit": 0,
+        "pass": 68,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "real",
+        "started": "2026-11-14T15:09:23.2228373+09:00",
+        "completed": "2026-11-14T15:09:42.4439681+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "weather",
+        "folder": "test-results/e2e-20261114-150942-618",
+        "exit": 0,
+        "pass": 74,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:09:42.6118875+09:00",
+        "completed": "2026-11-14T15:10:18.9011799+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "startup",
+        "folder": "test-results/e2e-20261114-151019-138 시작 옵션",
+        "exit": 0,
+        "pass": 25,
+        "fail": 0,
+        "skip": 1,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:10:19.1327507+09:00",
+        "completed": "2026-11-14T15:10:27.2440017+09:00",
+        "skippedChecks": [
+          {
+            "name": "Actual Windows logon",
+            "reason": "Registered command tested; current user session was not logged out."
+          }
+        ]
+      },
+      {
+        "mode": "isolation",
+        "folder": "test-results/e2e-20261114-151027-442",
+        "exit": 0,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:10:27.4355992+09:00",
+        "completed": "2026-11-14T15:10:29.9265226+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "clock-layout",
+        "folder": "test-results/e2e-20261114-151030-106",
+        "exit": 0,
+        "pass": 118,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:10:30.0999571+09:00",
+        "completed": "2026-11-14T15:10:48.3086792+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "matrix",
+        "folder": "test-results/e2e-20261114-151048-547",
+        "exit": 0,
+        "pass": 174,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:10:48.5410508+09:00",
+        "completed": "2026-11-14T15:12:07.3512249+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "behavior",
+        "folder": "test-results/e2e-20261114-151207-546",
+        "exit": 0,
+        "pass": 33,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:12:07.5396694+09:00",
+        "completed": "2026-11-14T15:12:39.1589191+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "temperature",
+        "folder": "test-results/e2e-20261114-151239-360",
+        "exit": 0,
+        "pass": 509,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:12:39.3538183+09:00",
+        "completed": "2026-11-14T15:13:58.4514013+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "ui-review",
+        "folder": "test-results/e2e-20261114-151358-670",
+        "exit": 0,
+        "pass": 502,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:13:58.6644835+09:00",
+        "completed": "2026-11-14T15:15:16.5768341+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "design",
+        "folder": "test-results/e2e-20261114-151516-794",
+        "exit": 0,
+        "pass": 577,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:15:16.7874204+09:00",
+        "completed": "2026-11-14T15:17:06.4409093+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "visual",
+        "folder": "test-results/e2e-20261114-151706-655",
+        "exit": 0,
+        "pass": 13,
+        "fail": 0,
+        "skip": 3,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:17:06.6492718+09:00",
+        "completed": "2026-11-14T15:17:13.1020049+09:00",
+        "skippedChecks": [
+          {
+            "name": "Desktop hit test: desktop hit test",
+            "reason": "Desktop hit test: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "Desktop hit test: desktop hit test",
+            "reason": "Desktop hit test: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "Shell Show Desktop / physical Win+D",
+            "reason": "Installed app is running; do not change the user's global desktop state."
+          }
+        ]
+      },
+      {
+        "mode": "windows-real",
+        "folder": "test-results/e2e-20261114-151713-317",
+        "exit": 0,
+        "pass": 53,
+        "fail": 0,
+        "skip": 1,
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "apiMode": "mock",
+        "systemMode": "real",
+        "started": "2026-11-14T15:17:13.3117564+09:00",
+        "completed": "2026-11-14T15:17:41.7205719+09:00",
+        "skippedChecks": [
+          {
+            "name": "Actual local temperature: kind 3",
+            "reason": "No valid sensor reading; status 3. This suite never installs a driver or sensor service."
+          }
+        ]
+      }
+    ]
+  },
+  "asan": {
+    "manifest": "test-results/full-validation-20261114-151745/manifest.json",
+    "sha256": "DA6EEB74EC4951078B0EBC06C4C3AC04D79B900D7C8B8CA99D7FC88ACA3C7E70",
+    "modes": 4,
+    "pass": 420,
+    "fail": 0,
+    "skip": 0,
+    "runs": [
+      {
+        "mode": "legacy-grid",
+        "folder": "test-results/e2e-20261114-151746-098",
+        "exit": 0,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "DA6EEB74EC4951078B0EBC06C4C3AC04D79B900D7C8B8CA99D7FC88ACA3C7E70",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:17:46.0916898+09:00",
+        "completed": "2026-11-14T15:18:01.0608431+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "edit-mode",
+        "folder": "test-results/e2e-20261114-151801-682",
+        "exit": 0,
+        "pass": 279,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "DA6EEB74EC4951078B0EBC06C4C3AC04D79B900D7C8B8CA99D7FC88ACA3C7E70",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:18:01.6763125+09:00",
+        "completed": "2026-11-14T15:18:24.0824986+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "interaction",
+        "folder": "test-results/e2e-20261114-151824-709",
+        "exit": 0,
+        "pass": 22,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "DA6EEB74EC4951078B0EBC06C4C3AC04D79B900D7C8B8CA99D7FC88ACA3C7E70",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:18:24.7035314+09:00",
+        "completed": "2026-11-14T15:18:45.2430627+09:00",
+        "skippedChecks": []
+      },
+      {
+        "mode": "render-cache",
+        "folder": "test-results/e2e-20261114-151845-828",
+        "exit": 0,
+        "pass": 91,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "DA6EEB74EC4951078B0EBC06C4C3AC04D79B900D7C8B8CA99D7FC88ACA3C7E70",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "started": "2026-11-14T15:18:45.822605+09:00",
+        "completed": "2026-11-14T15:19:17.2490125+09:00",
+        "skippedChecks": []
+      }
+    ]
+  },
+  "peComparison": [
+    {
+      "name": "Tempos.exe",
+      "previous": {
+        "file": "artifacts/pre-v0.1.3/Tempos.exe",
+        "sha256": "379905E0682C4C45AA3EF1FCA802CD80DB90D7E477C745B47B58483D25679C31",
+        "sections": {
+          ".text": "49929B43F85F23E91A55465462BAF0CFF6D3E5328A70ED2734747D040B1DF85F",
+          ".rdata": "BBC6CD272320110F9D98668D78280FA89274BF396C31EFDD92B432082D12F7D0",
+          ".data": "5EFA87D8D9195D0E88EA64723395BDB44482E6C35DF39225687F503E7EFDEC08",
+          ".pdata": "9897550567E2045DEE69587CA429501693DEAFF685262F4DEB1AA714A1F95DD2",
+          ".fptable": "076A27C79E5ACE2A3D47F9DD2E83E4FF6EA8872B3C2218F66C92B89B55F36560",
+          ".rsrc": "D8AE80191BDA44DAC6B5F7B7E0E2B34D7C8DC7258805B4DA805CDB10FB946446",
+          ".reloc": "68EBE3871DF9C82C3CA3EFC6DC882C759B7BD725F2867194A1AA3EAE4B357A0B"
+        }
+      },
+      "candidate": {
+        "file": "out/release/Tempos.exe",
+        "sha256": "CB885C4928EA30583C77D6DE363EC14806687EE6C70E147FB6BAD5CB04849391",
+        "sections": {
+          ".text": "49929B43F85F23E91A55465462BAF0CFF6D3E5328A70ED2734747D040B1DF85F",
+          ".rdata": "7CB53276E49E39AB75116BDBCB22273214B857ECA70C480E379ED3EEBA72F9F8",
+          ".data": "5EFA87D8D9195D0E88EA64723395BDB44482E6C35DF39225687F503E7EFDEC08",
+          ".pdata": "9897550567E2045DEE69587CA429501693DEAFF685262F4DEB1AA714A1F95DD2",
+          ".fptable": "076A27C79E5ACE2A3D47F9DD2E83E4FF6EA8872B3C2218F66C92B89B55F36560",
+          ".rsrc": "0DA0F8A3EAD4E3F516F79051459126331DEE776A35CA1F8C1D334F01484736A3",
+          ".reloc": "68EBE3871DF9C82C3CA3EFC6DC882C759B7BD725F2867194A1AA3EAE4B357A0B"
+        }
+      },
+      "codeSectionIdentical": true
+    },
+    {
+      "name": "Tempos.TestHost.exe",
+      "previous": {
+        "file": "artifacts/pre-v0.1.3/Tempos.TestHost.exe",
+        "sha256": "2B4AEDCC7E5049CF9F13BBCF01162849EDE360577A2D39E9C65C170776C0019F",
+        "sections": {
+          ".text": "1BF53403C1FCB86D1054B3CB62B4365E73801D31B1A791B3A15FFAC481F755AE",
+          ".rdata": "631F040419AD75D283F2E89A70881A32B2DEE857524CF668FFE4B51D5384F37C",
+          ".data": "BC3CA3A6A328E1554B4FC6DA4B9127109288CE6842E04869FAE48D49E425D529",
+          ".pdata": "3FA0796D9572FD014CF747CCED662D019209FDA74AAADCCB72998CE1451BA924",
+          ".fptable": "076A27C79E5ACE2A3D47F9DD2E83E4FF6EA8872B3C2218F66C92B89B55F36560",
+          ".rsrc": "CF5912B7572BBE458F9C8C52C5E2050C7DA97575DFED94C4023B6D9D16093D0E",
+          ".reloc": "6E38A89FBD668CBB666B495F19DE84C9A28CFF7606A62461C828A5515A5F2957"
+        }
+      },
+      "candidate": {
+        "file": "out/release/Tempos.TestHost.exe",
+        "sha256": "132F64770D8F76BDFB2C02A6C437B23EB979D275EDB80CB335149444AD671CB5",
+        "sections": {
+          ".text": "1BF53403C1FCB86D1054B3CB62B4365E73801D31B1A791B3A15FFAC481F755AE",
+          ".rdata": "25D147C5DBFD7D0092CD536E0337C2D40F530E1858B1D2878859D0F06A18D890",
+          ".data": "BC3CA3A6A328E1554B4FC6DA4B9127109288CE6842E04869FAE48D49E425D529",
+          ".pdata": "3FA0796D9572FD014CF747CCED662D019209FDA74AAADCCB72998CE1451BA924",
+          ".fptable": "076A27C79E5ACE2A3D47F9DD2E83E4FF6EA8872B3C2218F66C92B89B55F36560",
+          ".rsrc": "F8DD9916AA91C11F7AA30E4959D0D940CB698B76E0F18CACBB6FB6BF19DA1DFA",
+          ".reloc": "6E38A89FBD668CBB666B495F19DE84C9A28CFF7606A62461C828A5515A5F2957"
+        }
+      },
+      "codeSectionIdentical": true
+    }
+  ],
+  "earlierAttempt": {
+    "log": "test-results/release-v0.1.3-build-unit.log",
+    "status": "failed",
+    "reason": "Restricted execution context failed DPAPI settings save after check 9450; identical native tests passed in actual user context. Original failure retained."
+  },
+  "commands": [
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .tools/rebuild.ps1 -Preset release -Test",
+    "out/release/tempos_tests.exe",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .tools/rebuild.ps1 -Preset asan -Test",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/full-validation.ps1",
+    "scripts/full-validation.ps1 -Exe out/asan/Tempos.TestHost.exe -Modes legacy-grid,edit-mode,interaction,render-cache",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/performance_policy_tests.ps1",
+    ".tools/pwsh/pwsh.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-sensors.ps1 -Test"
+  ],
+  "boundaries": {
+    "externalApis": "HTTP-boundary mock, unregistered requests fail",
+    "localWindowsCounters": "real in windows-real mode",
+    "installedApps": "not stopped or updated; layout, backups and startup state protected by every E2E run",
+    "installerLifecycle": "SKIP: existing installed apps; no install/uninstall performed",
+    "liveApiIntegration": "not requested or performed",
+    "longDuration": "Prior 2-hour soak and two-PC 30-minute measurements belong to the earlier binary hash; not rerun for version resource update",
+    "screenshots": "README retains labeled v0.1.2 screenshots; new automated captures stay in per-run test-results"
+  },
+  "historicalEvidence": [
+    "2026-11-14-grid-results.json",
+    "2026-11-14-personal-two-windows.json"
+  ]
+}
