@@ -1,0 +1,65 @@
+{
+  "checkedAt": "2026-11-14T16:37:14.7083242+09:00",
+  "release": {
+    "tag": "v0.1.4",
+    "id": 445116349,
+    "url": "https://github.com/poyal/tempos/releases/tag/v0.1.4",
+    "publishedAt": "2026-11-14T07:37:06Z",
+    "draft": false,
+    "prerelease": false,
+    "sourceCommit": "6bc5827c9592a6ea738965b305d12bc52cd81da8"
+  },
+  "authentication": "none for public metadata and asset downloads; GitHub CLI authentication used only to publish and verify draft",
+  "uploadedDraftDownloadsVerified": true,
+  "downloads": [
+    {
+      "name": "Tempos-0.1.4-win-x64.exe",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.4/Tempos-0.1.4-win-x64.exe",
+      "sha256": "C2B93BB49C31AC6D7DD6B172D59B8C42B265EC0DC9D2749B2D77E518B315DD5C",
+      "bytes": 44803720,
+      "matchesTestedArtifact": true
+    },
+    {
+      "name": "Tempos-0.1.4-win-x64.exe.sha256",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.4/Tempos-0.1.4-win-x64.exe.sha256",
+      "sha256": "82B3AEA63774724BFD7C7EFA0E25CBC50497E7191AD43D4A355EB0C83D1F537B",
+      "bytes": 92,
+      "matchesTestedArtifact": true
+    },
+    {
+      "name": "Tempos-0.1.4-win-x64.zip",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.4/Tempos-0.1.4-win-x64.zip",
+      "sha256": "22D1AD7812251DC360F6D0B4EB96166BF4953BA62F8211811738F1C35A368493",
+      "bytes": 49747495,
+      "matchesTestedArtifact": true
+    },
+    {
+      "name": "Tempos-0.1.4-win-x64.zip.sha256",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.4/Tempos-0.1.4-win-x64.zip.sha256",
+      "sha256": "3AD5D327509B793409E1E6FC6583536868BC96FCF47D27837B8EFD4D92C5AD85",
+      "bytes": 92,
+      "matchesTestedArtifact": true
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.4/SHA256SUMS.txt",
+      "sha256": "B08CB9EB4B9FF8B0A29A48C10831216215A8356B65F9CBD5580889557685E990",
+      "bytes": 382,
+      "matchesTestedArtifact": true
+    }
+  ],
+  "packageVerification": {
+    "appSha256": "8C708FA9E1AF13BE8E7B0CE4E57AC93E78301E30AFF13CFBBAB473F0AD8AF0A6",
+    "zipExtractedAppMatches": true,
+    "installerPayloadAppMatches": true,
+    "manifestFilesChecked": 269,
+    "docsVerified": true,
+    "sourceDirtyAtPackaging": false
+  },
+  "limits": {
+    "installerLifecycle": "SKIP: installed user app present",
+    "liveApiIntegration": "not performed",
+    "installedAppPreserved": true,
+    "longDurationEvidence": "Final candidate short idle check only; no new 30-minute or two-PC qualification"
+  }
+}

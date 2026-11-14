@@ -1,10 +1,12 @@
 # 검증 기록
 
-## Windows v0.1.4 릴리즈 후보 · 2026-11-14
+## Windows v0.1.4 릴리즈 · 2026-11-14
 
 About·업데이트를 포함한 최종 버전 0.1.4의 Release·ASan 단위 각각 **9,695 PASS**, 센서 **22 PASS**, Release E2E **877 PASS·0 FAIL·108 SKIP**, ASan E2E **152 PASS·0 FAIL·0 SKIP**을 확인했다. 업데이트 모드는 두 빌드에서 각각 **84 PASS·0 FAIL·0 SKIP**이다. 최초 RC 버전 의존성 누락으로 About와 Windows 파일 속성이 달랐던 문제를 수정하고 같은 검사로 재확인했다. [후보 검증·최초 실패·제한](validation/release-v0.1.4.md), [해시·실행별 결과](validation/release-v0.1.4.json), [릴리즈 노트](releases/v0.1.4.md).
 
-외부 API와 설치 실행은 목업이며 Windows UI·파일 검증·도우미 인계·TestHost 종료/재실행 및 로컬 시스템 수집은 실제다. 설치본 보호 기준에 따라 실제 NSIS 설치·제거와 GitHub 실연동을 수행하지 않았다. 공개 게시 후 다운로드 검증은 별도 영수증으로 남긴다. 아래 About 개발 단계 기록은 버전 리소스 변경 전의 과거 결과다.
+외부 API와 설치 실행은 목업이며 Windows UI·파일 검증·도우미 인계·TestHost 종료/재실행 및 로컬 시스템 수집은 실제다. 설치본 보호 기준에 따라 실제 NSIS 설치·제거와 앱의 GitHub 실연동을 수행하지 않았다. 아래 About 개발 단계 기록은 버전 리소스 변경 전의 과거 결과다.
+
+[v0.1.4](https://github.com/poyal/tempos/releases/tag/v0.1.4)에 설치 EXE·ZIP·개별 체크섬·전체 체크섬 5개를 게시했다. 초안에서 재다운로드 검증 후 공개했으며, 공개 URL에서도 인증 없이 5개를 다시 내려받아 SHA-256 일치를 확인했다. 패키지 파일 269개와 문서·이미지도 검증했다. [게시 영수증](validation/release-v0.1.4-published.json). 기존 설치본은 계속 실행 중이며 변경하지 않았다. 게시 이후에는 문서 기록만 추가하며 공개 태그와 패키지는 변경하지 않았다.
 
 ## About·업데이트 개발 소스 · 2026-11-14
 
