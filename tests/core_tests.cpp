@@ -29,6 +29,7 @@ void weatherTests();
 void apiMockTests();
 void temperatureTests();
 void placementTests();
+void updateTests();
 int liveWeatherProbe();
 void memoryHistoryRegression() {
   Widget memory;
@@ -80,6 +81,7 @@ int main(int argc, char **argv) {
     memoryHistoryRegression();
     temperatureTests();
     placementTests();
+    updateTests();
     if (argc == 2 && std::string_view(argv[1]) == "--memory-history")
       return 0;
     Widget diskWidget;

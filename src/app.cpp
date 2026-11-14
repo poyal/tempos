@@ -1,16 +1,18 @@
 #include "app.h"
 #include "test_isolation.h"
+#include "update_install.h"
 #include <commctrl.h>
 #include <windowsx.h>
 #include <wtsapi32.h>
 #include <psapi.h>
 #include <commdlg.h>
 #include <fstream>
+#include <ctime>
 #ifdef TEMPOS_TEST_HOST
 #include "api_fixture.h"
 #endif
 namespace tempos {
-constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3, WM_LOCATION = WM_APP + 5;
+constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3, WM_LOCATION = WM_APP + 5, WM_UPDATE = WM_APP + 6;
 static LRESULT CALLBACK gridProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
   if (msg == WM_NCHITTEST)
     return HTTRANSPARENT;
@@ -123,7 +125,7 @@ void App::updateViewport() {
                      nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
   }
 }
-App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visible)
+App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visible, bool afterUpdate)
     : instance_(instance), store_(root), settings_(store_.load()),
       startupRoot_(root.empty() ? root : std::filesystem::absolute(root)),
 #ifdef TEMPOS_TEST_HOST
@@ -133,7 +135,7 @@ App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visi
       weather_(store_, http_, fixture), calendar_(store_, http_, fixture),
 #endif
       fixture_(fixture),
-      visible_(visible) {
+      visible_(visible), afterUpdate_(afterUpdate) {
   if (!renderer_.ready())
     throw std::runtime_error("renderer");
   monitors_ = monitors();
@@ -146,6 +148,7 @@ App::~App() {
   closing_ = true;
   location_.cancel();
   http_.cancel();
+  if (updates_) updates_->stop();
   actions_.stop();
   if (providers_)
     providers_->stop();
@@ -245,11 +248,14 @@ int App::run() {
       fixture_, std::move(temperatureFixture));
   WTSRegisterSessionNotification(main_, NOTIFY_FOR_THIS_SESSION);
   tray(true);
+  updates_ = std::make_unique<UpdateService>(http_, store_.root(), [this] { PostMessageW(main_, WM_UPDATE, 0, 0); });
   rebuild();
   if (visible_ || !store_.warning.empty() || !trayAdded_)
     openSettings();
   if (!store_.warning.empty())
     status(store_.warning);
+  if (afterUpdate_) { openSettings(); TabCtrl_SetCurSel(control(1000), 4); selectTab(4); }
+  if (settings_.checkUpdatesOnStart) updates_->check();
   MSG message{};
   while (GetMessageW(&message, nullptr, 0, 0) > 0) {
     if (!IsDialogMessageW(main_, &message)) {
@@ -312,7 +318,7 @@ void App::buildSettings() {
     SendMessageW(hwnd, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(t));
   };
   auto tabs = create(WC_TABCONTROLW, L"", WS_TABSTOP, 16, 12, 818, 34, 1000, -1);
-  for (auto t : {L"위젯", L"연동", L"앱", L"표시 옵션"}) {
+  for (auto t : {L"위젯", L"연동", L"앱", L"표시 옵션", L"About · 업데이트"}) {
     TCITEMW item{};
     item.mask = TCIF_TEXT;
     item.pszText = const_cast<wchar_t *>(t);
@@ -423,10 +429,76 @@ void App::buildSettings() {
   check(L"GPU 이름", 405, 435, 395, 1613, 3);
   check(L"가동 시간", 27, 477, 350, 1614, 3);
   button(L"표시 옵션 적용", 27, 615, 773, 1620, 3);
+  label(L"Tempos · 바탕화면 위젯", 27, 71, 777, 4);
+  create(L"STATIC", L"현재 버전 " + wide(TEMPOS_VERSION_STRING) + L" · Windows x64", 0, 27, 105, 777, 25, 1700, 4);
+  label(L"제작자  Poyal  ·  poyal.work@gmail.com", 27, 143, 777, 4);
+  button(L"사용 안내", 27, 187, 180, 1708, 4);
+  button(L"GitHub", 222, 187, 180, 1706, 4);
+  button(L"문의·오류 신고", 417, 187, 180, 1707, 4);
+  button(L"이메일", 612, 187, 188, 1712, 4);
+  check(L"앱을 시작할 때 새 버전 확인", 27, 250, 777, 1713, 4);
+  create(L"STATIC", L"", 0, 27, 293, 777, 54, 1701, 4);
+  create(L"STATIC", L"", 0, 27, 350, 777, 25, 1709, 4);
+  button(L"업데이트 확인", 27, 395, 180, 1702, 4);
+  button(L"업데이트 설치", 222, 395, 180, 1703, 4);
+  button(L"취소", 417, 395, 180, 1704, 4);
+  button(L"변경 내역 보기", 612, 395, 188, 1705, 4);
+  create(L"STATIC", L"", 0, 27, 453, 777, 74, 1710, 4);
+  create(L"STATIC", L"", 0, 27, 545, 777, 66, 1714, 4);
+  label(L"업데이트 확인·다운로드에는 GitHub를 사용합니다. 설정과 계정 정보는 보내지 않습니다.", 27, 640, 777, 4);
   create(L"STATIC", L"", 0, 22, 695, 802, 26, 1999, -1);
   selectTab(0);
   sensorControls();
+  updateControls();
   updateViewport();
+}
+void App::updateControls() {
+  if (!updates_ || !control(1700)) return;
+  auto state = updates_->state();
+  auto message = updateInstallError_.empty() ? state.message : updateInstallError_;
+  if (state.phase == UpdatePhase::Downloading && state.release)
+    message += L" " + std::to_wstring(state.received * 100 / state.release->bytes) + L"%";
+  SetWindowTextW(control(1701), message.c_str());
+  std::wstring checked = L"아직 확인하지 않았습니다.";
+  if (state.checkedAt) {
+    std::time_t stamp = state.checkedAt; std::tm local{}; wchar_t formatted[64]{};
+    if (localtime_s(&local, &stamp) == 0 && std::wcsftime(formatted, std::size(formatted), L"%Y-%m-%d %H:%M:%S", &local))
+      checked = L"마지막 확인: " + std::wstring(formatted);
+  }
+  SetWindowTextW(control(1709), checked.c_str());
+  EnableWindow(control(1702), !state.busy() && !installRequested_);
+  bool installed = installedUpdateTarget(runningExecutable());
+  EnableWindow(control(1703), installed && !state.busy() && !installRequested_ && state.release &&
+      state.release->installable() && compareVersions(state.release->version, TEMPOS_VERSION_STRING) > 0);
+  EnableWindow(control(1704), state.busy());
+  EnableWindow(control(1705), state.release.has_value());
+  SendMessageW(control(1713), BM_SETCHECK, settings_.checkUpdatesOnStart ? BST_CHECKED : BST_UNCHECKED, 0);
+  SetWindowTextW(control(1710), installed
+      ? L"업데이트 설치를 누르면 다운로드·검증 후 앱을 종료하고 설치·재실행합니다.\r\n적용하지 않은 설정은 먼저 적용해 주세요. 다운로드 중에는 취소할 수 있습니다.\r\n저장한 위젯 설정과 연동 정보는 유지됩니다."
+      : L"무설치 실행 중입니다. 변경 내역에서 새 ZIP을 받아 앱을 종료한 뒤 교체해 주세요.\r\n등록된 설치본은 이 창에서 변경하지 않습니다.");
+  if (auto previous = boundedRead(store_.root() / L"update-result.json", 16384)) {
+    try {
+      auto result = Json::parse(*previous);
+      auto resultMessage = L"최근 설치 결과 · " + wide(result.at("version").get<std::string>()) + L"\r\n" + wide(result.at("message").get<std::string>());
+      SetWindowTextW(control(1714), resultMessage.c_str());
+    } catch (...) { SetWindowTextW(control(1714), L"이전 업데이트 결과를 읽을 수 없습니다."); }
+  }
+}
+void App::openAboutLink(int id) {
+  std::wstring url;
+  if (id == 1706) url = L"https://github.com/poyal/tempos";
+  if (id == 1707) url = L"https://github.com/poyal/tempos/issues";
+  if (id == 1708) url = L"https://github.com/poyal/tempos/blob/main/README.md";
+  if (id == 1712) url = L"mailto:poyal.work@gmail.com";
+  if (id == 1705 && updates_) { auto s = updates_->state(); if (s.release) url = s.release->page; }
+  if (url.empty()) return;
+#ifdef TEMPOS_TEST_HOST
+  atomicWrite(store_.root() / L"about-link.json", Json{{"url", utf8(url)}, {"mode", "mock"}}.dump());
+  status(L"목업: About 링크 대상을 확인했습니다.");
+#else
+  if (reinterpret_cast<INT_PTR>(ShellExecuteW(main_, L"open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL)) <= 32)
+    status(L"링크를 열지 못했습니다. 기본 브라우저 또는 메일 앱을 확인해 주세요.");
+#endif
 }
 void App::sensorControls() {
   if (!control(1510)) return;
@@ -537,6 +609,7 @@ void App::selectTab(int tab) {
     }
   }
   if (tab == 2) sensorControls();
+  if (tab == 4) updateControls();
   if (tab == 3) {
     auto *w = find(selected_);
     for (int id : {1600, 1601, 1602, 1603, 1604, 1610, 1611, 1612, 1613, 1614, 1620})
@@ -1336,6 +1409,18 @@ void App::calendarMonth(Widget &current, int delta) {
     }
 }
 void App::command(int id, int notification) {
+  if (id >= 1702 && id <= 1713) {
+    if (id == 1702 && updates_ && !installRequested_) {
+      updateInstallError_.clear(); updates_->check();
+    } else if (id == 1703 && updates_ && !installRequested_ && installedUpdateTarget(runningExecutable())) {
+      updateInstallError_.clear(); installRequested_ = updates_->download();
+    } else if (id == 1704 && updates_) {
+      installRequested_ = false; updates_->cancel();
+    } else if (id == 1713) {
+      auto next = settings_; next.checkUpdatesOnStart = checked(1713); commit(std::move(next));
+    } else openAboutLink(id);
+    updateControls(); return;
+  }
 #ifdef TEMPOS_TEST_HOST
   std::ofstream trace(store_.root() / L"commands.log", std::ios::app);
   trace << id << " " << notification << "\n";
@@ -1511,6 +1596,7 @@ void App::command(int id, int notification) {
             throw std::runtime_error("read");
           auto imported = readSettings(Json::parse(*content));
           imported.cpuTemperatureEnabled = settings_.cpuTemperatureEnabled;
+          imported.checkUpdatesOnStart = settings_.checkUpdatesOnStart;
           if (!commit(std::move(imported)))
             return;
           rebuild();
@@ -1645,6 +1731,27 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     if (auto result = location_.take())
       applyLocation(std::move(*result));
     return 0;
+  case WM_UPDATE: {
+    if (!updates_ || closing_) return 0;
+    auto state = updates_->state();
+    if (state.phase == UpdatePhase::Error || state.phase == UpdatePhase::Available) installRequested_ = false;
+    updateControls();
+    if (state.phase == UpdatePhase::Ready && installRequested_) {
+      installRequested_ = false;
+      if (beginUpdateInstall(state, store_.root(), updateInstallError_)) PostQuitMessage(0);
+      else updateControls();
+    }
+#ifndef TEMPOS_TEST_HOST
+    if (state.phase == UpdatePhase::Available && !updateNotified_ && trayAdded_) {
+      updateNotified_ = true;
+      auto info = tray_; info.uFlags = NIF_INFO; info.dwInfoFlags = NIIF_INFO;
+      wcscpy_s(info.szInfoTitle, L"Tempos 새 버전");
+      wcscpy_s(info.szInfo, L"설정의 About · 업데이트에서 확인하고 설치할 수 있습니다.");
+      Shell_NotifyIconW(NIM_MODIFY, &info);
+    }
+#endif
+    return 0;
+  }
   case WM_TRAY:
     switch (LOWORD(l)) {
     case NIN_SELECT:
@@ -1654,6 +1761,9 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
       break;
     case WM_CONTEXTMENU:
       menu(main_);
+      break;
+    case NIN_BALLOONUSERCLICK:
+      openSettings(); TabCtrl_SetCurSel(control(1000), 4); selectTab(4);
       break;
     }
     return 0;
@@ -1908,6 +2018,14 @@ void App::diagnose() {
   DWORD handles = 0;
   GetProcessHandleCount(GetCurrentProcess(), &handles);
   Json j = Json::object();
+  if (updates_) {
+    auto update = updates_->state();
+    j["update"] = {{"phase", int(update.phase)}, {"currentVersion", TEMPOS_VERSION_STRING},
+        {"message", utf8(update.message)}, {"busy", update.busy()}, {"received", update.received},
+        {"installRequested", installRequested_}, {"installError", utf8(updateInstallError_)},
+        {"installedTarget", installedUpdateTarget(runningExecutable())}};
+    if (update.release) j["update"]["latestVersion"] = update.release->version;
+  }
   j["utc"] = rfc3339(nowUnix());
   j["widgets"] = settings_.widgets.size();
   j["subscriptions"] = providers_ ? providers_->subscriptions() : 0;

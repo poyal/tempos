@@ -82,6 +82,7 @@ Json settingsJson(const Settings &s, bool exporting) {
   if (!exporting) {
     j["hidden"] = s.hidden;
     j["cpuTemperatureEnabled"] = s.cpuTemperatureEnabled;
+    j["checkUpdatesOnStart"] = s.checkUpdatesOnStart;
   }
   for (auto &w : s.widgets)
     j["widgets"].push_back(widgetJson(w));
@@ -98,6 +99,7 @@ Settings readSettings(const Json &j) {
   s.theme = j.value("theme", 1);
   s.hidden = j.value("hidden", false);
   s.cpuTemperatureEnabled = j.value("cpuTemperatureEnabled", false);
+  s.checkUpdatesOnStart = j.value("checkUpdatesOnStart", true);
   if (s.theme < 0 || s.theme >= 9)
     throw std::runtime_error("Invalid theme");
   if (!j.contains("widgets") || !j["widgets"].is_array() || j["widgets"].size() > 64)

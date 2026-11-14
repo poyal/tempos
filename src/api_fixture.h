@@ -2,6 +2,8 @@
 // TestHost only: mock the external boundary, retain HTTP parsers and OAuth callback validation.
 #include <winsock2.h>
 #include "weather_fixture.h"
+#include "updates.h"
+#include <bcrypt.h>
 namespace tempos {
 inline void mockApiLog(const std::filesystem::path &root, std::string endpoint, bool matched,
                        std::string mode = "normal") {
@@ -15,10 +17,56 @@ inline Json mockApiOptions(const std::filesystem::path &root) {
     return Json::parse(*text);
   return Json::object();
 }
+inline std::string mockUpdateBytes() { return "MZ" + std::string(254, 'T'); }
+inline Response mockUpdateResponse(const std::filesystem::path &root, const std::wstring &host,
+                                   const std::wstring &path, std::stop_token stop) {
+  Json options = Json::object();
+  try { if (auto text = boundedRead(root / L"update-scenario.json", 16384)) options = Json::parse(*text); }
+  catch (...) { return {0, ERROR_INVALID_DATA}; }
+  const bool check = host == updateHost && path == updateFeed;
+  auto mode = options.value(check ? "check" : "download", std::string("normal"));
+  mockApiLog(root, utf8(host + path.substr(0, path.find(L'?'))), true, mode);
+  if (mode == "slow") {
+    std::mutex mutex; std::condition_variable_any cv; std::unique_lock lock(mutex);
+    cv.wait_for(lock, stop, 2s, [] { return false; });
+  }
+  if (stop.stop_requested()) return {0, ERROR_CANCELLED};
+  if (mode == "timeout") return {0, ERROR_WINHTTP_TIMEOUT};
+  if (mode == "quota") return {429, 0, "{}", 60};
+  if (mode == "server-error") return {503, 0, "{}"};
+  if (mode == "malformed") return {200, 0, "not-json"};
+  auto version = options.value("version", std::string(TEMPOS_VERSION_STRING));
+  auto bytes = mockUpdateBytes();
+  if (!check) {
+    if (mode == "unsafe-redirect") return {302, 0, {}, 0, L"https://evil.example/installer.exe"};
+    if (mode == "redirect-loop" || (mode == "redirect" && host == L"github.com"))
+      return {302, 0, {}, 0, L"https://release-assets.githubusercontent.com/github-production-release-asset/mock/installer"};
+    if (mode == "corrupt") bytes[3] = 'X';
+    if (mode == "short") bytes.resize(16);
+    if (mode == "oversize") bytes += 'X';
+    return {200, 0, bytes};
+  }
+  unsigned char digest[32]{};
+  BCryptHash(BCRYPT_SHA256_ALG_HANDLE, nullptr, 0, reinterpret_cast<PUCHAR>(bytes.data()), ULONG(bytes.size()), digest, sizeof digest);
+  std::string hex;
+  for (auto c : digest) { hex += "0123456789abcdef"[c >> 4]; hex += "0123456789abcdef"[c & 15]; }
+  auto name = "Tempos-" + version + "-win-x64.exe";
+  Json asset = {{"name", name}, {"state", "uploaded"}, {"size", bytes.size()}, {"digest", "sha256:" + hex},
+      {"browser_download_url", "https://github.com/poyal/tempos/releases/download/v" + version + "/" + name}};
+  if (mode == "bad-url") asset["browser_download_url"] = "https://evil.example/installer.exe";
+  if (mode == "bad-digest") asset["digest"] = "sha256:no";
+  Json release = {{"tag_name", "v" + version}, {"draft", mode == "draft"}, {"prerelease", mode == "prerelease"},
+      {"assets", mode == "missing" ? Json::array() : Json::array({asset})}};
+  return {200, 0, release.dump()};
+}
 inline HttpClient::Transport mockApi(const std::filesystem::path &root) {
   return [root, weather = weatherFixture(root)](const std::wstring &host, const std::wstring &path,
              const std::wstring &method, const std::string &body, const std::wstring &headers,
              std::stop_token stop) -> Response {
+    if (method == L"GET" && ((host == updateHost && path == updateFeed) ||
+        (host == L"github.com" && path.starts_with(L"/poyal/tempos/releases/download/")) ||
+        (host == L"release-assets.githubusercontent.com" && path == L"/github-production-release-asset/mock/installer")))
+      return mockUpdateResponse(root, host, path, stop);
     const bool weatherRoute = method == L"GET" &&
         ((host == L"api.open-meteo.com" && path.starts_with(L"/v1/forecast?")) ||
          (host == L"apihub.kma.go.kr" &&

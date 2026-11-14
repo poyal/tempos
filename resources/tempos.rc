@@ -1,8 +1,9 @@
 #include <windows.h>
+#include "version.h"
 101 ICON "tempos.ico"
 1 VERSIONINFO
- FILEVERSION 0,1,3,0
- PRODUCTVERSION 0,1,3,0
+ FILEVERSION TEMPOS_VERSION_NUMBERS
+ PRODUCTVERSION TEMPOS_VERSION_NUMBERS
  FILEOS VOS_NT_WINDOWS32
  FILETYPE VFT_APP
 BEGIN
@@ -12,9 +13,9 @@ BEGIN
   BEGIN
    VALUE "CompanyName", "Tempos"
    VALUE "FileDescription", "Tempos desktop widgets"
-   VALUE "FileVersion", "0.1.3"
+   VALUE "FileVersion", TEMPOS_VERSION_STRING
    VALUE "ProductName", "Tempos"
-   VALUE "ProductVersion", "0.1.3"
+   VALUE "ProductVersion", TEMPOS_VERSION_STRING
   END
  END
  BLOCK "VarFileInfo"

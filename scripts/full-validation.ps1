@@ -1,4 +1,4 @@
-﻿param([string]$Dotnet='', [string]$Exe='', [switch]$LongRunning, [string[]]$Modes=@('edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real'))
+param([string]$Dotnet='', [string]$Exe='', [switch]$LongRunning, [string[]]$Modes=@('edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','updates','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real'))
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 if(-not $Dotnet){$Dotnet=Join-Path $root '.tools/dotnet/dotnet.exe'}
@@ -13,7 +13,7 @@ New-Item -ItemType Directory -Force $folder|Out-Null
 $runs=[Collections.Generic.List[object]]::new()
 if($LongRunning){$Modes+=@('stress','soak')}
 foreach($mode in $Modes){
-  if($mode -notin @('edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real','stress','soak','layout','readme','smoke')){throw 'Unsupported/unsafe suite mode.'}
+  if($mode -notin @('edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','updates','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real','stress','soak','layout','readme','smoke')){throw 'Unsupported/unsafe suite mode.'}
   if((Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash -ne $hash){throw 'Binary changed during validation.'}
   $before=@(Get-ChildItem (Join-Path $root 'test-results') -Directory -Filter 'e2e-*' | ForEach-Object FullName)
   $log=Join-Path $folder ($mode+'.log')

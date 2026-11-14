@@ -4,7 +4,7 @@
 
 | 구분 | 문서 |
 | --- | --- |
-| Windows 다운로드 | [최신 공개 릴리즈](https://github.com/poyal/tempos/releases/latest), [v0.1.3 릴리즈 노트](releases/v0.1.3.md), [v0.1.3 검증](validation/release-v0.1.3.md) |
+| Windows 다운로드 | [최신 공개 릴리즈](https://github.com/poyal/tempos/releases/latest), [v0.1.4 릴리즈 노트](releases/v0.1.4.md), [v0.1.4 검증](validation/release-v0.1.4.md) |
 | 상세 사용법 | [위젯·설정·복원 안내](user-guide.md), [날씨 서비스 연결](weather.md), [CPU·GPU 온도](sensors.md) |
 | 실제 화면 | [최신 촬영 조건과 9종 위젯](screenshots.md#manual-20261017), [README 촬영·검증](validation/2026-10-17-readme.md), [이전 화면 기록](screenshots.md#release-010) |
 | 문서 유지 | [README 작성 가이드](README-작성-가이드.md) |

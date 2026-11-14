@@ -1,5 +1,6 @@
 #include "app.h"
 #include "test_isolation.h"
+#include "update_install.h"
 #include <commctrl.h>
 #include <shellapi.h>
 #include <roapi.h>
@@ -9,17 +10,28 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   INITCOMMONCONTROLSEX controls{sizeof controls, ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_BAR_CLASSES};
   InitCommonControlsEx(&controls);
   std::filesystem::path root;
-  bool visible = false, fixture = false;
+  bool visible = false, fixture = false, afterUpdate = false;
 #ifdef TEMPOS_TEST_HOST
   fixture = true;
   visible = true;
 #endif
   int argc = 0;
   auto argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+  if (argc == 3 && std::wstring_view(argv[1]) == L"--apply-update") {
+    auto job = std::filesystem::path(argv[2]); LocalFree(argv);
+    int code = tempos::runUpdateHelper(job); RoUninitialize(); return code;
+  }
+#ifdef TEMPOS_TEST_HOST
+  if (argc == 3 && std::wstring_view(argv[1]) == L"--mock-update-installer") {
+    auto job = std::filesystem::path(argv[2]); LocalFree(argv);
+    int code = tempos::runMockUpdateInstaller(job); RoUninitialize(); return code;
+  }
+#endif
   for (int i = 1; i < argc; ++i) {
     std::wstring arg = argv[i];
     if (arg == L"--settings")
       visible = true;
+    if (arg == L"--after-update") afterUpdate = true;
     if (arg == L"--data-dir" && i + 1 < argc)
       root = argv[++i];
 #ifdef TEMPOS_TEST_HOST
@@ -58,7 +70,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   }
   int result = 1;
   try {
-    tempos::App app(instance, root, fixture, visible);
+    tempos::App app(instance, root, fixture, visible, afterUpdate);
     result = app.run();
   } catch (const std::exception &) {
     MessageBoxW(nullptr, L"Tempos를 시작할 수 없습니다. 그래픽 드라이버와 설정 파일 접근 권한을 확인하세요.",

@@ -10,6 +10,7 @@ struct Response {
   DWORD status{}, error{};
   std::string body;
   int retryAfter{};
+  std::wstring location;
   bool ok() const { return !error && status >= 200 && status < 300; }
 };
 std::string urlEncode(std::string_view value);
@@ -20,7 +21,9 @@ public:
   explicit HttpClient(Transport transport = {});
   ~HttpClient();
   Response request(const std::wstring &host, const std::wstring &path, const std::wstring &method = L"GET",
-                   const std::string &body = {}, const std::wstring &headers = {}, std::stop_token stop = {});
+                   const std::string &body = {}, const std::wstring &headers = {}, std::stop_token stop = {},
+                   const std::function<bool(std::string_view)> &sink = {}, size_t limit = 1024 * 1024,
+                   std::chrono::milliseconds timeout = 15s);
   void cancel();
 
 private:

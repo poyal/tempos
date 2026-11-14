@@ -39,13 +39,19 @@ void HttpClient::cancel() {
   active_.clear();
 }
 Response HttpClient::request(const std::wstring &host, const std::wstring &path, const std::wstring &method,
-                             const std::string &body, const std::wstring &headers, std::stop_token stop) {
+                             const std::string &body, const std::wstring &headers, std::stop_token stop,
+                             const std::function<bool(std::string_view)> &sink, size_t limit,
+                             std::chrono::milliseconds timeout) {
   Response r;
   if (stop.stop_requested()) {
     r.error = ERROR_CANCELLED;
     return r;
   }
-  if (host != L"apihub.kma.go.kr" && host != L"api.open-meteo.com" && host != L"oauth2.googleapis.com" &&
+  const bool updateRoute =
+      (host == L"api.github.com" && path == L"/repos/poyal/tempos/releases/latest") ||
+      (host == L"github.com" && path.starts_with(L"/poyal/tempos/releases/download/")) ||
+      (host == L"release-assets.githubusercontent.com" && path.starts_with(L"/github-production-release-asset/"));
+  if (!updateRoute && host != L"apihub.kma.go.kr" && host != L"api.open-meteo.com" && host != L"oauth2.googleapis.com" &&
       host != L"www.googleapis.com") {
     r.error = ERROR_ACCESS_DENIED;
     return r;
@@ -54,8 +60,15 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
     r.error = ERROR_ACCESS_DENIED;
     return r;
   }
-  if (transport_)
-    return transport_(host, path, method, body, headers, stop);
+  if (transport_) {
+    auto response = transport_(host, path, method, body, headers, stop);
+    if (response.body.size() > limit) { response.error = ERROR_BUFFER_OVERFLOW; response.body.clear(); }
+    if (sink && response.ok()) {
+      if (!sink(response.body)) response.error = ERROR_WRITE_FAULT;
+      response.body.clear();
+    }
+    return response;
+  }
   if (!session_) {
     r.error = ERROR_CANCELLED;
     return r;
@@ -95,12 +108,14 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
     std::mutex m;
     std::condition_variable_any cv;
     std::unique_lock l(m);
-    cv.wait_for(l, token, 15s, [&] { return complete.load(); });
+    cv.wait_for(l, token, timeout, [&] { return complete.load(); });
     if (!token.stop_requested() && !complete.load())
       close();
   });
   DWORD redirect = WINHTTP_OPTION_REDIRECT_POLICY_NEVER;
   WinHttpSetOption(request, WINHTTP_OPTION_REDIRECT_POLICY, &redirect, sizeof redirect);
+  DWORD disableCookies = WINHTTP_DISABLE_COOKIES;
+  WinHttpSetOption(request, WINHTTP_OPTION_DISABLE_FEATURE, &disableCookies, sizeof disableCookies);
   DWORD decompression = WINHTTP_DECOMPRESSION_FLAG_GZIP | WINHTTP_DECOMPRESSION_FLAG_DEFLATE;
   // The small Open-Meteo response stays below the same body limit without compression.
   // Some Windows builds abort decompression of its streamed response after HTTP 200.
@@ -116,12 +131,17 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
     DWORD n = sizeof r.status;
     WinHttpQueryHeaders(request, WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
                         WINHTTP_HEADER_NAME_BY_INDEX, &r.status, &n, WINHTTP_NO_HEADER_INDEX);
+    wchar_t location[4096]{};
+    n = sizeof location;
+    if (WinHttpQueryHeaders(request, WINHTTP_QUERY_LOCATION, WINHTTP_HEADER_NAME_BY_INDEX, location, &n,
+                            WINHTTP_NO_HEADER_INDEX)) r.location.assign(location, n / sizeof(wchar_t));
     wchar_t retry[64]{};
     n = sizeof retry;
     if (WinHttpQueryHeaders(request, WINHTTP_QUERY_RETRY_AFTER, WINHTTP_HEADER_NAME_BY_INDEX, retry, &n,
                             WINHTTP_NO_HEADER_INDEX))
       r.retryAfter = std::clamp(_wtoi(retry), 0, 86400);
     char buffer[8192];
+    size_t received = 0;
     while (!stop.stop_requested()) {
       DWORD bytes = 0;
       if (!WinHttpReadData(request, buffer, sizeof buffer, &bytes)) {
@@ -130,12 +150,15 @@ Response HttpClient::request(const std::wstring &host, const std::wstring &path,
       }
       if (!bytes)
         break;
-      if (r.body.size() + bytes > 1024 * 1024) {
+      if (bytes > limit - received) {
         r.error = ERROR_BUFFER_OVERFLOW;
         r.body.clear();
         break;
       }
-      r.body.append(buffer, bytes);
+      received += bytes;
+      if (sink && r.ok()) {
+        if (!sink(std::string_view(buffer, bytes))) { r.error = ERROR_WRITE_FAULT; break; }
+      } else r.body.append(buffer, bytes);
     }
   }
   complete = true;

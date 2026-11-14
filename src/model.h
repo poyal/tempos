@@ -103,6 +103,7 @@ struct Settings {
   WeatherProvider weatherProvider = WeatherProvider::OpenMeteo;
   bool edit = false, hidden = false;
   bool cpuTemperatureEnabled = false;
+  bool checkUpdatesOnStart = true;
   std::vector<Widget> widgets;
 };
 bool validateWidget(Widget &widget);

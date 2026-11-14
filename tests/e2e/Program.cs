@@ -169,7 +169,7 @@ internal static partial class Program
     {
         var started = DateTimeOffset.Now;
         System.Windows.Forms.Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-        Root = Path.GetFullPath(args.Length > 0 ? args[0] : "."); Data = Path.Combine(Root, "test-results", "e2e-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + (args.Contains("--startup") ? " 시작 옵션" : "")); Directory.CreateDirectory(Data);
+        Root = Path.GetFullPath(args.Length > 0 ? args[0] : "."); Data = Path.Combine(Root, "test-results", "e2e-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff") + (args.Contains("--startup") ? " 시작 옵션" : args.Contains("--updates") ? " 업데이트 검사" : "")); Directory.CreateDirectory(Data);
         Live = args.Contains("--live-smoke") || args.Contains("--windows-real") || args.Contains("--api-mock");
         LiveApis = args.Contains("--integration-live-api");
         int savedLayoutArg = Array.IndexOf(args, "--saved-layout");
@@ -189,7 +189,7 @@ internal static partial class Program
                 throw new ArgumentException("E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.");
             if (LiveApis && !Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("Live API integration requires an explicit production Tempos.exe path.");
-            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--design" or "--startup" or "--readme" or "--temperature"))
+            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--design" or "--startup" or "--readme" or "--temperature" or "--updates"))
                 throw new ArgumentException("Mock-only suites cannot run as live API integration.");
             if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
                 throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
@@ -197,6 +197,7 @@ internal static partial class Program
             if (args.Contains("--isolation")) { Isolation(ref app, exe); return 0; }
             if (args.Contains("--edit-mode")) { EditModeCycles(ref app, exe); return 0; }
             if (args.Contains("--shell-actions")) { ShellActions(ref app, exe); return 0; }
+            if (args.Contains("--updates")) { Updates(ref app, exe); return 0; }
             if (args.Contains("--drag-performance")) { DragPerformance(ref app); return 0; }
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");

@@ -1,5 +1,17 @@
 # 검증 기록
 
+## Windows v0.1.4 릴리즈 후보 · 2026-11-14
+
+About·업데이트를 포함한 최종 버전 0.1.4의 Release·ASan 단위 각각 **9,695 PASS**, 센서 **22 PASS**, Release E2E **877 PASS·0 FAIL·108 SKIP**, ASan E2E **152 PASS·0 FAIL·0 SKIP**을 확인했다. 업데이트 모드는 두 빌드에서 각각 **84 PASS·0 FAIL·0 SKIP**이다. 최초 RC 버전 의존성 누락으로 About와 Windows 파일 속성이 달랐던 문제를 수정하고 같은 검사로 재확인했다. [후보 검증·최초 실패·제한](validation/release-v0.1.4.md), [해시·실행별 결과](validation/release-v0.1.4.json), [릴리즈 노트](releases/v0.1.4.md).
+
+외부 API와 설치 실행은 목업이며 Windows UI·파일 검증·도우미 인계·TestHost 종료/재실행 및 로컬 시스템 수집은 실제다. 설치본 보호 기준에 따라 실제 NSIS 설치·제거와 GitHub 실연동을 수행하지 않았다. 공개 게시 후 다운로드 검증은 별도 영수증으로 남긴다. 아래 About 개발 단계 기록은 버전 리소스 변경 전의 과거 결과다.
+
+## About·업데이트 개발 소스 · 2026-11-14
+
+Windows About 탭, 시작 시 새 정식 버전 확인, 사용자 설치 클릭 후 다운로드·크기/SHA-256 검증·종료·설치·재실행을 추가했다. Release·ASan 단위 각각 **9,695 PASS**, Release E2E **825 PASS·0 FAIL·106 SKIP**, ASan E2E **152 PASS·0 FAIL·0 SKIP**이다. 새 업데이트 E2E는 각 빌드에서 **84 PASS·0 FAIL·0 SKIP**이다. 설치 실행은 목업 프로세스이며, 앱 종료·도우미 인계·실제 TestHost 재실행과 설정 보존을 검사했다. 사용자 설치본에 대한 실제 NSIS 설치·외부 GitHub 실연동으로 표시하지 않는다.
+
+단일 PC의 30초 준비·60.675초 평상시 측정은 평균 CPU 시간 **4.893ms/초**, 최대 private/working set **18.35/42.99MiB**로 필수 예산을 통과했다. 시작 업데이트 요청 1회이며 별도 4ms/초 목표는 미달이다. 30분·두 PC 검증은 아니다. [기능·실행 증거·제한](validation/2026-11-14-about-updates.md), [원본 경로·해시·SKIP](validation/2026-11-14-about-updates.json). 공개 v0.1.3과 현재 설치본은 변경하지 않았으며 다음 배포를 위한 소스 변경이다.
+
 ## Windows v0.1.3 릴리즈 · 2026-11-14
 
 스냅·표시 격자를 8 DIP로 통일하고 위젯 네 변의 정렬, 오른쪽 경계 배치, 설정창 종료 시 격자 제거와 드래그 수명주기를 보완했다. 최종 0.1.3 후보의 Release·ASan 단위 검사는 각각 9,575개, 센서 22개, 성능 정책·로그 공유 25개를 통과했다. Release E2E는 24개 모드 **3,977 PASS·0 FAIL·53 SKIP**, ASan E2E는 4개 모드 **420 PASS·0 FAIL·0 SKIP**이다. 외부 API는 HTTP 경계 목업이며 실제 Windows 입력·로컬 수집 검사는 별도로 실행했다. [최종 후보 결과·제한](validation/release-v0.1.3.md), [실행별 해시·SKIP 이유](validation/release-v0.1.3.json), [변경 사항](releases/v0.1.3.md).

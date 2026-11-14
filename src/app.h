@@ -6,6 +6,7 @@
 #include "accessibility.h"
 #include "startup.h"
 #include "location.h"
+#include "updates.h"
 #include <shellapi.h>
 namespace tempos {
 class App;
@@ -31,7 +32,7 @@ struct WidgetWindow {
 };
 class App {
 public:
-  App(HINSTANCE, std::filesystem::path root, bool fixture, bool visible);
+  App(HINSTANCE, std::filesystem::path root, bool fixture, bool visible, bool afterUpdate = false);
   ~App();
   int run();
   static LRESULT CALLBACK windowProc(HWND, UINT, WPARAM, LPARAM);
@@ -44,6 +45,8 @@ private:
   LRESULT message(HWND, UINT, WPARAM, LPARAM);
   LRESULT widgetMessage(WidgetWindow &, UINT, WPARAM, LPARAM);
   void buildSettings();
+  void updateControls();
+  void openAboutLink(int);
   void updateViewport();
   void selectTab(int);
   void loadControls();
@@ -90,6 +93,7 @@ private:
   std::filesystem::path startupRoot_;
   Renderer renderer_;
   HttpClient http_;
+  std::unique_ptr<UpdateService> updates_;
   WeatherService weather_;
   CalendarService calendar_;
   std::unique_ptr<ProviderService> providers_;
@@ -109,6 +113,8 @@ private:
   bool fixture_ = false, visible_ = false, closing_ = false, loading_ = false, suspended_ = false,
        sessionLocked_ = false;
   bool settingsBuilt_ = false;
+  bool afterUpdate_ = false, installRequested_ = false, updateNotified_ = false;
+  std::wstring updateInstallError_;
   HANDLE sensorSetup_{};
   bool sensorRemoving_ = false;
   UINT settingsDpi_ = 96;

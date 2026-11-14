@@ -1,0 +1,647 @@
+{
+  "date": "2026-11-14",
+  "status": "Implemented and locally validated; not published",
+  "sourceBaseCommit": "7e4f49bd04e5dff1dc3bcb214e99b5bf0e6761d7",
+  "sourceDirty": true,
+  "binaries": {
+    "release": "6E42319BDB69BCF113B4483DC534840D519C325BF828FA3507062C8B60A56B74",
+    "releaseTestHost": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+    "asanTestHost": "DDB3A34D9C0C04498D6DE37EFD1E1B13BF3B36A5B76B7B10C486B2BA4E497DB2",
+    "harness": "CAD71005E3D0C65BC1EC1BD763947A75DF7D1C382C958B38B52254D1DB1A0F4B"
+  },
+  "native": {
+    "releaseChecks": 9695,
+    "asanChecks": 9695,
+    "newUpdateChecks": 120,
+    "fail": 0,
+    "releaseLog": "test-results/about-update-verified-release-build.log",
+    "asanLog": "test-results/about-update-verified-asan-build.log"
+  },
+  "release": {
+    "manifest": "test-results/full-validation-20261114-155750/manifest.json",
+    "pass": 825,
+    "fail": 0,
+    "skip": 106,
+    "runs": [
+      {
+        "mode": "updates",
+        "folder": "test-results/e2e-20261114-155750-772 업데이트 검사",
+        "exit": 0,
+        "pass": 84,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": []
+      },
+      {
+        "mode": "api-mock",
+        "folder": "test-results/e2e-20261114-155814-306",
+        "exit": 0,
+        "pass": 68,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "real",
+        "skips": []
+      },
+      {
+        "mode": "weather",
+        "folder": "test-results/e2e-20261114-155832-718",
+        "exit": 0,
+        "pass": 74,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": []
+      },
+      {
+        "mode": "persistence",
+        "folder": "test-results/e2e-20261114-155907-650",
+        "exit": 0,
+        "pass": 223,
+        "fail": 0,
+        "skip": 106,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": [
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "nine-saved: desktop hit test",
+            "reason": "nine-saved: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-0: desktop hit test",
+            "reason": "edit-exit-0: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-1: desktop hit test",
+            "reason": "edit-exit-1: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "edit-exit-2: desktop hit test",
+            "reason": "edit-exit-2: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "settings-closed: desktop hit test",
+            "reason": "settings-closed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "restarted: desktop hit test",
+            "reason": "restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-126: desktop hit test",
+            "reason": "shell-notification-126: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-26: desktop hit test",
+            "reason": "shell-notification-26: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shell-notification-49294: desktop hit test",
+            "reason": "shell-notification-49294: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "shown-after-restart: desktop hit test",
+            "reason": "shown-after-restart: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "middle-removed: desktop hit test",
+            "reason": "middle-removed: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_WidgetWin_1"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          },
+          {
+            "name": "deletion-restarted: desktop hit test",
+            "reason": "deletion-restarted: desktop hit test obscured by external window Chrome_RenderWidgetHostHWND"
+          }
+        ]
+      },
+      {
+        "mode": "options",
+        "folder": "test-results/e2e-20261114-155950-226",
+        "exit": 0,
+        "pass": 86,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": []
+      },
+      {
+        "mode": "edit-mode",
+        "folder": "test-results/e2e-20261114-160023-774",
+        "exit": 0,
+        "pass": 279,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": []
+      },
+      {
+        "mode": "isolation",
+        "folder": "test-results/e2e-20261114-160043-652",
+        "exit": 0,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "0FFF2F7B9FB1F6B69490F33CB7F94DFB42C439AAD59310996E1CCE7D4DCC8204",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": []
+      }
+    ]
+  },
+  "asan": {
+    "manifest": "test-results/full-validation-20261114-160046/manifest.json",
+    "pass": 152,
+    "fail": 0,
+    "skip": 0,
+    "runs": [
+      {
+        "mode": "updates",
+        "folder": "test-results/e2e-20261114-160046-325 업데이트 검사",
+        "exit": 0,
+        "pass": 84,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "DDB3A34D9C0C04498D6DE37EFD1E1B13BF3B36A5B76B7B10C486B2BA4E497DB2",
+        "apiMode": "mock",
+        "systemMode": "fixture",
+        "skips": []
+      },
+      {
+        "mode": "api-mock",
+        "folder": "test-results/e2e-20261114-160121-230",
+        "exit": 0,
+        "pass": 68,
+        "fail": 0,
+        "skip": 0,
+        "sha256": "DDB3A34D9C0C04498D6DE37EFD1E1B13BF3B36A5B76B7B10C486B2BA4E497DB2",
+        "apiMode": "mock",
+        "systemMode": "real",
+        "skips": []
+      }
+    ]
+  },
+  "shortIdlePerformance": {
+    "report": "test-results/performance-about-update-idle-20261114-160234/report.json",
+    "warmupSeconds": 30,
+    "actualSampleSeconds": 60.67541070000001,
+    "averageRawCpuMsPerSecond": 4.892838739367609,
+    "averageCpuPercent": 0.04077365616139674,
+    "p95CpuPercent": 0.12960437693680765,
+    "maximumPrivateBytes": 19243008,
+    "maximumWorkingSet": 45076480,
+    "checks": [
+      {
+        "name": "Average CPU percent",
+        "actual": 0.04077365616139674,
+        "limit": 0.1,
+        "passed": true,
+        "valid": true
+      },
+      {
+        "name": "P95 CPU percent",
+        "actual": 0.12960437693680765,
+        "limit": 0.3,
+        "passed": true,
+        "valid": true
+      },
+      {
+        "name": "Raw CPU ms/second",
+        "actual": 4.892838739367609,
+        "limit": 10,
+        "passed": true,
+        "valid": true
+      },
+      {
+        "name": "Private bytes",
+        "actual": 19243008,
+        "limit": 33554432,
+        "passed": true,
+        "valid": true
+      },
+      {
+        "name": "Working set",
+        "actual": 45076480,
+        "limit": 50331648,
+        "passed": true,
+        "valid": true
+      },
+      {
+        "name": "Widgets remain visible",
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "optimizationTargetsMet": false,
+    "devicePerformanceQualified": false,
+    "startupUpdateRequests": 1,
+    "scope": "Short single-PC smoke; not a 30-minute or two-PC qualification"
+  },
+  "screenshot": {
+    "file": "docs/assets/about-update-2026-11-14.png",
+    "sha256": "2FB18A97BF2001BFD5B1111245CCAC6DE8184D89D1A60483E69B48A1499DF79C",
+    "source": "test-results/e2e-20261114-155750-772 업데이트 검사/about-update-available-example.png",
+    "api": "mock",
+    "latestVersion": "99.0.0 test example, not a published release",
+    "reviewed": true
+  },
+  "boundaries": {
+    "externalApis": "HTTP-boundary mocks including GitHub release metadata and installer/CDN bytes",
+    "installer": "Dedicated mock child process only; no NSIS or user installation executed",
+    "realWindows": "Native UI, file writes, SHA-256, separate updater process, process identity/handshake/wait, shutdown and relaunch with Unicode/spaces in profile path",
+    "profile": "Installed layout, backup and startup registration unchanged in every E2E run",
+    "productionInstall": "Not exercised: installed app present; real NSIS replacement, registry mutation, production-only installed-version verification and Windows security policy remain outside these E2E results",
+    "liveGitHub": "Not requested or executed by the app tests",
+    "releasedVersion": "Public v0.1.3 and installed app unchanged"
+  },
+  "earlierWork": {
+    "firstUiRun": "test-results/e2e-20261114-155025-598/results.json",
+    "includedInFinalCounts": false,
+    "harnessCompileCorrection": "Initial Updates.cs compilation lacked the FlaUI extension namespace; added using and rebuilt. Build failure retained in test-results/about-update-e2e-build.log."
+  }
+}
