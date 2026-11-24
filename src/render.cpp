@@ -155,18 +155,22 @@ void Renderer::text(const std::wstring &value, float x, float y, float w, float 
       layoutOrder_.pop_front();
     }
     layoutOrder_.push_back(layoutKey);
-    cached = layouts_.emplace(std::move(layoutKey), std::move(layout)).first;
+    DWRITE_OVERHANG_METRICS ink{};
+    float bottom = SUCCEEDED(layout->GetOverhangMetrics(&ink)) ? std::clamp(h + ink.bottom, 0.f, h) : h;
+    cached = layouts_.emplace(std::move(layoutKey), MeasuredLine{std::move(layout), bottom}).first;
   }
-  context_->DrawTextLayout({x, y}, cached->second.Get(), brush_.Get(), D2D1_DRAW_TEXT_OPTIONS_CLIP);
+  context_->DrawTextLayout({x, std::min(y, contentBottom_ - cached->second.inkBottom)},
+                           cached->second.layout.Get(), brush_.Get(), D2D1_DRAW_TEXT_OPTIONS_CLIP);
 }
 void Renderer::line(float x, float y, float x2, float y2, uint32_t rgb, float alpha, float stroke) {
   brush_->SetColor(color(rgb, alpha));
   context_->DrawLine({x, y}, {x2, y2}, brush_.Get(), stroke);
 }
-void Renderer::modelText(const std::wstring &value, float x, float y, float width, float height, float size) {
-  auto key = std::tuple{value, width, height, size};
+void Renderer::modelText(const std::wstring &value, float x, float y, float width, float height, float size,
+                         bool bold, uint32_t rgb) {
+  auto key = std::tuple{value, width, height, size, bold};
   if (auto found = modelSizes_.find(key); found != modelSizes_.end()) {
-    text(value, x, y, width, height, found->second);
+    text(value, x, y, width, height, found->second, bold, rgb);
     return;
   }
   // Measure the complete single line before choosing its font; only exceptionally long
@@ -175,20 +179,22 @@ void Renderer::modelText(const std::wstring &value, float x, float y, float widt
     ComPtr<IDWriteTextFormat> format;
     ComPtr<IDWriteTextLayout> layout;
     DWRITE_TEXT_METRICS metrics{};
-    if (FAILED(write_->CreateTextFormat(L"Segoe UI", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
-                                       DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
-                                       size, L"ko-KR", &format)))
+    if (FAILED(write_->CreateTextFormat(
+            L"Segoe UI", nullptr, bold ? DWRITE_FONT_WEIGHT_SEMI_BOLD : DWRITE_FONT_WEIGHT_NORMAL,
+            DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"ko-KR", &format)))
       break;
     format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
     if (FAILED(write_->CreateTextLayout(value.c_str(), UINT32(value.size()), format.Get(),
                                        width, height, &layout)) ||
         FAILED(layout->GetMetrics(&metrics)) || metrics.widthIncludingTrailingWhitespace <= width)
       break;
-    size -= .5f;
+    size = std::max(
+        11.f, std::min(size - .5f,
+                       float(std::floor(size * width / metrics.widthIncludingTrailingWhitespace * 2) / 2)));
   }
   if (modelSizes_.size() >= 128) modelSizes_.clear();
   modelSizes_.emplace(std::move(key), size);
-  text(value, x, y, width, height, size);
+  text(value, x, y, width, height, size, bold, rgb);
 }
 void Renderer::dot(float x, float y, float radius, uint32_t rgb, float alpha) {
   brush_->SetColor(color(rgb, alpha));
@@ -506,23 +512,61 @@ void Renderer::weatherBackdrop(const WeatherData &weather, Extent e, bool sunset
       }
   }
 }
+static std::vector<const Event *> upcomingEvents(const Widget &w, const CalendarData *d,
+                                                 year_month_day today) {
+  auto now = nowUnix();
+  std::vector<const Event *> events;
+  if (d)
+    for (auto &v : d->events)
+      events.push_back(&v);
+  std::stable_sort(events.begin(), events.end(), [&](auto *a, auto *b) {
+    auto key = [&](const Event &v) {
+      bool on = eventOnDate(v, today, w.timezone);
+      int category = v.allDay ? (on ? 2 : 3)
+                              : (v.start <= now && v.end > now ? 0
+                                 : on && v.start >= now        ? 1
+                                                               : 3);
+      int64_t start = v.allDay ? localMidnight(v.first, w.timezone) : v.start;
+      return std::pair{category, start};
+    };
+    return key(*a) < key(*b);
+  });
+  events.erase(std::remove_if(events.begin(), events.end(),
+                              [&](auto *v) {
+                                if ((w.size == Size::M || w.size == Size::L) &&
+                                    !eventOnDate(*v, today, w.timezone))
+                                  return true;
+                                return v->allDay ? sys_days{v->last} <= sys_days{today} : v->end <= now;
+                              }),
+               events.end());
+  return events;
+}
 std::wstring widgetSummary(const Widget &w, const Snapshot *s) {
-  std::wstring out = std::wstring(kindName(w.kind));
+  std::wstring out =
+      w.alias.empty() ? std::wstring(kindName(w.kind)) : w.alias + L" · " + std::wstring(kindName(w.kind));
   if (w.kind == Kind::Clock)
     return out + L" " + timeLabel(nowUnix(), w, w.seconds) + L" " +
            dateLabel(localDate(nowUnix(), w.timezone));
   if (w.kind == Kind::Calendar) {
-    out += L" " + dateLabel(localDate(nowUnix(), w.timezone));
-    if (s && s->calendar) {
-      size_t count = 0;
-      for (auto &e : s->calendar->events) {
-        if (!eventOnDate(e, localDate(nowUnix(), w.timezone), w.timezone))
-          continue;
-        out += L" · " + eventLabel(e, w);
-        if (++count == 10) {
-          out += L" · 추가 일정 있음";
-          break;
-        }
+    auto today = localDate(nowUnix(), w.timezone);
+    out += L" " + dateLabel(today);
+    if (s && s->calendar && w.size != Size::XL) {
+      auto events = upcomingEvents(w, s->calendar.get(), today);
+      auto limit = std::min<size_t>(events.size(), w.size == Size::M || w.size == Size::L ? 2 : 1);
+      for (size_t i = 0; i < limit; ++i)
+        out += L" · " + eventLabel(*events[i], w);
+    } else if (s && s->calendar) {
+      int year = int(today.year()), month = int(unsigned(today.month()));
+      if (!w.source.empty())
+        swscanf_s(w.source.c_str(), L"%d-%d", &year, &month);
+      auto grid = calendarGrid(year, unsigned(month), w.weekStart);
+      const auto start = localMidnight(year_month_day{grid.first}, w.timezone);
+      const auto end = localMidnight(year_month_day{grid.first + days{grid.weeks * 7}}, w.timezone);
+      for (const auto &e : s->calendar->events) {
+        auto first = e.allDay ? localMidnight(e.first, w.timezone) : e.start;
+        auto lastDay = e.allDay ? localMidnight(e.last, w.timezone) : e.end;
+        if (first < end && lastDay > start)
+          out += L" · " + eventLabel(e, w);
       }
     }
     return out;
@@ -603,8 +647,8 @@ void Renderer::weather(const Widget &w, const Snapshot *s, Extent e) {
   const auto degrees = number(temperature) + L"°";
   float temperatureWidth = w.size == Size::Slim ? 90.f : w.size == Size::S ? 120.f :
                            degrees.size() >= 4 ? 146.f : 110.f;
-  text(degrees, w.size == Size::Slim ? 115.f : pad, w.size == Size::Slim ? 14.f : 43,
-       temperatureWidth, 64, size, true);
+  modelText(degrees, w.size == Size::Slim ? 115.f : pad, w.size == Size::Slim ? 14.f : 43, temperatureWidth,
+            64, size, true);
   float iconX = w.size == Size::S ? 121.f : e.width - 52, iconY = w.size == Size::S      ? 30.f
                                                                   : w.size == Size::Slim ? 30.f
                                                                                          : 65.f;
@@ -659,30 +703,7 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
   auto emptyLabel = !d ? L"일정 불러오는 중" : !d->connected ? L"설정에서 일정 연결" : L"일정 없음";
   if (w.size != Size::L && w.size != Size::XL)
     heading(w, L"캘린더");
-  std::vector<const Event *> events;
-  if (d)
-    for (auto &v : d->events)
-      events.push_back(&v);
-  std::stable_sort(events.begin(), events.end(), [&](auto *a, auto *b) {
-    auto key = [&](const Event &v) {
-      bool on = eventOnDate(v, today, w.timezone);
-      int category = v.allDay ? (on ? 2 : 3)
-                              : (v.start <= nowUnix() && v.end > nowUnix() ? 0
-                                 : on && v.start >= nowUnix()              ? 1
-                                                                           : 3);
-      int64_t start = v.allDay ? localMidnight(v.first, w.timezone) : v.start;
-      return std::pair{category, start};
-    };
-    return key(*a) < key(*b);
-  });
-  events.erase(std::remove_if(events.begin(), events.end(),
-                              [&](auto *v) {
-                                if ((w.size == Size::M || w.size == Size::L) &&
-                                    !eventOnDate(*v, today, w.timezone))
-                                  return true;
-                                return v->allDay ? sys_days{v->last} <= sys_days{today} : v->end <= nowUnix();
-                              }),
-               events.end());
+  auto events = w.size == Size::XL ? std::vector<const Event *>{} : upcomingEvents(w, d.get(), today);
   auto eventText = [&](size_t index, float x, float y, float width, float size) {
     if (index >= events.size())
       return;
@@ -706,12 +727,12 @@ void Renderer::calendar(const Widget &w, const Snapshot *s, Extent e) {
     return;
   }
   if (w.size == Size::S) {
-    text(std::to_wstring(unsigned(today.month())) + L"월", 20, 93, 44, 24, 16);
+    text(std::to_wstring(unsigned(today.month())) + L"월", 20, 89, 44, 24, 16);
     text(std::to_wstring(unsigned(today.day())), 68, 61, 72, 62, 46, true);
     if (events.empty())
       text(emptyLabel, 20, 133, 120, 22, 11);
     else
-      eventText(0, 20, 135, 120, 11);
+      eventText(0, 20, 128, 120, 11);
     return;
   }
   if (w.size == Size::M) {
@@ -849,7 +870,7 @@ void Renderer::metricDecorations(const Widget &w, const Snapshot &data, Extent e
     text(L"최근 60초", 214, slim ? 10.f : 18.f, 102, 20, slim ? 11.f : 12.f,
          false, 0xffffff, DWRITE_TEXT_ALIGNMENT_TRAILING);
   if ((w.kind == Kind::Cpu || w.kind == Kind::Gpu) && !slim && !compact)
-    modelText(data.title, 20, medium ? 134.f : 302.f, e.width - 40, 21, 12);
+    modelText(data.title, 20, medium ? 126.f : 298.f, e.width - 40, 21, 12);
 }
 void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool decorationsCached) {
   const bool slim = w.size == Size::Slim, compact = w.size == Size::S, medium = w.size == Size::M;
@@ -876,25 +897,25 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
     auto value = timeLabel(now, w, w.seconds, false);
     auto period = w.twelveHour ? timeLabel(now, w).substr(0, 2) : L"";
     if (slim) {
-      text(value, 47, 31, 119, 34, w.seconds ? 21.f : 26.f, true);
+      modelText(value, 47, 31, 119, 34, w.seconds ? 21.f : 26.f, true);
       line(176, 19, 176, 53);
       text(shortDate, 193, 15, 126, 24, 14);
       text(period.empty() ? weekday : period + L" · " + weekday, 193, 39, 126, 22, 12);
     } else if (compact) {
       text(period, 20, 46, 120, 17, 11);
-      text(value, 20, period.empty() ? 53.f : 63.f, 120, 49, w.seconds ? 25.f : 37.f, true);
+      modelText(value, 20, period.empty() ? 53.f : 63.f, 120, 49, w.seconds ? 25.f : 37.f, true);
       text(shortDate, 20, 109, 120, 22, 13);
       text(weekday, 20, 131, 120, 20, 12);
     } else if (medium) {
       text(period, 20, 47, 175, 20, 12);
-      text(value, 20, period.empty() ? 53.f : 67.f, 175, 61, w.seconds ? 35.f : 51.f, true);
+      modelText(value, 20, period.empty() ? 53.f : 67.f, 175, 61, w.seconds ? 35.f : 51.f, true);
       line(197, 56, 197, 140);
       text(std::to_wstring(int(date.year())) + L"년", 214, 61, 102, 22, 13);
       text(shortDate, 214, 88, 102, 24, 16, true);
       text(weekday, 214, 118, 102, 22, 13);
     } else {
       text(period, 20, 65, width, 24, 15);
-      text(value, 20, 91, width, 100, w.seconds ? 60.f : 86.f, true);
+      modelText(value, 20, 91, width, 100, w.seconds ? 60.f : 86.f, true);
       text(dateLabel(date), 20, 208, width, 32, 22);
       line(20, 253, 316, 253);
       text(weekday, 20, 268, width, 25, 16);
@@ -923,30 +944,45 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
   if (w.kind == Kind::Cpu || w.kind == Kind::Gpu || w.kind == Kind::Memory) {
     const bool thermal = w.kind != Kind::Memory;
     if (!decorationsCached) metricDecorations(w, *data, e);
-    text(number(data->value) + L"%", slim ? 47.f : pad, slim ? 31.f : medium && thermal ? 73.f : 49.f,
-         slim     ? (thermal ? 72.f : 119.f)
-         : medium ? 146.f
-                  : width,
-         slim ? 29.f : 55.f, slim ? 24.f : 42.f, true, usageColor);
+    modelText(number(data->value) + L"%", slim ? 47.f : pad,
+              slim     ? 31.f
+              : medium ? 60.f
+                       : 49.f,
+              slim     ? (thermal ? 72.f : 119.f)
+              : medium ? 146.f
+                       : width,
+              slim ? 29.f : 55.f, slim ? 24.f : 42.f, true, usageColor);
     if (thermal) {
       const bool measured = validTemperature(data->temperature, monotonic(), w.interval);
       auto label = measured ? number(data->temperature.celsius) + L"°C" : L"—";
-      text(label, slim ? 123.f : medium ? 128.f : pad,
-           slim ? 38.f : medium ? 103.f : 104.f,
-           slim ? 56.f : medium ? 46.f : width, 21, slim || medium ? 12.f : 14.f, false,
+      text(label,
+           slim     ? 123.f
+           : medium ? 128.f
+                    : pad,
+           slim      ? 38.f
+           : compact ? 128.f
+           : medium  ? 87.f
+                     : 104.f,
+           slim     ? 56.f
+           : medium ? 46.f
+                    : width,
+           21, slim || medium ? 12.f : 14.f, false,
            design::metricColor(design::Metric::Temperature, data->temperature.celsius, measured));
     }
     if (!thermal)
-      modelText(formatBytes(data->total - data->available) + L" / " + formatBytes(data->total), slim ? 17.f : pad,
-              slim ? 55.f : compact ? 137.f : medium ? 134.f : 302.f,
-              slim ? 302.f : width, slim || compact ? 15.f : 21.f,
-              slim || compact ? 11.f : 12.f);
+      modelText(formatBytes(data->total - data->available) + L" / " + formatBytes(data->total),
+                slim ? 125.f : pad,
+                slim      ? 35.f
+                : compact ? 130.f
+                : medium  ? 126.f
+                          : 298.f,
+                slim ? 103.f : width, 19, slim || compact ? 11.f : 12.f);
     if (w.graph && !compact) {
       if (slim)
-        graph(data->history, 192, 32, 124, 18, 0xffffff);
+        graph(data->history, thermal ? 192.f : 235.f, 33, thermal ? 124.f : 81.f, 18, 0xffffff);
       else if (medium) {
-        line(176, 56, 176, 122);
-        graph(data->history, 192, 58, 124, 62, 0xffffff);
+        line(176, 51, 176, 117);
+        graph(data->history, 192, 53, 124, 62, 0xffffff);
       } else {
         graph(data->history, pad, 151, width, 105, 0xffffff);
         text(L"평균 " + number(data->history.average(monotonic()).value_or(NAN)) + L"%", pad, 272, 143, 24,
@@ -955,8 +991,12 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
              15);
       }
     } else
-      usage(slim ? 192.f : pad, slim ? 42.f : (compact || medium) ? 126.f : 151.f,
-            slim ? 124.f : width, data->value);
+      usage(slim ? (thermal ? 192.f : 235.f) : pad,
+            slim      ? 42.f
+            : compact ? 118.f
+            : medium  ? 113.f
+                      : 151.f,
+            slim ? (thermal ? 124.f : 81.f) : width, data->value);
   } else if (w.kind == Kind::System) {
     auto uptime = int64_t(std::max(0., std::isfinite(data->value) ? data->value : 0.));
     auto duration = std::to_wstring(uptime / 86400) + L"일 " + std::to_wstring(uptime / 3600 % 24) + L"시간";
@@ -967,19 +1007,31 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
     if (slim) {
       if (w.systemFields[0])
         text(data->title, 47, 34, 119, 26, 17, true);
-      line(176, 19, 176, 53);
+      if (w.systemFields[0] && (w.systemFields[1] || w.systemFields[4]))
+        line(176, 19, 176, 53);
+      float infoX = w.systemFields[0] ? 193.f : 47.f;
       if (w.systemFields[1])
-        text(os, 193, 14, 126, 25, 14);
+        text(os, infoX, w.systemFields[0] ? 14.f : 33.f, e.width - pad - infoX, 25, 14);
       if (w.systemFields[4])
-        text(duration, 193, 40, 126, 22, 12);
+        text(duration, w.systemFields[0] ? infoX : (w.systemFields[1] ? 193.f : 47.f),
+             w.systemFields[1] && w.systemFields[0] ? 40.f : 33.f, 126, 22, 12);
     } else if (compact) {
-      if (w.systemFields[0])
-        text(data->title, pad, 55, width, 34, 24, true);
-      if (w.systemFields[1])
-        text(os, pad, 94, width, 23, 12);
-      line(pad, 120, e.width - pad, 120);
-      if (w.systemFields[4])
-        text(L"가동 " + duration, pad, 129, width, 22, 12);
+      float y = 52;
+      if (w.systemFields[0]) {
+        text(data->title, pad, y, width, 34, 24, true);
+        y += 39;
+      }
+      if (w.systemFields[1]) {
+        text(os, pad, y, width, 23, 12);
+        y += 26;
+      }
+      if (w.systemFields[4]) {
+        if (y > 52) {
+          line(pad, y, e.width - pad, y);
+          y += 6;
+        }
+        text(L"가동 " + duration, pad, y, width, 22, 12);
+      }
     } else {
       if (w.systemFields[0])
         text(data->title, pad, 53, width, medium ? 31.f : 50.f,
@@ -996,10 +1048,11 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
         rows.push_back({L"GPU", gpu});
       if (!medium && w.systemFields[4])
         rows.push_back({L"가동 시간", duration});
-      if (!medium)
+      if (!medium && w.systemFields[0] && !rows.empty())
         line(pad, 113, e.width - pad, 113);
       for (size_t i = 0; i < rows.size(); ++i) {
-        float y = (medium ? 87.f : 127.f) + float(i) * (medium ? 23.f : 49.f);
+        float first = w.systemFields[0] ? (medium ? 82.f : 127.f) : 53.f;
+        float y = first + float(i) * (medium ? 20.f : 49.f);
         float label = medium ? 39.f : 76.f;
         text(rows[i].first, pad, y, label, 22, 12);
         text(rows[i].second, pad + label, y, width - label, medium ? 22.f : 40.f, medium ? 12.f : 14.f, false,
@@ -1011,10 +1064,12 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
         std::wstring footer = w.systemFields[1] ? os : L"";
         if (w.systemFields[4])
           footer += (footer.empty() ? L"" : L" · ") + std::wstring(L"가동 ") + duration;
-        text(footer, pad, 137, width, 19, 11);
+        float footerY = (w.systemFields[0] ? 82.f : 53.f) + float(rows.size()) * 20.f + 5;
+        text(footer, pad, footerY, width, 19, 12);
       }
     }
-    if (std::none_of(w.systemFields.begin(), w.systemFields.end(), [](bool value) { return value; }))
+    if (!(w.systemFields[0] || w.systemFields[1] || w.systemFields[4] ||
+          ((!compact && !slim) && (w.systemFields[2] || w.systemFields[3]))))
       text(L"표시 항목 없음", slim ? 47.f : pad, slim ? 36.f : 64.f, width, 24, 12);
   } else if (w.kind == Kind::Network) {
     auto speed = [&](double value) {
@@ -1024,14 +1079,16 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
     double maximum = std::max(data->history.maximum(monotonic()).value_or(1),
                               data->history2.maximum(monotonic()).value_or(1));
     if (slim) {
-      text(incoming, 47, 36, 129, 24, 14, true);
+      modelText(incoming, 47, 36, 129, 24, 14, true);
       line(184, 19, 184, 53);
       text(L"송신", 200, 12, 116, 24, 14);
-      text(outgoing, 200, 36, 116, 24, 14, true, 0xc3ffe9);
+      modelText(outgoing, 200, 36, 116, 24, 14, true, 0xc3ffe9);
     } else {
-      const float summary = medium ? 146.f : width;
-      text(incoming, pad, 57, summary, 36, compact ? 17.f : medium ? 19.f : 27.f, true);
-      text(outgoing, pad, 99, summary, 30, compact ? 15.f : medium ? 17.f : 22.f, false, 0xc3ffe9);
+      const float summary = medium && w.graph ? 146.f : width;
+      const float inFont = compact ? 17.f : medium ? 19.f : 27.f;
+      const float outFont = compact ? 15.f : medium ? 17.f : 22.f;
+      modelText(incoming, pad, 57, summary, 36, inFont, true);
+      modelText(outgoing, pad, 99, summary, 30, outFont, false, 0xc3ffe9);
       if (w.graph && !compact) {
         float x = medium ? 192.f : pad, y = medium ? 76.f : 164.f, gw = medium ? 124.f : width,
               gh = medium ? 64.f : 98.f;
@@ -1061,7 +1118,7 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
       const float row = dense ? 37.f : 74.f;
       for (size_t i = 0; i < shown; ++i) {
         const auto &volume = data->disks[first + i];
-        const float y = 92 + float(i) * row;
+        const float y = (dense ? 80.f : 91.f) + float(i) * row;
         text(volume.name, pad, y, dense ? 100.f : 127.f, 24, dense ? 12.f : 16.f, true);
         if (std::isfinite(volume.total) && volume.total > 0 && std::isfinite(volume.available)) {
           const auto total = formatBytes(volume.total, w.binaryDisk);
@@ -1087,15 +1144,15 @@ void Renderer::content(const Widget &w, const Snapshot *data, Extent e, bool dec
     if (slim) {
       text(L"디스크", 47, 37, 85, 22, 12);
       line(126, 19, 126, 53);
-      text(L"여유 " + available, 143, 13, 173, 28, 17, true);
+      modelText(L"여유 " + available, 143, 13, 173, 28, 17, true);
       usage(143, 48, 173, data->value);
     } else if (compact) {
       text(number(data->value) + L"%", pad, 49, width, 58, 42, true, usageColor);
       text(L"사용", pad, 101, width, 23, 13);
       text(available + L" 여유", pad, 121, width, 20, 11);
-      usage(pad, 144, width, data->value);
+      usage(pad, 142, width, data->value);
     } else {
-      text(available, pad, 55, 165, 52, 34, true);
+      modelText(available, pad, 55, 165, 52, 34, true);
       text(L"사용 가능", pad, 117, 165, 23, 14);
       line(187, 56, 187, 140);
       text(formatBytes(data->total - data->available, w.binaryDisk) + L" / " +
@@ -1162,15 +1219,20 @@ ComPtr<ID2D1Bitmap> Renderer::background(Extent e, UINT width, UINT height, floa
 }
 
 bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot *data, int theme, bool edit,
-                    UINT dpi) {
+                    UINT dpi, HDC preview) {
   if (!ready() || !surface(hwnd, s))
     return false;
   auto e = extent(w.size, w.scale);
   e.width *= 100.f / w.scale;
   e.height *= 100.f / w.scale;
+  contentBottom_ = e.height - (w.size == Size::Slim ? design::slimBottom
+                               : w.size == Size::S  ? design::compactBottom
+                                                    : design::regularBottom);
   if (!raster_)
     gpuContext_->SetTarget(s.bitmap.Get());
-  context_->SetDpi(float(dpi) * w.scale / 100, float(dpi) * w.scale / 100);
+  float renderDpi =
+      preview ? 96.f * std::min(s.width / e.width, s.height / e.height) : float(dpi) * w.scale / 100;
+  context_->SetDpi(renderDpi, renderDpi);
   context_->SetTransform(D2D1::Matrix3x2F::Identity());
   int index = w.theme < 0 ? theme : w.theme;
   auto palette = palettes()[std::clamp(index, 0, 8)];
@@ -1230,8 +1292,9 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
   float alpha = highContrast_ ? 1.f : 1 - w.backgroundTransparency / 100.f;
   if (edit)
     alpha = std::max(.3f, alpha);
-  auto backdrop = !scene ? background(e, s.width, s.height, float(dpi) * w.scale / 100,
-                                      palette.top, palette.bottom, alpha, w, data) : ComPtr<ID2D1Bitmap>{};
+  auto backdrop =
+      !scene ? background(e, s.width, s.height, renderDpi, palette.top, palette.bottom, alpha, w, data)
+             : ComPtr<ID2D1Bitmap>{};
   context_->BeginDraw();
   context_->Clear({0, 0, 0, 0});
   if (backdrop) {
@@ -1286,6 +1349,10 @@ bool Renderer::draw(HWND hwnd, RenderSurface &s, const Widget &w, const Snapshot
                     : edit        ? std::max(.35f, 1 - w.transparency / 100.f)
                                   : 1 - w.transparency / 100.f;
     BLENDFUNCTION blend{AC_SRC_OVER, 0, BYTE(std::round(opacity * 255)), AC_SRC_ALPHA};
+    s.raster->opacity = blend.SourceConstantAlpha;
+    if (preview)
+      return AlphaBlend(preview, 0, 0, size.cx, size.cy, s.raster->dc, 0, 0, size.cx, size.cy, blend) !=
+             FALSE;
     return UpdateLayeredWindow(hwnd, nullptr, nullptr, &size, s.raster->dc, &zero, 0, &blend, ULW_ALPHA) !=
            FALSE;
   }

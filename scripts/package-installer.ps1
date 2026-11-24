@@ -1,5 +1,5 @@
 param(
-  [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.1.4',
+  [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.1.5',
   [string]$PackageZip,
   [string]$NsisCompiler
 )

@@ -10,6 +10,7 @@ static std::string str(const std::wstring &s) {
 Json widgetJson(const Widget &w) {
   return {{"id", str(w.id)},
           {"kind", int(w.kind)},
+          {"alias", str(w.alias)},
           {"size", int(w.size)},
           {"scale", w.scale},
           {"x", w.x},
@@ -42,6 +43,7 @@ Json widgetJson(const Widget &w) {
 Widget readWidget(const Json &j) {
   Widget w;
   w.id = wide(j.value("id", str(w.id)));
+  w.alias = wide(j.value("alias", std::string{}));
   w.kind = Kind(j.at("kind").get<int>());
   w.size = Size(j.value("size", 2));
   w.scale = j.value("scale", 100);
@@ -76,41 +78,79 @@ Widget readWidget(const Json &j) {
     throw std::runtime_error("Invalid widget settings");
   return w;
 }
+static Json layoutJson(const Layout &layout) {
+  Json j{{"theme", layout.theme}, {"widgets", Json::array()}};
+  for (const auto &widget : layout.widgets)
+    j["widgets"].push_back(widgetJson(widget));
+  return j;
+}
+static void writeLayoutIdentity(Json &j, const Layout &layout) {
+  j["layoutId"] = str(layout.layoutId);
+  j["layoutName"] = str(layout.layoutName);
+}
 Json settingsJson(const Settings &s, bool exporting) {
-  Json j = {{"version", 1}, {"theme", s.theme}, {"widgets", Json::array()}};
+  auto j = layoutJson(s);
+  j["version"] = exporting ? 1 : 2;
   j["weatherProvider"] = s.weatherProvider == WeatherProvider::Kma ? "kma" : "open-meteo";
   if (!exporting) {
+    writeLayoutIdentity(j, s);
+    j["otherLayouts"] = Json::array();
+    for (const auto &layout : s.otherLayouts) {
+      auto item = layoutJson(layout);
+      writeLayoutIdentity(item, layout);
+      j["otherLayouts"].push_back(std::move(item));
+    }
     j["hidden"] = s.hidden;
     j["cpuTemperatureEnabled"] = s.cpuTemperatureEnabled;
     j["checkUpdatesOnStart"] = s.checkUpdatesOnStart;
   }
-  for (auto &w : s.widgets)
-    j["widgets"].push_back(widgetJson(w));
   return j;
 }
+static Layout readLayout(const Json &j, bool named) {
+  Layout layout;
+  if (named) {
+    layout.layoutId = wide(j.at("layoutId").get<std::string>());
+    layout.layoutName = wide(j.at("layoutName").get<std::string>());
+    if (layout.layoutId.empty() || layout.layoutId.size() > 64 || layout.layoutName.empty() ||
+        layout.layoutName.size() > 64)
+      throw std::runtime_error("Invalid layout identity");
+  }
+  layout.theme = j.value("theme", 1);
+  if (layout.theme < 0 || layout.theme >= 9 || !j.at("widgets").is_array() || j["widgets"].size() > 64)
+    throw std::runtime_error("Invalid layout");
+  std::set<std::wstring> ids;
+  for (const auto &item : j["widgets"]) {
+    auto w = readWidget(item);
+    if (!ids.insert(w.id).second)
+      throw std::runtime_error("Duplicate widget id");
+    layout.widgets.push_back(std::move(w));
+  }
+  return layout;
+}
 Settings readSettings(const Json &j) {
-  if (j.value("version", 0) != 1)
+  int version = j.value("version", 0);
+  if (version != 1 && version != 2)
     throw std::runtime_error("Unsupported settings version");
   Settings s;
+  static_cast<Layout &>(s) = readLayout(j, version == 2);
+  if (version == 2) {
+    std::set<std::wstring> ids{s.layoutId}, names{s.layoutName};
+    if (!j.at("otherLayouts").is_array())
+      throw std::runtime_error("Invalid layouts");
+    for (const auto &item : j["otherLayouts"]) {
+      auto layout = readLayout(item, true);
+      if (!ids.insert(layout.layoutId).second || !names.insert(layout.layoutName).second)
+        throw std::runtime_error("Duplicate layout");
+      s.otherLayouts.push_back(std::move(layout));
+    }
+  }
   auto provider = j.value("weatherProvider", std::string("kma"));
   if (provider != "kma" && provider != "open-meteo")
     throw std::runtime_error("Invalid weather provider");
   s.weatherProvider = provider == "kma" ? WeatherProvider::Kma : WeatherProvider::OpenMeteo;
-  s.theme = j.value("theme", 1);
   s.hidden = j.value("hidden", false);
   s.cpuTemperatureEnabled = j.value("cpuTemperatureEnabled", false);
   s.checkUpdatesOnStart = j.value("checkUpdatesOnStart", true);
-  if (s.theme < 0 || s.theme >= 9)
-    throw std::runtime_error("Invalid theme");
-  if (!j.contains("widgets") || !j["widgets"].is_array() || j["widgets"].size() > 64)
-    throw std::runtime_error("Invalid widget count");
-  std::set<std::wstring> ids;
-  for (auto &item : j["widgets"]) {
-    auto w = readWidget(item);
-    if (!ids.insert(w.id).second)
-      throw std::runtime_error("Duplicate widget id");
-    s.widgets.push_back(std::move(w));
-  }
   return s;
 }
 std::optional<std::string> boundedRead(const std::filesystem::path &p, size_t limit) {
@@ -199,14 +239,27 @@ bool Store::save(const Settings &s) {
   std::lock_guard guard(mutex_);
   try {
     auto file = root_ / L"settings.json";
-    if (auto old = boundedRead(file)) {
+    auto bytes = settingsJson(s).dump(2);
+    if (bytes.size() > 4 * 1024 * 1024)
+      return false;
+    auto old = boundedRead(file);
+    if (old) {
       try {
         readSettings(Json::parse(*old));
-        atomicWrite(root_ / L"settings.backup.json", *old);
       } catch (...) {
+        old.reset();
       }
     }
-    return atomicWrite(file, settingsJson(s).dump(2));
+    auto backup = root_ / L"settings.backup.json";
+    auto link = root_ / L"settings.backup.link.tmp";
+    // Our primary writes always replace the file. Keep its already-flushed previous
+    // revision by inode, then publish that backup only after committing the new primary.
+    bool linked = old && CreateHardLinkW(link.c_str(), file.c_str(), nullptr);
+    bool saved = atomicWrite(file, bytes);
+    if (saved && old && !(linked && MoveFileExW(link.c_str(), backup.c_str(), MOVEFILE_REPLACE_EXISTING)))
+      atomicWrite(backup, *old); // Volumes without hard links keep the copy-based backup.
+    DeleteFileW(link.c_str()); // Also retire a temporary link left by an interrupted save.
+    return saved;
   } catch (...) {
     return false;
   }

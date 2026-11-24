@@ -47,7 +47,7 @@ internal static partial class Program
                   w["weatherDays"]![2]!["probability"]!.GetValue<double>() == 80),
               "Open-Meteo HTTP daily response reaches all widgets with four days and maximum probability");
         Tab(1);
-        Check(!Element(1400).IsEnabled && Element(1405).Name.Contains("비상업적"), "Open-Meteo needs no key and explains free-use condition");
+        Check(!IsWindowVisible(GetDlgItem(Window.Properties.NativeWindowHandle, 1400)) && Element(1405).Name.Contains("비상업적"), "Open-Meteo needs no key and explains free-use condition");
         Screenshot("weather-connections-open-meteo", Window.BoundingRectangle);
         SelectWeather(0); WaitWeather("kma", 1, 18);
         Check(WeatherWindows().All(w => w["weatherDays"]!.AsArray().Count == 4 &&
@@ -78,9 +78,9 @@ internal static partial class Program
         app.Dispose(); app = Start(exe);
         Check(app.ProcessId != oldPid && JsonNode.DeepEquals(saved, Settings()), "Committed settings survive forced process termination");
         WaitWeather("open-meteo", 1, 21);
-        Tab(2); FileDialog(1503, Path.Combine(Data, "weather-layout.json"));
+        Tab(3); FileDialog(1503, Path.Combine(Data, "weather-layout.json"));
         Check(JsonNode.Parse(File.ReadAllText(Path.Combine(Data, "weather-layout.json")))!["weatherProvider"]!.GetValue<string>() == "open-meteo", "Layout export includes provider");
-        SelectWeather(0); Tab(2); FileDialog(1504, Path.Combine(Data, "weather-layout.json"));
+        SelectWeather(0); Tab(3); FileDialog(1504, Path.Combine(Data, "weather-layout.json"));
         WaitWeather("open-meteo", 1, 21);
         SelectWeather(0);
         using (var locked = new FileStream(Path.Combine(Data, "settings.json"), FileMode.Open, FileAccess.Read, FileShare.Read))

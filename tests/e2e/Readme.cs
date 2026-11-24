@@ -33,11 +33,11 @@ internal static partial class Program
         NativeButton(1204); CaptureSettings("usage-arrange");
         VisibleWidgets("design-usage-arrange-widget", 1, true);
         NativeButton(1204);
-        Tab(3); Element(1600).AsCheckBox().IsChecked = true; NativeButton(1620);
+        Tab(0); Element(1600).AsCheckBox().IsChecked = true; NativeButton(1316);
         Check(Settings()["widgets"]![0]!["twelveHour"]!.GetValue<bool>(), "README display option saved");
         CaptureSettings("usage-clock-options");
         Tab(0); NativeButton(1203); NativeCombo(1201, 5); NativeButton(1202);
-        Tab(3); CaptureSettings("usage-system-options");
+        Tab(0); CaptureSettings("usage-system-options");
         Tab(0); NativeButton(1203); NativeCombo(1201, 6); NativeButton(1202);
         CaptureSettings("usage-network");
         NativeButton(1203); NativeCombo(1201, 1); NativeButton(1202);
@@ -74,7 +74,7 @@ internal static partial class Program
             CaptureSettings("usage-backup-exported");
             Tab(0); NativeButton(1203);
             Check(Settings()["widgets"]!.AsArray().Count == 0, "README remove before restore");
-            Tab(2); FileDialog(1504, layout);
+            Tab(3); FileDialog(1504, layout);
             Check(Settings()["widgets"]!.AsArray().Count == 1, "README layout restore recovers calendar");
             CaptureSettings("usage-backup-restored");
             NativeButton(1505); CaptureSettings("usage-diagnostics");

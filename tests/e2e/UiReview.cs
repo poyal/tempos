@@ -25,7 +25,6 @@ internal static partial class Program
             Check(Visible(1313) == new[] {3, 6, 7}.Contains(kind), $"Kind {kind}: appropriate device controls");
             Check(Visible(1315) == (kind == 0 || kind == 8), $"Kind {kind}: timezone only for clock/calendar");
             CaptureSettings("settings-kind-" + kind);
-            Tab(3);
             int[] optionKinds = [0, 1, 6, 7, 8];
             for (int i = 0; i < optionKinds.Length; i++)
                 Check(Visible(1600 + i) == (kind == optionKinds[i]), $"Kind {kind}: relevant display option {i}");
@@ -77,7 +76,30 @@ internal static partial class Program
                 NativeCombo(1300, size); NativeButton(1316);
                 if (kind == 7)
                     Check(Visible(1313) == (size != 3), $"Disk size {size}: volume selector only for single-drive layouts");
-                VisibleWidgets($"design-kind-{kind}-size-{size}", 1, true);
+                string capture = $"design-kind-{kind}-size-{size}";
+                VisibleWidgets(capture, 1, true);
+                using var bitmap = new Bitmap(Path.Combine(Data,capture+".png"));
+                double ratio = bitmap.Width / (double)new[] {160,336,336,336,1008}[size];
+                int inset=(int)Math.Ceiling(24*ratio), bottom=(int)Math.Floor(new[] {12,8,16,16,16}[size]*ratio);
+                bool clear = true;
+                for (int y=bitmap.Height-bottom; y<bitmap.Height-2 && clear; ++y)
+                    for (int x=inset; x<bitmap.Width-inset; ++x) {
+                        var pixel=bitmap.GetPixel(x,y);
+                        if (pixel.R>=230 && pixel.G>=230 && pixel.B>=230 && Math.Abs(pixel.R-pixel.B)<14) { clear=false; break; }
+                    }
+                Check(clear,capture+": bottom margin is clear of white text and solid marks");
+                if (size == 0 && kind is 2 or 3)
+                {
+                    bool HasText(int top,int bottom) {
+                        for (int y=(int)(top*ratio);y<(int)(bottom*ratio);y++)
+                            for (int x=(int)(20*ratio);x<(int)(85*ratio);x++) {
+                                var c=bitmap.GetPixel(x,y);
+                                if (c.R>224 && c.G>224 && c.B>224) return true;
+                            }
+                        return false;
+                    }
+                    Check(!HasText(124,128) && HasText(132,147), capture+": temperature occupies its own row below the usage bar");
+                }
             }
             if (kind == 7)
             {

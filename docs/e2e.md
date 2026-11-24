@@ -48,6 +48,7 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 | `--temperature` | 센서 응답 경계 목업·설치 취소/실패/재부팅 요구·설정 저장/재시작·내보내기 격리·미지원/오래됨/복구·날씨/CPU/GPU/메모리 S/Slim/M/L×100/150/200% 예제 캡처·CPU/GPU/메모리/디스크 M의 흰색/주황색/빨간색/오래된 값 픽셀 확인 |
 | `--api-mock` | OAuth 승인 거부·교환·갱신, 캘린더 목록·페이지 합치기·빈 응답·401/403/429/503·시간 초과·비정상 응답·캐시·연결 해제 |
 | `--weather` | 공급자 전환, 키 보존, 신규/구버전 기본값, 요청 공유, 저장 실패, 정상·강제 종료 복원, 레이아웃 가져오기, 오류 응답·WMO 상태·늦은 응답, 위젯 출처 문구 제거 |
+| `--workspace-editor` | v1 프로필 자동 이전과 재실행, 통합 편집·미리보기·되돌리기, 미적용 변경 3가지 선택, 복제, 배치 전환·잠긴 파일·재시작, 단일 배치 가져오기·내보내기, 좁은 창과 테마 예제 캡처. 실제 Win32 입력·파일, 외부 API 목업 |
 | `--ui-review` | 9종 선택별 설정, 클릭 무동작·읽기 전용 접근성, 현재 위치 한 번 선택·저장, 전체 네트워크, 37개 크기, 전체 디스크·자동 페이지 순환 |
 | `--startup` | 격리된 레지스트리 등록·해제, 재시작 체크 복원, 공백·한글 데이터 경로, 등록 명령 실행 |
 | `--persistence` | 위젯 ID·설정·실제 창·숨김·중간 삭제·종료 후 복원 |
@@ -93,6 +94,8 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --wi
 ./scripts/full-validation.ps1
 ./scripts/full-validation.ps1 -LongRunning
 ./scripts/performance.ps1 -WarmupSeconds 300 -SampleSeconds 1800 -Name regression
+# 설정창을 닫은 상태에서 미리보기 그리기 횟수와 위젯 예산을 함께 검사
+./scripts/performance.ps1 -WarmupSeconds 30 -SampleSeconds 60 -Name editor-closed -SettingsClosed
 ```
 
 성능·2시간 지속 검사는 해당 실행 스레드에만 일시적인 절전 방지 요청을 두며 종료 시 해제한다. 전원 계획·화면 잠금 정책을 변경하지 않는다. 입력 데스크톱이 잠기거나 샘플 사이에 비정상적으로 긴 중단이 생기면 실패 처리하여 절전 시간을 실제 UI 검증 시간으로 합산하지 않는다. 성능 보고서에는 실제 누적 측정 시간과 최대 샘플 간격을 기록한다.
@@ -184,7 +187,7 @@ TestHost의 자동 시작은 `HKCU\Software\Tempos\Tests\<데이터 경로 식�
 
 각 실행의 `results.json`에서 시작·종료·모드·`testClass`·`apiMode`·`systemMode`·실행 파일 SHA-256·각 항목의 결과를 확인한다. 실패·중단·보고서 누락은 통과가 아니다. 캡처 생성과 사람이 검토한 결과도 별도로 기록한다.
 
-디자인 검수용 위젯은 항상 위·배경 불투명 상태로 촬영하며, 뒤에 중립색 창을 배치한다. 설정창은 촬영할 때만 맨 앞으로 올리고 49개 내부 지점의 가림 여부를 검사한 뒤 클라이언트 영역만 캡처한다. 설정과 실제 배경 투명도 기본값을 바꾼 것이 아니라 촬영 조건이다. `scripts/collect-design-review.cjs`는 `artifacts/final-runs.json`의 `[{"mode":"ui-review","folder":"test-results/e2e-..."}, ...]` 목록에서 통과한 실행의 지정 PNG만 수집하며 프로파일·인증 정보는 복사하지 않는다.
+디자인 검수용 위젯은 항상 위·배경 불투명 상태로 촬영하며, 뒤에 중립색 창을 배치한다. 다른 앱이나 시스템 대화상자가 촬영 영역을 가리면 설정창은 Windows의 `PrintWindow`로, 위젯은 해당 TestHost 창이 마지막으로 표시한 색상·투명도 표면으로 촬영한다. 외부 창이 가로막은 마우스 적중 검사는 SKIP으로 기록한다. 설정창은 촬영할 때만 맨 앞으로 올리고 49개 내부 지점의 가림 여부를 검사한 뒤 클라이언트 영역만 캡처한다. 설정과 실제 배경 투명도 기본값을 바꾼 것이 아니라 촬영 조건이다. `scripts/collect-design-review.cjs`는 `artifacts/final-runs.json`의 `[{"mode":"ui-review","folder":"test-results/e2e-..."}, ...]` 목록에서 통과한 실행의 지정 PNG만 수집하며 프로파일·인증 정보는 복사하지 않는다.
 
 일반 E2E는 실제 기상청 인증이나 Open-Meteo 서버의 가용성을 증명하지 않는다. 실제 Open-Meteo는 `tempos_tests.exe --live-weather`, 실제 기상청 키·Google OAuth·Windows 로그인은 별도 실환경 검사로 구분한다. 물리 드래그와 Win+D를 Win32 메시지 테스트로 대신했다고 표시하지 않는다.
 

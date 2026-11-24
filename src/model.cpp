@@ -260,8 +260,8 @@ bool validateWidget(Widget &w) {
   if (!std::isfinite(w.latitude) || !std::isfinite(w.longitude) || w.latitude < 31 || w.latitude > 44 ||
       w.longitude < 123 || w.longitude > 133)
     return false;
-  if (w.id.empty() || w.id.size() > 64 || w.source.size() > 1024 || w.region.size() > 256 ||
-      w.timezone.size() > 128 || w.monitor.size() > 1024 || w.calendars.size() > 32)
+  if (w.alias.size() > 64 || w.id.empty() || w.id.size() > 64 || w.source.size() > 1024 ||
+      w.region.size() > 256 || w.timezone.size() > 128 || w.monitor.size() > 1024 || w.calendars.size() > 32)
     return false;
   return true;
 }

@@ -1,0 +1,271 @@
+{
+  "date": "2026-11-24",
+  "hash": {
+    "testHost": "146C3A0F2B6CCA735897D5B72168AA0DCF82A5638D777A83F854B8F41A188362",
+    "app": "E7B259105A61933ABFAC4707E4945A13AB45E8AD66452C61025289068C379CF5"
+  },
+  "coreChecks": 9699,
+  "runs": [
+    {
+      "mode": "--workspace-editor",
+      "run": "e2e-20261124-143955-429",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 62,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--ui-review",
+      "run": "e2e-20261124-144122-466",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 532,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--windows-real",
+      "run": "e2e-20261124-144231-425",
+      "api": "mock",
+      "collectors": "real",
+      "passed": 52,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "mode": "--legacy-grid",
+      "run": "e2e-20261124-143945-410",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--geometry-matrix",
+      "run": "e2e-20261124-144611-296",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 711,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--capacity",
+      "run": "e2e-20261124-144020-423",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 83,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "mode": "--options",
+      "run": "e2e-20261124-144706-144",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 86,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--failures",
+      "run": "e2e-20261124-144731-888",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 140,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--drag-performance",
+      "run": "e2e-20261124-144809-264",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--render-cache",
+      "run": "e2e-20261124-144852-362",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 91,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--temperature",
+      "run": "e2e-20261124-145023-287",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 508,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--weather",
+      "run": "e2e-20261124-144919-638",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 74,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--api-mock",
+      "run": "e2e-20261124-144948-940",
+      "api": "mock",
+      "collectors": "real",
+      "passed": 68,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--updates",
+      "run": "e2e-20261124-145003-902 업데이트 검사",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 83,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "mode": "--persistence",
+      "run": "e2e-20261124-145136-267",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 223,
+      "failed": 0,
+      "skipped": 106
+    },
+    {
+      "mode": "--placement",
+      "run": "e2e-20261124-145217-087",
+      "api": "mock",
+      "collectors": "fixture",
+      "passed": 60,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "counts": {
+    "passed": 2823,
+    "failed": 0,
+    "skipped": 108
+  },
+  "performance": [
+    {
+      "state": "closed",
+      "run": "performance-editor-closed-20261124-144302",
+      "passed": true,
+      "settingsClosed": true,
+      "previewDraws": 0,
+      "warmup": 30,
+      "seconds": 60.6956534,
+      "averageCpu": 0.0128715971611898,
+      "p95Cpu": 0.12840600102179042,
+      "rawCpu": 1.544591659342776,
+      "workingMiB": 43.03515625,
+      "privateMiB": 19.8046875,
+      "optimizationTargetsMet": true,
+      "checks": [
+        {
+          "name": "Average CPU percent",
+          "passed": true
+        },
+        {
+          "name": "P95 CPU percent",
+          "passed": true
+        },
+        {
+          "name": "Raw CPU ms/second",
+          "passed": true
+        },
+        {
+          "name": "Private bytes",
+          "passed": true
+        },
+        {
+          "name": "Working set",
+          "passed": true
+        },
+        {
+          "name": "Closed settings stop preview rendering",
+          "passed": true
+        },
+        {
+          "name": "Widgets remain visible",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "state": "open",
+      "run": "performance-editor-open-20261124-144437",
+      "passed": true,
+      "settingsClosed": false,
+      "previewDraws": 2,
+      "warmup": 30,
+      "seconds": 60.56763049999999,
+      "averageCpu": 0.038696412269256596,
+      "p95Cpu": 0.12970456081911017,
+      "rawCpu": 4.643569472310792,
+      "workingMiB": 43.04296875,
+      "privateMiB": 22.5390625,
+      "optimizationTargetsMet": false,
+      "checks": [
+        {
+          "name": "Average CPU percent",
+          "passed": true
+        },
+        {
+          "name": "P95 CPU percent",
+          "passed": true
+        },
+        {
+          "name": "Raw CPU ms/second",
+          "passed": true
+        },
+        {
+          "name": "Private bytes",
+          "passed": true
+        },
+        {
+          "name": "Working set",
+          "passed": true
+        },
+        {
+          "name": "Widgets remain visible",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "drag": [
+    {
+      "testClass": "native-message-batch-drag-performance",
+      "widgets": 1,
+      "warmupCycles": 100,
+      "cycles": 1000,
+      "moveP95Milliseconds": 0.987,
+      "dropP95Milliseconds": 39.356,
+      "roundTripP95Milliseconds": 41.3349,
+      "moveMaximumMilliseconds": 1.998,
+      "dropMaximumMilliseconds": 123.804
+    },
+    {
+      "testClass": "native-message-batch-drag-performance",
+      "widgets": 64,
+      "warmupCycles": 100,
+      "cycles": 1000,
+      "moveP95Milliseconds": 0.533,
+      "dropP95Milliseconds": 2.807,
+      "roundTripP95Milliseconds": 3.7254,
+      "moveMaximumMilliseconds": 0.963,
+      "dropMaximumMilliseconds": 5.78
+    }
+  ]
+}

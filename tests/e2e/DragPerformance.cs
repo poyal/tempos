@@ -49,7 +49,7 @@ internal static partial class Program
             w["x"] = 16; w["y"] = 16; return w;
         }).ToArray());
         var file = Path.Combine(Data, "drag-capacity.json");
-        File.WriteAllText(file, imported.ToJsonString()); Tab(2); FileDialog(1504, file); Tab(0);
+        File.WriteAllText(file, imported.ToJsonString()); Tab(3); FileDialog(1504, file); Tab(0);
         NativeButton(1204); Measure(64);
         NativeButton(1204); Quit(app!); app = null;
     }

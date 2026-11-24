@@ -1,5 +1,13 @@
 # 검증 기록
 
+## Windows v0.1.5 릴리즈 · 2026-11-24
+
+격리된 Windows TestHost에서 설정 편집, 배치 저장·복원, 위젯 37개 구성과 업데이트를 검사했습니다. [최종 후보의 Release·ASan 결과와 검사 범위](validation/release-v0.1.5.md) · [릴리즈 노트](releases/v0.1.5.md)
+
+## 설정·위젯 편집기 개발 빌드 · 2026-11-24
+
+[37개 위젯과 설정 화면 비교](validation/editor-2026-11-24/index.html) · [실행별 검사 결과와 측정 환경](validation/editor-2026-11-24/results.md)
+
 ## Windows v0.1.4 릴리즈 · 2026-11-14
 
 About·업데이트를 포함한 최종 버전 0.1.4의 Release·ASan 단위 각각 **9,695 PASS**, 센서 **22 PASS**, Release E2E **877 PASS·0 FAIL·108 SKIP**, ASan E2E **152 PASS·0 FAIL·0 SKIP**을 확인했다. 업데이트 모드는 두 빌드에서 각각 **84 PASS·0 FAIL·0 SKIP**이다. 최초 RC 버전 의존성 누락으로 About와 Windows 파일 속성이 달랐던 문제를 수정하고 같은 검사로 재확인했다. [후보 검증·최초 실패·제한](validation/release-v0.1.4.md), [해시·실행별 결과](validation/release-v0.1.4.json), [릴리즈 노트](releases/v0.1.4.md).

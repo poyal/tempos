@@ -59,7 +59,18 @@ internal static partial class Program
     static AutomationElement Element(int id) { if (Controls.TryGetValue(id, out var value)) return value; return Controls[id] = Window.FindFirstDescendant(c => c.ByAutomationId(id.ToString())) ?? throw new Exception($"Control {id} missing"); }
     static void Button(int id) { var element = Element(id); Console.WriteLine($"BUTTON {id} {element.Name} offscreen={element.IsOffscreen}"); element.AsButton().Invoke(); Thread.Sleep(500); if (id != 1507) Console.WriteLine($"STATUS {Element(1999).Name}"); }
     static void Combo(int id, int index) { Element(id).AsComboBox().Select(index); Thread.Sleep(100); }
-    static void Tab(int index) { var tab = Element(1000).AsTab(); tab.TabItems[index].Patterns.SelectionItem.Pattern.Select(); Thread.Sleep(300); Console.WriteLine($"TAB {index} selected={tab.SelectedTabItemIndex} bounds={tab.BoundingRectangle}"); }
+    static void Tab(int index)
+    {
+        var handle = Window.Properties.NativeWindowHandle.Value;
+        if (IsWindowVisible(GetDlgItem(handle, 1000 + index))) NativeButton(1000 + index);
+        else
+        {
+            var picker = GetDlgItem(handle, 1012);
+            int item = Array.IndexOf(new[] { 0, 3, 1, 2, 4 }, index);
+            SendMessage(picker, 0x14E, item, 0);
+            SendMessage(handle, 0x111, 1012 | (1 << 16), picker);
+        }
+    }
     static JsonObject Settings()
     {
         for (int attempt = 0; ; attempt++)
@@ -87,6 +98,7 @@ internal static partial class Program
     }
     static void FileDialog(int command, string file)
     {
+        Tab(3);
         PostMessage(Window.Properties.NativeWindowHandle, 0x111, command, 0); nint handle = 0;
         for (int i = 0; i < 100; i++) { Thread.Sleep(100); handle = OwnedWindow("#32770"); if (handle != 0 && IsWindowVisible(handle) && GetDlgItem(handle, 1) != 0) break; }
         Check(handle != 0 && IsWindowVisible(handle), "Native layout file dialog opens"); Thread.Sleep(1000); var dialog = Automation.FromHandle(handle);
@@ -97,16 +109,19 @@ internal static partial class Program
             name?.FindFirstDescendant(c => c.ByControlType(FlaUI.Core.Definitions.ControlType.Edit)) ??
             dialog.FindFirstDescendant(c => c.ByAutomationId("1152"));
         Check(edit != null, "File name control found");
-        edit!.Focus();
-        GetWindowThreadProcessId(GetForegroundWindow(), out var foregroundOwner);
-        Check(foregroundOwner == ProcessId, "Filename input targets the owned test dialog");
-        edit.AsTextBox().Enter(file);
+        var editHandle = edit!.Properties.NativeWindowHandle.Value;
+        GetWindowThreadProcessId(editHandle, out var editOwner);
+        Check(editOwner == ProcessId && GetAncestor(editHandle, 2) == handle, "Filename input targets the owned test dialog");
+        // Replace the selection in one edit, including spaces and Hangul. The edit
+        // sends EN_CHANGE to the shell without routing keyboard input to another app.
+        edit.Focus();
+        SendMessage(editHandle, 0xB1, 0, -1); // EM_SETSEL
+        SendText(editHandle, 0xC2, 1, file); // EM_REPLACESEL
         for (int wait = 0; wait < 100 && edit.AsTextBox().Text != file; wait++) Thread.Sleep(100);
         Check(edit.AsTextBox().Text == file, "File name control retains requested path");
         Thread.Sleep(300);
         var accept = GetDlgItem(handle, 1); Check(accept != 0, "File dialog accept button found");
         Automation.FromHandle(accept).Focus();
-        Thread.Sleep(100);
         PostMessage(accept, 0xF5, 0, 0);
         for (int i = 0; i < 100 && IsWindowVisible(handle); i++) Thread.Sleep(100);
         Check(!IsWindowVisible(handle), "File dialog completed");
@@ -118,10 +133,14 @@ internal static partial class Program
     {
         var bounds = area ?? SystemInformation.VirtualScreen;
         using var image = new Bitmap(bounds.Width, bounds.Height); using var graphics = Graphics.FromImage(image);
-        var dest = graphics.GetHdc(); var source = GetDC(0);
-        try { if (!BitBlt(dest, 0, 0, bounds.Width, bounds.Height, source, bounds.X, bounds.Y, 0x40CC0020)) throw new Exception("Desktop capture failed"); }
-        finally { graphics.ReleaseHdc(dest); ReleaseDC(0, source); }
+        CopyScreen(graphics, Point.Empty, bounds);
         image.Save(Path.Combine(Data, name + ".png"));
+    }
+    static void CopyScreen(Graphics graphics, Point target, Rectangle bounds)
+    {
+        var dest = graphics.GetHdc(); var source = GetDC(0);
+        try { if (!BitBlt(dest, target.X, target.Y, bounds.Width, bounds.Height, source, bounds.X, bounds.Y, 0x40CC0020)) throw new Exception("Desktop capture failed"); }
+        finally { graphics.ReleaseHdc(dest); ReleaseDC(0, source); }
     }
     static App Start(string exe, string? arguments = null)
     {
@@ -189,7 +208,7 @@ internal static partial class Program
                 throw new ArgumentException("E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.");
             if (LiveApis && !Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("Live API integration requires an explicit production Tempos.exe path.");
-            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--design" or "--startup" or "--readme" or "--temperature" or "--updates"))
+            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--workspace-editor" or "--design" or "--startup" or "--readme" or "--temperature" or "--updates"))
                 throw new ArgumentException("Mock-only suites cannot run as live API integration.");
             if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
                 throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
@@ -201,6 +220,7 @@ internal static partial class Program
             if (args.Contains("--drag-performance")) { DragPerformance(ref app); return 0; }
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
+            if (args.Contains("--workspace-editor")) { WorkspaceEditor(ref app, exe); return 0; }
             if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, !LiveApis || args.Contains("--allow-location-to-open-meteo")); return 0; }
             if (args.Contains("--temperature")) { TemperatureLayout(ref app, exe); return 0; }
             if (args.Contains("--api-mock")) { ApiMock(ref app, exe); return 0; }
@@ -217,7 +237,7 @@ internal static partial class Program
             if (args.Contains("--placement")) { Placement(ref app, exe); return 0; }
             if (args.Contains("--legacy-grid")) { LegacyGrid(ref app, exe); return 0; }
             if (Live) { Thread.Sleep(4000); var state = Diagnostic(); foreach (var entry in state["windows"]!.AsArray().Where(x => new[] { 2, 3, 4 }.Contains(x!["kind"]!.GetValue<int>()))) { var summary = Automation.FromHandle(WidgetHandle(entry!)).Name; Console.WriteLine("LIVE " + summary); Check(summary.Contains('%'), "Live system usage available: " + entry!["kind"]); } Quit(app); app = null; return 0; }
-            if (args.Contains("--layout")) { Tab(2); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI"); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 5, "Layout import through UI"); Quit(app); app = null; return 0; }
+            if (args.Contains("--layout")) { Tab(3); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI"); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 5, "Layout import through UI"); Quit(app); app = null; return 0; }
             if (args.Contains("--smoke"))
             {
                 Check(SendMessage(GetDlgItem(Window.Properties.NativeWindowHandle, 1314), 0x146, 0, 0) == 3837, "All 3837 packaged weather regions loaded");
@@ -381,13 +401,13 @@ internal static partial class Program
                 NativeButton(1203); NativeButton(1203); NativeCombo(1201, 0); NativeButton(1202);
                 Element(1310).AsCheckBox().IsChecked = true; NativeButton(1316); Check(Settings()["widgets"]![0]!["seconds"]!.GetValue<bool>() && Settings()["widgets"]![0]!["interval"]!.GetValue<int>() == 1, "Clock seconds and interval agree");
                 NativeCombo(1303, 1); NativeButton(1316); Check(!Settings()["widgets"]![0]!["seconds"]!.GetValue<bool>() && Settings()["widgets"]![0]!["interval"]!.GetValue<int>() == 60, "Clock refresh dropdown updates seconds display");
-                Tab(3); Element(1600).AsCheckBox().IsChecked = true; Button(1620); Check(Settings()["widgets"]![0]!["twelveHour"]!.GetValue<bool>(), "Twelve-hour display persists");
+                Tab(0); Element(1600).AsCheckBox().IsChecked = true; Button(1316); Check(Settings()["widgets"]![0]!["twelveHour"]!.GetValue<bool>(), "Twelve-hour display persists");
                 Tab(0); Element(1315).AsTextBox().Text = "Invalid/Timezone"; NativeButton(1316); Check(Settings()["widgets"]![0]!["timezone"]!.GetValue<string>() == "", "Invalid timezone rejected");
                 Element(1315).AsTextBox().Text = "Asia/Seoul"; NativeButton(1316); Check(Settings()["widgets"]![0]!["timezone"]!.GetValue<string>() == "Asia/Seoul", "IANA timezone accepted");
-                Tab(2); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI");
+                Tab(3); FileDialog(1503, Path.Combine(Data, "layout-export.json")); Check(File.Exists(Path.Combine(Data, "layout-export.json")), "Layout export created through UI");
                 var exported = File.ReadAllText(Path.Combine(Data, "layout-export.json")); Check(!exported.Contains("calendar-client") && !exported.Contains("refresh_token"), "Layout export excludes account data");
                 Tab(0); NativeButton(1203); Check(Settings()["widgets"]!.AsArray().Count == 0, "All widgets can be removed");
-                Tab(2); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 1, "Layout import restores widget");
+                Tab(3); FileDialog(1504, Path.Combine(Data, "layout-export.json")); Check(Settings()["widgets"]!.AsArray().Count == 1, "Layout import restores widget");
                 Quit(app); app = null; return 0;
             }
             if (args.Contains("--soak")) { Soak(ref app, exe); return 0; }

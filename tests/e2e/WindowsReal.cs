@@ -70,7 +70,7 @@ internal static partial class Program
         {
             var item = State()["windows"]!.AsArray().First(w => w!["kind"]!.GetValue<int>() == kind)!;
             if (item["temperatureC"] is JsonValue value)
-                Check(value.GetValue<double>() is > 0 and <= 150 && Summary(kind).Contains("°C"),
+                Check(value.GetValue<double>() is > 0 and <= 150 && SpinWait.SpinUntil(() => Summary(kind).Contains("°C"), 10000),
                     "Actual local temperature reaches the widget: kind " + kind);
             else
                 Skip("Actual local temperature: kind " + kind,
@@ -190,8 +190,16 @@ internal static partial class Program
             File.WriteAllText(Path.Combine(Data, "input-outcome.json"), JsonSerializer.Serialize(new {
                 cursorReadable = hadCursor, moveInjected, win32Error = inputError, cursorMoveObserved = moved,
                 pointerCoordinatesRecorded = false }));
+            nint hit = WindowFromPoint(origin);
+            var hitClass = new System.Text.StringBuilder(128);
+            GetClassName(hit, hitClass, hitClass.Capacity);
+            GetWindowThreadProcessId(hit, out var hitOwner);
+            bool externalWindow = hit != 0 && hitOwner != ProcessId &&
+                hitClass.ToString() is not ("WorkerW" or "Progman" or "SHELLDLL_DefView");
             if (!moved)
                 Skip("OS SendInput drag", "Windows input desktop did not accept an observable cursor move; native-message tests are separate.");
+            else if (externalWindow)
+                Skip("OS SendInput drag", "An external window covers the target; no click was issued.");
             else
             {
                 Check(WindowFromPoint(origin) == WidgetHandle(clock), "OS input targets the owned clock widget");

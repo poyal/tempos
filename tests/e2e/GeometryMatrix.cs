@@ -26,7 +26,8 @@ internal static partial class Program
                     if (width + 32 > availableWidth || height + 32 > availableHeight)
                     {
                         Check(JsonNode.DeepEquals(before, Settings()), label + ": oversized request preserves layout");
-                        Check(Element(1999).Name.Contains("입력값"), label + ": oversized request explains rejection");
+                        Check(Element(1999).Name.Contains("빈 공간"), label + ": oversized request explains rejection");
+                        NativeButton(1325);
                         continue;
                     }
                     var actual = State()["windows"]![0]!;

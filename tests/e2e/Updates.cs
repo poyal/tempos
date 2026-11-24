@@ -77,7 +77,7 @@ internal static partial class Program
         Check(!Settings()["checkUpdatesOnStart"]!.GetValue<bool>(), "Startup update setting persists disabled state");
         Quit(app!); app=null; app=Start(exe); Tab(4);
         Check(UpdateState()["phase"]!.GetValue<int>() == 0, "Disabled startup check remains idle after restart");
-        Tab(2); FileDialog(1503,Path.Combine(Data,"update-layout.json")); FileDialog(1504,Path.Combine(Data,"update-layout.json"));
+        Tab(3); FileDialog(1503,Path.Combine(Data,"update-layout.json")); FileDialog(1504,Path.Combine(Data,"update-layout.json"));
         Check(!Settings()["checkUpdatesOnStart"]!.GetValue<bool>() && !File.ReadAllText(Path.Combine(Data,"update-layout.json")).Contains("checkUpdatesOnStart"), "Layout import/export preserves the local update preference");
         Tab(4); NativeButton(1713);
         Check(JsonNode.DeepEquals(saved,Settings()), "Restoring startup preference preserves original complete settings");

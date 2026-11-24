@@ -57,7 +57,27 @@ private:
   void sensorControls();
   void startSensorSetup(bool removing);
   void completeSensorSetup(DWORD result);
-  void applyControls();
+  bool applyControls();
+  std::optional<Widget> editorValue(int &field, std::wstring &error);
+  bool leaveEditor();
+  void editorChanged();
+  void duplicateWidget();
+  void refreshLayouts();
+  void layoutCommand(int id, size_t index);
+  void settingsTheme();
+  void paintSettings(HDC);
+  void drawSettingItem(const DRAWITEMSTRUCT &);
+  void scrollTo(int position);
+  void focusField(HWND);
+  bool layoutBusy_ = false, dirty_ = false, dark_ = false, highContrast_ = false;
+  int errorField_ = 0;
+  static LRESULT CALLBACK comboProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
+  std::vector<RECT> panels_;
+  std::vector<HWND> tabStops_;
+  HFONT titleFont_{}, sectionFont_{}, navIconFont_{};
+  HBRUSH paneBrush_{}, canvasBrush_{}, inputBrush_{};
+  COLORREF canvasColor_{}, paneColor_{}, textColor_{}, accentColor_{}, borderColor_{}, inputColor_{};
+  RenderSurface previewSurface_;
   void command(int, int);
   void rebuild();
   void position(WidgetWindow &);
@@ -120,7 +140,7 @@ private:
   UINT settingsDpi_ = 96;
   int tab_ = 0;
   bool trayAdded_ = false;
-  uint64_t redraws_ = 0;
+  uint64_t redraws_ = 0, previewDraws_ = 0;
   std::wstring status_;
 #ifdef TEMPOS_TEST_HOST
   int designCase_ = -1;

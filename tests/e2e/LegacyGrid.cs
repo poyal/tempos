@@ -23,7 +23,7 @@ internal static partial class Program
         var second = first.DeepClone(); second["id"] = "legacy-slim-second"; second["y"] = 144;
         imported["widgets"] = new JsonArray(first, second);
         var file = Path.Combine(Data, "legacy-four-dip-layout.json");
-        File.WriteAllText(file, imported.ToJsonString()); Tab(2); FileDialog(1504, file); Tab(0);
+        File.WriteAllText(file, imported.ToJsonString()); Tab(3); FileDialog(1504, file); Tab(0);
         void Verify(string phase)
         {
             var state = State(); var windows = state["windows"]!.AsArray();

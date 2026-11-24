@@ -1,4 +1,4 @@
-param([ValidateRange(0,86400)][int]$WarmupSeconds=300,[ValidateRange(5,172800)][int]$SampleSeconds=1800,[ValidateRange(1,60)][int]$IntervalSeconds=1,[string]$Name='baseline',[string]$Exe='',[string]$SettingsFile='',[string]$Profile='Five M widgets, default intervals, real system providers, weather key absent',[ValidateSet('Five','Nine','Clock','None')][string]$Budget='Five',[switch]$AllowParked)
+param([ValidateRange(0,86400)][int]$WarmupSeconds=300,[ValidateRange(5,172800)][int]$SampleSeconds=1800,[ValidateRange(1,60)][int]$IntervalSeconds=1,[string]$Name='baseline',[string]$Exe='',[string]$SettingsFile='',[string]$Profile='Five M widgets, default intervals, real system providers, weather key absent',[ValidateSet('Five','Nine','Clock','None')][string]$Budget='Five',[switch]$AllowParked,[switch]$SettingsClosed)
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'performance-support.ps1')
@@ -63,6 +63,7 @@ public static IntPtr OwnedManagement(uint pid) {
 [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hwnd,out uint pid);
 [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern int GetClassName(IntPtr hwnd,System.Text.StringBuilder name,int count);
 [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr hwnd,uint msg,IntPtr w,IntPtr l);
+[DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
 [DllImport("user32.dll")] public static extern IntPtr SendMessage(IntPtr hwnd,uint msg,IntPtr w,IntPtr l);
 [DllImport("user32.dll")] public static extern bool PostThreadMessage(uint thread,uint msg,IntPtr w,IntPtr l);
 }
@@ -84,6 +85,10 @@ try {
     if($management -eq [IntPtr]::Zero){Start-Sleep -Milliseconds 100}
   }
   if($management -eq [IntPtr]::Zero){throw 'Owned management window unavailable.'}
+  if($SettingsClosed){
+    [PerfNative]::SendMessage($management,0x10,[IntPtr]::Zero,[IntPtr]::Zero)|Out-Null
+    if([PerfNative]::IsWindowVisible($management)){throw 'Owned settings window did not close.'}
+  }
   [PerfNative]::SendMessage($management,0x111,[IntPtr]1505,[IntPtr]::Zero)|Out-Null
   $initialState=Get-Content -LiteralPath (Join-Path $result 'diagnostics.json') -Raw|ConvertFrom-Json
   if($initialState.apiMode -ne 'mock' -or [IO.Path]::GetFullPath($initialState.testDataDirectory) -ne [IO.Path]::GetFullPath($result)){throw 'Performance TestHost isolation/API boundary mismatch.'}
@@ -152,6 +157,11 @@ try {
   $report.optimizationTargetsMet=@($policy.targets|Where-Object {-not $_.passed}).Count -eq 0
   [PerfNative]::SendMessage($management,0x111,[IntPtr]1505,[IntPtr]::Zero)|Out-Null
   $finalState=Get-Content -LiteralPath (Join-Path $result 'diagnostics.json') -Raw|ConvertFrom-Json
+  $report.settingsClosed=[bool]$SettingsClosed
+  $report.previewDrawsDuringRun=[long]$finalState.previewDraws-[long]$initialState.previewDraws
+  if($SettingsClosed){
+    $checks.Add([pscustomobject]@{name='Closed settings stop preview rendering';passed=($report.previewDrawsDuringRun -eq 0 -and -not [PerfNative]::IsWindowVisible($management))})
+  }
   $requests=Join-Path $result 'api-mock-requests.jsonl'
   if(Test-Path $requests){
     foreach($line in Get-Content $requests){

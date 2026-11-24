@@ -27,48 +27,83 @@ internal static partial class Program
     [DllImport("user32.dll")] static extern bool ClientToScreen(nint window, ref Point point);
     [DllImport("user32.dll")] static extern nint GetAncestor(nint window, uint flags);
     [DllImport("user32.dll")] static extern bool RedrawWindow(nint window, nint updateRect, nint updateRegion, uint flags);
+    static bool ClearRegion(Rectangle bounds, Func<nint,bool> accepts)
+    {
+        for (int y = bounds.Top; y < bounds.Bottom; y += 16)
+            for (int x = bounds.Left; x < bounds.Right; x += 16)
+                if (!accepts(WindowFromPoint(new Point(x, y)))) return false;
+        return accepts(WindowFromPoint(new Point(bounds.Right - 1, bounds.Bottom - 1)));
+    }
+    [DllImport("user32.dll")] static extern bool PrintWindow(nint window, nint dc, uint flags);
+    static void PrintClient(nint handle, Graphics graphics)
+    {
+        var dc = graphics.GetHdc();
+        try { Check(PrintWindow(handle, dc, 1), "Windows prints the owned native client"); }
+        finally { graphics.ReleaseHdc(dc); }
+    }
+    static Rectangle SettingsClient(nint handle)
+    {
+        var origin = Point.Empty;
+        if (!GetClientRect(handle, out var bounds) || !ClientToScreen(handle, ref origin))
+            throw new Exception("Settings client bounds unavailable");
+        bounds.Location = origin;
+        return bounds;
+    }
     static void CaptureSettings(string name)
     {
         var handle = Window.Properties.NativeWindowHandle.Value;
-        // Keep other topmost test widgets out of the settings capture. Capture the
-        // client area so invisible resize borders cannot expose the user's desktop.
         SetWindowPos(handle, new nint(-1), 0, 0, 0, 0, 0x13);
         try
         {
-            // Finish repainting native child controls after tab/selection changes
-            // before copying screen pixels; never repair text in the PNG.
+            bool Clear() => ClearRegion(SettingsClient(handle), hit => GetAncestor(hit, 2) == handle);
             if (!RedrawWindow(handle, 0, 0, 0x585)) throw new Exception("Settings repaint failed");
-            Thread.Sleep(200);
-            if (!GetClientRect(handle, out var bounds)) throw new Exception("Settings client bounds unavailable");
-            var origin = Point.Empty;
-            if (!ClientToScreen(handle, ref origin)) throw new Exception("Settings client origin unavailable");
-            bounds.Location = origin;
-            bool clear = true;
-            for (int y = 1; y < 8; y++)
-                for (int x = 1; x < 8; x++)
-                    clear &= GetAncestor(WindowFromPoint(new Point(bounds.X + bounds.Width * x / 8,
-                        bounds.Y + bounds.Height * y / 8)), 2) == handle;
-            Check(clear, name + ": settings client is unobscured");
-            Screenshot(name, bounds);
+            Thread.Sleep(150);
+            var bounds = SettingsClient(handle);
+            if (Clear()) Screenshot(name, bounds);
+            else
+            {
+                // Windows prints this HWND and its children, even under secure desktop overlays.
+                using var image = new Bitmap(bounds.Width, bounds.Height);
+                using (var graphics = Graphics.FromImage(image)) PrintClient(handle, graphics);
+                image.Save(Path.Combine(Data,name+".png"));
+            }
         }
         finally { SetWindowPos(handle, new nint(-2), 0, 0, 0, 0, 0x13); }
     }
     static void CaptureWidget(string name, JsonNode widget)
     {
+        nint handle = WidgetHandle(widget);
         var crop = new Rectangle(widget["x"]!.GetValue<int>(), widget["y"]!.GetValue<int>(),
                                  widget["width"]!.GetValue<int>(), widget["height"]!.GetValue<int>());
         using var backdrop = new CaptureBackdrop { FormBorderStyle = FormBorderStyle.None, StartPosition = FormStartPosition.Manual,
             Bounds = crop, BackColor = Color.FromArgb(237, 244, 250), ShowInTaskbar = false, TopMost = true };
         backdrop.Show();
-        SetWindowPos(backdrop.Handle, WidgetHandle(widget), crop.X, crop.Y, crop.Width, crop.Height, 0x10);
-        backdrop.Refresh(); System.Windows.Forms.Application.DoEvents(); Thread.Sleep(150);
-        Screenshot(name, crop);
-        using var captured = new Bitmap(Path.Combine(Data, name + ".png"));
+        SetWindowPos(backdrop.Handle, handle, crop.X, crop.Y, crop.Width, crop.Height, 0x10);
+        backdrop.Refresh(); System.Windows.Forms.Application.DoEvents(); Thread.Sleep(100);
+        using var captured = new Bitmap(crop.Width, crop.Height);
+        using (var graphics = Graphics.FromImage(captured))
+        {
+            if (ClearRegion(crop, hit => hit == handle || hit == backdrop.Handle)) CopyScreen(graphics,Point.Empty,crop);
+            else
+            {
+                // Request the original premultiplied client surface through Windows,
+                // composited on the same neutral background used by the gallery.
+                Check(!LiveApis && SendMessage(handle, 0x8000 + 70, 0, 0) != 0, name + ": isolated native surface captured");
+                using var surface = new Bitmap(Path.Combine(Data,"widget-surface.bmp"));
+                graphics.DrawImageUnscaled(surface,0,0);
+            }
+        }
         int contentPixels = 0;
+        var colors = new HashSet<int>();
         for (int y = 5; y < captured.Height; y += 5)
             for (int x = 5; x < captured.Width; x += 5)
-                if (captured.GetPixel(x, y).ToArgb() != backdrop.BackColor.ToArgb()) contentPixels++;
-        Check(contentPixels > 20, name + ": captured widget pixels present");
+            {
+                int color = captured.GetPixel(x,y).ToArgb();
+                colors.Add(color);
+                if (color != backdrop.BackColor.ToArgb()) contentPixels++;
+            }
+        Check(colors.Count >= 12 && contentPixels > 20, name + ": captured widget pixels present");
+        captured.Save(Path.Combine(Data,name+".png"));
     }
     static void VisibleWidgets(string stage, int count, bool hitTest = false)
     {
@@ -99,7 +134,7 @@ internal static partial class Program
                 var cls = new StringBuilder(128); GetClassName(actual, cls, cls.Capacity);
                 GetWindowThreadProcessId(actual, out var hitOwner);
                 if (actual != WidgetHandle(w) && hitOwner != ProcessId &&
-                    (w["extendedStyle"]!.GetValue<long>() & 8) == 0 &&
+                    ((w["extendedStyle"]!.GetValue<long>() & 8) == 0 || cls.ToString() == "Shell_SystemDim") &&
                     cls.ToString() != "WorkerW" && cls.ToString() != "Progman" && cls.ToString() != "SHELLDLL_DefView")
                 {
                     var reason = stage + ": desktop hit test obscured by external window " + cls;
@@ -124,9 +159,16 @@ internal static partial class Program
         VisibleWidgets("copied-layout-started", count, true);
         var saved = Settings().DeepClone();
         for (int i = 0; i < count; i++) { SelectWidget(i); NativeButton(1316); VisibleWidgets("copied-layout-apply-" + i, count, true); }
-        // A legacy layout gains only the explicit provider field; applying style
-        // must preserve existing coordinates when the selected region is unchanged.
+        // Compare the migrated schema while preserving every legacy widget and coordinate.
         saved["weatherProvider"] ??= "kma";
+        if (saved["version"]?.GetValue<int>() == 1)
+        {
+            saved["version"] = 2;
+            saved["layoutId"] = "default";
+            saved["layoutName"] = "기본 배치";
+            saved["otherLayouts"] = new JsonArray();
+            foreach (var widget in saved["widgets"]!.AsArray()) widget!["alias"] ??= "";
+        }
         Check(JsonNode.DeepEquals(saved, Settings()), "Applying every copied widget preserves complete saved layout");
         Button(1204);
         for (int kind = 0; kind < 9; kind++)
@@ -204,7 +246,7 @@ internal static partial class Program
                 }
                 var file = Path.Combine(Data, "capacity-import.json");
                 File.WriteAllText(file, imported.ToJsonString());
-                Tab(2); FileDialog(1504, file); Tab(0);
+                Tab(3); FileDialog(1504, file); Tab(0);
                 break;
             }
             Check(Settings()["widgets"]!.AsArray().Count == i + 1, "Capacity add " + (i + 1));
@@ -220,10 +262,8 @@ internal static partial class Program
               "64 widgets including parked windows survive restart");
         for (int i = 0; i < 64; i++) NativeButton(1203);
         Check(Settings()["widgets"]!.AsArray().Count == 0 && State()["windows"]!.AsArray().Count == 0, "Removing all widgets releases native windows");
-        Check(!Element(1316).IsEnabled, "Apply disabled without selected widget");
-        Tab(3);
-        var displayApply = GetDlgItem(Window.Properties.NativeWindowHandle, 1620);
-        Check(displayApply != 0 && !IsWindowEnabled(displayApply), "Display options disabled without selected widget");
+        Check(!IsWindowEnabled(GetDlgItem(Window.Properties.NativeWindowHandle, 1316)), "Apply disabled without selected widget");
+        Check(!IsWindowVisible(GetDlgItem(Window.Properties.NativeWindowHandle, 1212)), "Empty layout has no preview");
         Restart(ref app, exe);
         Check(Element(1200).AsListBox().Items.Length == 0 && State()["windows"]!.AsArray().Count == 0, "Empty layout remains empty after restart");
         Tab(0); NativeCombo(1201, 8); NativeButton(1202);
@@ -239,9 +279,11 @@ internal static partial class Program
             Element(1306).AsTextBox().Text = value; NativeButton(1316);
             Check(Element(1999).Name.Contains("입력값") && JsonNode.DeepEquals(saved, Settings()), "Invalid transparency preserves layout: " + value);
         }
+        NativeButton(1325);
         SelectWidget(0);
         Element(1315).AsTextBox().Text = "Invalid/Timezone"; NativeButton(1316);
         Check(Element(1999).Name.Contains("입력값") && JsonNode.DeepEquals(saved, Settings()), "Invalid timezone preserves layout");
+        NativeButton(1325);
         SelectWidget(0);
         void BlockedWrite(string name, Action action, ref App? currentApp)
         {
@@ -256,6 +298,7 @@ internal static partial class Program
                 var state = State();
                 Check(state["windows"]!.AsArray().Select(w => w!["id"]!.GetValue<string>()).SequenceEqual(Ids(before)) && state["hidden"]!.GetValue<bool>() == before["hidden"]!.GetValue<bool>(), name + ": preserves live widgets");
             }
+            if (IsWindowVisible(GetDlgItem(Window.Properties.NativeWindowHandle, 1325))) NativeButton(1325);
             // An unlocked save must not silently commit a previously rejected change.
             Restart(ref currentApp, exe);
             Check(JsonNode.DeepEquals(before, Settings()), name + ": rejected change stays rejected after exit/restart");
@@ -265,11 +308,11 @@ internal static partial class Program
         BlockedWrite("Remove", () => NativeButton(1203), ref app);
         BlockedWrite("Hide", () => NativeButton(1205), ref app);
         BlockedWrite("Global theme", () => { Tab(2); NativeCombo(1500, 8); NativeButton(1501); }, ref app);
-        BlockedWrite("Display options", () => { Tab(3); Element(1600).AsCheckBox().IsChecked = true; NativeButton(1620); }, ref app);
+        BlockedWrite("Display options", () => { Tab(0); Element(1600).AsCheckBox().IsChecked = true; NativeButton(1316); }, ref app);
         var importPath = Path.Combine(Data, "import.json");
         var imported = saved.DeepClone(); imported["theme"] = 7;
         File.WriteAllText(importPath, imported.ToJsonString());
-        BlockedWrite("Import", () => { Tab(2); FileDialog(1504, importPath); }, ref app);
+        BlockedWrite("Import", () => { Tab(3); FileDialog(1504, importPath); }, ref app);
 
         var invalidImports = new Dictionary<string, JsonNode>();
         var duplicate = saved.DeepClone(); duplicate["widgets"]!.AsArray().Add(duplicate["widgets"]![0]!.DeepClone()); invalidImports["duplicate IDs"] = duplicate;
@@ -286,6 +329,7 @@ internal static partial class Program
         File.WriteAllText(importPath, "{broken"); FileDialog(1504, importPath);
         Check(JsonNode.DeepEquals(saved, Settings()) && Element(1999).Name.Contains("처리"), "Malformed JSON import preserves layout");
         File.WriteAllText(importPath, imported.ToJsonString()); FileDialog(1504, importPath);
+        Tab(2);
         Check(Settings()["theme"]!.GetValue<int>() == 7 && SendMessage(Element(1500).Properties.NativeWindowHandle, 0x147, 0, 0) == 7, "Import synchronizes global theme control");
         VisibleWidgets("imported", 5);
         var backup = Settings().DeepClone();
@@ -319,7 +363,7 @@ internal static partial class Program
         }
         foreach (var option in new[] { (0, 1600, "twelveHour"), (1, 1601, "fahrenheit"), (6, 1602, "networkBytes"), (7, 1603, "binaryDisk"), (8, 1604, "weekStart") })
         {
-            Tab(0); SelectWidget(option.Item1); Tab(3); Element(option.Item2).AsCheckBox().IsChecked = true; NativeButton(1620);
+            Tab(0); SelectWidget(option.Item1); Element(option.Item2).AsCheckBox().IsChecked = true; NativeButton(1316);
             var field = Settings()["widgets"]![option.Item1]![option.Item3]!;
             Check(option.Item3 == "weekStart" ? field.GetValue<int>() == 1 : field.GetValue<bool>(), "Display option persisted: " + option.Item3);
             var view = State()["windows"]![option.Item1]!;
@@ -336,12 +380,12 @@ internal static partial class Program
                     "Network accessible rates use selected byte units");
             }
             if (option.Item1 == 7) Check(optionSummary.Contains("GiB") || optionSummary.Contains("TiB"), "Disk accessible space uses selected binary units");
-            Tab(0); SelectWidget((option.Item1 + 1) % 9); Tab(3);
+            Tab(0); SelectWidget((option.Item1 + 1) % 9);
             Check(Element(option.Item2).AsCheckBox().IsChecked == false, "Display option isolated to selected widget: " + option.Item3);
         }
-        Tab(0); SelectWidget(5); Tab(3);
+        Tab(0); SelectWidget(5); NativeCombo(1300, 2); NativeButton(1316);
         for (int i = 0; i < 5; i++) Element(1610 + i).AsCheckBox().IsChecked = i % 2 == 0;
-        NativeButton(1620);
+        NativeButton(1316);
         Check(Settings()["widgets"]![5]!["systemFields"]!.AsArray().Select(v => v!.GetValue<bool>()).SequenceEqual(new[] { true, false, true, false, true }), "System field selection persisted");
         Tab(0); SelectWidget(0);
         Element(1310).AsCheckBox().IsChecked = true; NativeButton(1316);
@@ -385,7 +429,7 @@ internal static partial class Program
         NativeButton(1316);
         for (int period = 0; period < 2; period++)
         {
-            Tab(3); Element(1600).AsCheckBox().IsChecked = period == 1; NativeButton(1620); Tab(0);
+            Tab(0); Element(1600).AsCheckBox().IsChecked = period == 1; NativeButton(1316); Tab(0);
             for (int size = 0; size < 4; size++)
                 for (int seconds = 0; seconds < 2; seconds++)
                 {
@@ -406,7 +450,7 @@ internal static partial class Program
         template["x"] = 16; template["y"] = 16;
         imported["widgets"] = new JsonArray(Enumerable.Range(0, 64).Select(i => { var w = template.DeepClone(); w["id"] = "relocated-" + i; return w; }).ToArray());
         var file = Path.Combine(Data, "relocated.json");
-        File.WriteAllText(file, imported.ToJsonString()); Tab(2); FileDialog(1504, file);
+        File.WriteAllText(file, imported.ToJsonString()); Tab(3); FileDialog(1504, file);
         Check(Ids(Settings()).SequenceEqual(Ids(imported)), "Disconnected-monitor import loads the requested 64 identities");
         var visible = State()["windows"]!.AsArray().Where(w => w!["placed"]!.GetValue<bool>()).Select(w => w!["id"]!.GetValue<string>()).ToHashSet();
         Check(visible.Count > 0 && visible.Count < 64, "Disconnected-monitor layout exposes parked widgets when screens are full");

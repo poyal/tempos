@@ -55,7 +55,7 @@ internal static partial class Program
             "Layout export omits machine sensor opt-in");
         FileDialog(1504, layout);
         Check(Settings()["cpuTemperatureEnabled"]!.GetValue<bool>(), "Layout import preserves local sensor opt-in");
-        NativeButton(1513);
+        Tab(2); NativeButton(1513);
         Check(!Settings()["cpuTemperatureEnabled"]!.GetValue<bool>(), "Mock removal disables CPU temperature");
         WaitTemperature(0, null);
         CaptureSettings("temperature-settings");
@@ -95,7 +95,7 @@ internal static partial class Program
             }
             else
             {
-                Tab(3); Element(1601).AsCheckBox().IsChecked = true; NativeButton(1620); Tab(0);
+                Tab(0); Element(1601).AsCheckBox().IsChecked = true; NativeButton(1316); Tab(0);
                 SendMessage(Window.Properties.NativeWindowHandle, 0x111, 1903, 0);
                 VisibleWidgets("layout-example-weather-fahrenheit-negative", 1, true);
                 SendMessage(Window.Properties.NativeWindowHandle, 0x111, 1907, 0);
@@ -141,8 +141,8 @@ internal static partial class Program
                     Check(matches >= 3, name + ": actual " + label + " pixels match " + expected.Name);
                 }
                 ColorRegion(kind == 7 ? new(204, 117, 112, 23) :
-                            kind == 4 ? new(20, 49, 146, 55) : new(20, 73, 106, 55), "usage");
-                if (kind is 2 or 3) ColorRegion(new(128, 103, 46, 21), "temperature / unavailable dash");
+                            new(20, 60, 106, 55), "usage");
+                if (kind is 2 or 3) ColorRegion(new(128, 87, 46, 21), "temperature / unavailable dash");
                 if (kind == 7) ColorRegion(new(204, 96, 112, 5), "capacity bar", true);
             }
         }

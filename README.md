@@ -16,6 +16,8 @@
 
 시계·시스템 사용량·로컬 달력은 서비스 계정 없이 사용할 수 있습니다. 날씨에는 인터넷이 필요하며 Google 일정 연결과 CPU 온도 표시는 선택 기능입니다. 위젯 배치와 설정은 내 PC에 저장합니다.
 
+**v0.1.5**에서는 설정창에서 위젯을 미리 보며 편집하고, 이름을 붙인 배치를 트레이에서 전환할 수 있습니다. [릴리즈 노트](docs/releases/v0.1.5.md) · [설정·위젯 전후 비교 HTML 다운로드](https://github.com/poyal/tempos/releases/download/v0.1.5/tempos-before-after.html)
+
 [![시계·날씨·캘린더·CPU·GPU·메모리·시스템 정보·네트워크·디스크의 M 크기 화면](docs/assets/readme-2026-10-17/overview.png)](docs/assets/readme-2026-10-17/overview.png)
 
 처음이라면 **설치 → 트레이에서 설정 열기 → 위젯 추가·배치 → 필요한 서비스 연결 → 레이아웃 백업** 순서로 따라 해 보세요.
@@ -73,6 +75,12 @@
 ### 설치 없이 ZIP으로 시작하기
 
 같은 릴리즈의 `Tempos-…-win-x64.zip`을 새 폴더에 모두 풀고 **Tempos.exe**를 실행하세요. 함께 들어 있는 **data** 폴더와 구성요소를 유지합니다. ZIP 사용 시에도 설정은 앱 폴더가 아닌 내 Windows 사용자 데이터 폴더에 저장합니다.
+
+### v0.1.5 위젯 편집과 배치 전환
+
+**위젯**에서 이름·모양·시간 형식·단위를 함께 편집합니다. 미리보기를 확인한 뒤 **적용**하거나 **되돌리기**를 누르세요. **배치**에서 현재 구성을 복사해 이름을 붙이면 트레이에서 전환할 수 있습니다. 앱을 다시 열면 마지막으로 사용한 배치가 복원됩니다. [개편된 설정 사용법](docs/user-guide.md#workspace-editor) · [설정과 위젯 37개 구성 전후 비교](docs/validation/tempos-before-after.html)
+
+아래의 기존 화면 예제는 v0.1.4까지의 설정창을 기준으로 합니다.
 
 ### 첫 화면 확인하기
 
@@ -527,7 +535,7 @@ Tempos를 종료한 뒤 **Windows 설정 → 앱 → 설치된 앱 → Tempos �
 
 - [상세 사용 안내](docs/user-guide.md) · [날씨 서비스](docs/weather.md) · [CPU·GPU 온도](docs/sensors.md)
 - [전체 화면과 촬영 조건](docs/screenshots.md) · [최신 화면 촬영·검증 기록](docs/validation/2026-10-17-readme.md)
-- [0.1.4 릴리즈 노트](docs/releases/v0.1.4.md) · [개발 안내](docs/development.md) · [E2E 안내](docs/e2e.md)
+- [0.1.5 릴리즈 노트](docs/releases/v0.1.5.md) · [개발 안내](docs/development.md) · [E2E 안내](docs/e2e.md)
 - [검증 기록](docs/verification.md) · [레이아웃 변경 보고서](docs/validation/2026-10-17-layout-report.html) · [문서 모음](docs/README.md) · [외부 구성요소 고지](THIRD_PARTY_NOTICES.md)
 
 제작자 **Poyal** · [GitHub](https://github.com/poyal/tempos) · [문의·오류 신고](https://github.com/poyal/tempos/issues)

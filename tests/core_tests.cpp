@@ -223,6 +223,26 @@ int main(int argc, char **argv) {
     check(j.dump().find("client_secret") == std::string::npos &&
               j.dump().find("refresh_token") == std::string::npos,
           "export excludes credentials");
+    auto legacy = readSettings(j);
+    check(legacy.layoutName == L"기본 배치" && legacy.widgets.front().id == copy.id &&
+              legacy.otherLayouts.empty(),
+          "legacy layout retains identity in default workspace");
+    auto named = legacy;
+    named.widgets.front().alias = L"서울 시계";
+    Layout empty;
+    empty.layoutId = L"personal";
+    empty.layoutName = L"개인용";
+    named.otherLayouts.push_back(empty);
+    auto roundTrip = readSettings(settingsJson(named));
+    check(roundTrip.widgets.front().alias == L"서울 시계" && roundTrip.otherLayouts.front().widgets.empty() &&
+              roundTrip.otherLayouts.front().layoutId == L"personal",
+          "named layouts, aliases and empty workspaces round trip");
+    auto exported = settingsJson(named, true);
+    check(exported.at("version") == 1 && !exported.contains("otherLayouts") && !exported.contains("layoutId"),
+          "portable file contains only the selected layout");
+    auto invalidLayouts = settingsJson(named);
+    invalidLayouts["otherLayouts"].push_back(invalidLayouts["otherLayouts"].front());
+    throws([&] { readSettings(invalidLayouts); }, "duplicate layout identity rejected");
     auto duplicate = j;
     duplicate["widgets"].push_back(duplicate["widgets"][0]);
     throws([&] { readSettings(duplicate); }, "duplicate IDs rejected");

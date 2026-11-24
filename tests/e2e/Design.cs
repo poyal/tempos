@@ -33,11 +33,11 @@ internal static partial class Program
             NativeCombo(1302, theme + 1); NativeButton(1316);
             VisibleWidgets("design-theme-" + theme, 1, true);
         }
-        for (int tab = 0; tab < 4; tab++)
+        for (int tab = 0; tab < 5; tab++)
         {
             Tab(tab);
             CaptureSettings("design-settings-" + tab);
-            Check(Element(1000).AsTab().SelectedTabItemIndex == tab, "Design settings tab " + tab + " reachable");
+            Check(Element(1011).Name == new[] { "위젯", "연동", "앱", "배치", "정보 및 업데이트" }[tab], "Design settings tab " + tab + " reachable");
         }
         Tab(0);
         for (int kind = 1; kind < 9; kind++)

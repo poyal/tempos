@@ -12,6 +12,7 @@ namespace tempos {
 using Microsoft::WRL::ComPtr;
 struct RasterSurface {
   HDC dc{};
+  BYTE opacity = 255;
   HBITMAP bitmap{};
   HGDIOBJ previous{};
   ~RasterSurface() {
@@ -38,7 +39,8 @@ public:
   bool ready() const { return bool(context_); }
   bool software() const { return software_; }
   bool layered() const { return raster_; }
-  bool draw(HWND, RenderSurface &, const Widget &, const Snapshot *, int theme, bool edit, UINT dpi);
+  bool draw(HWND, RenderSurface &, const Widget &, const Snapshot *, int theme, bool edit, UINT dpi,
+            HDC preview = nullptr);
 
 private:
   bool surface(HWND, RenderSurface &);
@@ -47,7 +49,8 @@ private:
   void text(const std::wstring &, float x, float y, float width, float height, float size = 16,
             bool bold = false, uint32_t color = 0xffffff,
             DWRITE_TEXT_ALIGNMENT align = DWRITE_TEXT_ALIGNMENT_LEADING, bool wrap = false);
-  void modelText(const std::wstring &, float x, float y, float width, float height, float size = 12);
+  void modelText(const std::wstring &, float x, float y, float width, float height, float size = 12,
+                 bool bold = false, uint32_t rgb = 0xffffff);
   void line(float x, float y, float x2, float y2, uint32_t color = 0xffffff, float alpha = .25f,
             float stroke = 1);
   void dot(float x, float y, float radius, uint32_t color, float alpha = 1);
@@ -75,9 +78,14 @@ private:
   ComPtr<ID2D1SolidColorBrush> brush_;
   std::map<std::pair<int, bool>, ComPtr<IDWriteTextFormat>> fonts_;
   using LayoutKey = std::tuple<std::wstring, float, float, int, bool, int, bool>;
-  std::map<LayoutKey, ComPtr<IDWriteTextLayout>> layouts_;
+  struct MeasuredLine {
+    ComPtr<IDWriteTextLayout> layout;
+    float inkBottom;
+  };
+  float contentBottom_{};
+  std::map<LayoutKey, MeasuredLine> layouts_;
   std::deque<LayoutKey> layoutOrder_;
-  std::map<std::tuple<std::wstring, float, float, float>, float> modelSizes_;
+  std::map<std::tuple<std::wstring, float, float, float, bool>, float> modelSizes_;
   using BackgroundKey = std::tuple<float, float, UINT, UINT, float, uint32_t, uint32_t, float,
                                    int, int, bool, bool, uint32_t, std::wstring>;
   struct Background { ComPtr<ID2D1Bitmap> bitmap; size_t bytes; };

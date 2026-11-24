@@ -97,34 +97,6 @@ static HWND desktopHost() {
   cached = result;
   return result;
 }
-static void scrollSettings(HWND hwnd, int bar, int position) {
-  SCROLLINFO info{sizeof info, SIF_ALL};
-  GetScrollInfo(hwnd, bar, &info);
-  position = std::clamp(position, 0, std::max(0, info.nMax - int(info.nPage) + 1));
-  int delta = info.nPos - position;
-  SetScrollPos(hwnd, bar, position, TRUE);
-  if (delta)
-    ScrollWindowEx(hwnd, bar == SB_HORZ ? delta : 0, bar == SB_VERT ? delta : 0, nullptr, nullptr, nullptr,
-                   nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
-}
-void App::updateViewport() {
-  if (!main_)
-    return;
-  RECT client{};
-  GetClientRect(main_, &client);
-  UINT dpi = GetDpiForWindow(main_);
-  for (int bar : {SB_HORZ, SB_VERT}) {
-    int old = GetScrollPos(main_, bar);
-    SCROLLINFO info{sizeof info, SIF_RANGE | SIF_PAGE};
-    info.nMax = MulDiv(bar == SB_HORZ ? 850 : 730, dpi, 96) - 1;
-    info.nPage = UINT(bar == SB_HORZ ? client.right : client.bottom);
-    SetScrollInfo(main_, bar, &info, TRUE);
-    int current = GetScrollPos(main_, bar);
-    if (old != current)
-      ScrollWindowEx(main_, bar == SB_HORZ ? old - current : 0, bar == SB_VERT ? old - current : 0, nullptr,
-                     nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
-  }
-}
 App::App(HINSTANCE instance, std::filesystem::path root, bool fixture, bool visible, bool afterUpdate)
     : instance_(instance), store_(root), settings_(store_.load()),
       startupRoot_(root.empty() ? root : std::filesystem::absolute(root)),
@@ -161,6 +133,12 @@ App::~App() {
     WTSUnRegisterSessionNotification(main_);
     DestroyWindow(main_);
   }
+  for (auto brush : {paneBrush_, canvasBrush_, inputBrush_})
+    if (brush)
+      DeleteObject(brush);
+  for (auto font : {titleFont_, sectionFont_, navIconFont_})
+    if (font)
+      DeleteObject(font);
   if (font_)
     DeleteObject(font_);
 }
@@ -218,18 +196,20 @@ int App::run() {
   taskbarCreated_ = RegisterWindowMessageW(L"TaskbarCreated");
   main_ = CreateWindowExW(0, managementClass.c_str(), L"Tempos · 위젯 설정",
                           WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_THICKFRAME |
-                              WS_VSCROLL | WS_HSCROLL,
+                              WS_VSCROLL | WS_CLIPCHILDREN,
                           CW_USEDEFAULT, CW_USEDEFAULT, 880, 790, nullptr, nullptr, instance_, this);
   if (!main_)
     return 1;
   UINT dpi = GetDpiForWindow(main_);
-  RECT size{0, 0, MulDiv(850, dpi, 96), MulDiv(730, dpi, 96)};
+  RECT size{0, 0, MulDiv(1024, dpi, 96), MulDiv(780, dpi, 96)};
   AdjustWindowRectExForDpi(&size, DWORD(GetWindowLongPtrW(main_, GWL_STYLE)), FALSE, 0, dpi);
   MONITORINFO screen{sizeof screen};
   GetMonitorInfoW(MonitorFromWindow(main_, MONITOR_DEFAULTTONEAREST), &screen);
-  SetWindowPos(
-      main_, nullptr, 0, 0, std::min(size.right - size.left, screen.rcWork.right - screen.rcWork.left),
-      std::min(size.bottom - size.top, screen.rcWork.bottom - screen.rcWork.top), SWP_NOMOVE | SWP_NOZORDER);
+  const int width = std::min(size.right - size.left, screen.rcWork.right - screen.rcWork.left);
+  const int height = std::min(size.bottom - size.top, screen.rcWork.bottom - screen.rcWork.top);
+  SetWindowPos(main_, nullptr, screen.rcWork.left + (screen.rcWork.right - screen.rcWork.left - width) / 2,
+               screen.rcWork.top + (screen.rcWork.bottom - screen.rcWork.top - height) / 2, width, height,
+               SWP_NOZORDER);
   font_ = CreateFontW(-MulDiv(14, dpi, 96), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
   ProviderService::TemperatureRead temperatureFixture;
@@ -254,10 +234,31 @@ int App::run() {
     openSettings();
   if (!store_.warning.empty())
     status(store_.warning);
-  if (afterUpdate_) { openSettings(); TabCtrl_SetCurSel(control(1000), 4); selectTab(4); }
+  if (afterUpdate_) {
+    openSettings();
+    selectTab(4);
+  }
   if (settings_.checkUpdatesOnStart) updates_->check();
   MSG message{};
   while (GetMessageW(&message, nullptr, 0, 0) > 0) {
+    if (message.message == WM_KEYDOWN && message.wParam == VK_TAB &&
+        (message.hwnd == main_ || IsChild(main_, message.hwnd)) && !tabStops_.empty()) {
+      int step = GetKeyState(VK_SHIFT) < 0 ? -1 : 1;
+      auto current = std::find_if(tabStops_.begin(), tabStops_.end(), [&](HWND item) {
+        return item == message.hwnd || IsChild(item, message.hwnd);
+      });
+      int count = int(tabStops_.size()),
+          index = current == tabStops_.end() ? (step > 0 ? -1 : 0) : int(current - tabStops_.begin());
+      for (int i = 0; i < count; ++i) {
+        index = (index + count + step) % count;
+        auto target = tabStops_[index];
+        if (IsWindowEnabled(target)) {
+          SetFocus(target);
+          break;
+        }
+      }
+      continue;
+    }
     if (!IsDialogMessageW(main_, &message)) {
       TranslateMessage(&message);
       DispatchMessageW(&message);
@@ -282,175 +283,6 @@ LRESULT CALLBACK App::widgetProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     widget->hwnd = hwnd;
   }
   return widget ? widget->app->widgetMessage(*widget, msg, w, l) : DefWindowProcW(hwnd, msg, w, l);
-}
-void App::buildSettings() {
-  settingsBuilt_ = true;
-  loadRegions();
-  UINT dpi = GetDpiForWindow(main_);
-  settingsDpi_ = dpi;
-  auto px = [&](int x) { return MulDiv(x, dpi, 96); };
-  auto create = [&](const wchar_t *cls, const std::wstring &text, DWORD style, int x, int y, int w, int h,
-                    int id, int tab) {
-    HWND ctrl = CreateWindowExW(cls == std::wstring(L"EDIT") ? WS_EX_CLIENTEDGE : 0, cls, text.c_str(),
-                                WS_CHILD | WS_VISIBLE | style, px(x), px(y), px(w), px(h), main_,
-                                reinterpret_cast<HMENU>(INT_PTR(id)), instance_, nullptr);
-    SendMessageW(ctrl, WM_SETFONT, reinterpret_cast<WPARAM>(font_), TRUE);
-    controls_.push_back({ctrl, tab});
-    return ctrl;
-  };
-  auto label = [&](const wchar_t *t, int x, int y, int width, int tab) {
-    create(L"STATIC", t, 0, x, y, width, 23, 0, tab);
-  };
-  auto button = [&](const wchar_t *t, int x, int y, int width, int id, int tab) {
-    return create(L"BUTTON", t, WS_TABSTOP | BS_PUSHBUTTON, x, y, width, 31, id, tab);
-  };
-  auto combo = [&](int x, int y, int width, int id, int tab) {
-    return create(L"COMBOBOX", L"", WS_TABSTOP | CBS_DROPDOWNLIST | WS_VSCROLL, x, y, width, 220, id, tab);
-  };
-  auto edit = [&](int x, int y, int width, int id, int tab, bool password = false) {
-    return create(L"EDIT", L"", WS_TABSTOP | ES_AUTOHSCROLL | (password ? ES_PASSWORD : 0), x, y, width, 27,
-                  id, tab);
-  };
-  auto check = [&](const wchar_t *t, int x, int y, int width, int id, int tab) {
-    return create(L"BUTTON", t, WS_TABSTOP | BS_AUTOCHECKBOX, x, y, width, 27, id, tab);
-  };
-  auto addItem = [](HWND hwnd, const wchar_t *t) {
-    SendMessageW(hwnd, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(t));
-  };
-  auto tabs = create(WC_TABCONTROLW, L"", WS_TABSTOP, 16, 12, 818, 34, 1000, -1);
-  for (auto t : {L"위젯", L"연동", L"앱", L"표시 옵션", L"About · 업데이트"}) {
-    TCITEMW item{};
-    item.mask = TCIF_TEXT;
-    item.pszText = const_cast<wchar_t *>(t);
-    TabCtrl_InsertItem(tabs, TabCtrl_GetItemCount(tabs), &item);
-  }
-  label(L"바탕화면 위젯", 22, 63, 205, 0);
-  create(L"LISTBOX", L"", WS_TABSTOP | WS_BORDER | WS_VSCROLL | LBS_NOTIFY, 22, 91, 207, 400, 1200, 0);
-  auto kinds = combo(22, 507, 207, 1201, 0);
-  for (int i = 0; i < int(KindCount); ++i)
-    addItem(kinds, kindName(Kind(i)).data());
-  SendMessageW(kinds, CB_SETCURSEL, 0, 0);
-  button(L"추가", 22, 546, 98, 1202, 0);
-  button(L"제거", 130, 546, 99, 1203, 0);
-  button(L"정렬 모드", 22, 591, 207, 1204, 0);
-  button(L"모두 숨기기 / 표시", 22, 632, 207, 1205, 0);
-  label(L"크기 · 비율 고정", 253, 64, 230, 0);
-  combo(253, 90, 258, 1300, 0);
-  label(L"확대", 534, 64, 250, 0);
-  auto scale = combo(534, 90, 270, 1301, 0);
-  for (auto t : {L"100%", L"150%", L"200%"})
-    addItem(scale, t);
-  label(L"테마", 253, 132, 258, 0);
-  auto theme = combo(253, 158, 258, 1302, 0);
-  addItem(theme, L"전체 테마 따르기");
-  for (auto &p : palettes())
-    addItem(theme, p.name);
-  label(L"새로고침", 534, 132, 270, 0);
-  combo(534, 158, 270, 1303, 0);
-  label(L"모니터", 253, 200, 551, 0);
-  combo(253, 226, 551, 1304, 0);
-  label(L"배경 투명도 (0–100%)", 253, 268, 258, 0);
-  edit(253, 294, 258, 1305, 0);
-  label(L"전체 투명도 (0–100%)", 534, 268, 270, 0);
-  edit(534, 294, 270, 1306, 0);
-  check(L"클릭 통과", 253, 336, 165, 1307, 0);
-  check(L"위치 잠금", 430, 336, 165, 1308, 0);
-  check(L"항상 위", 621, 336, 175, 1309, 0);
-  check(L"초 표시 (시계)", 253, 373, 187, 1310, 0);
-  check(L"그래프", 453, 373, 140, 1311, 0);
-  check(L"날씨 배경 자동", 621, 373, 183, 1312, 0);
-  create(L"STATIC", L"장치 / 볼륨", 0, 253, 418, 551, 23, 1321, 0);
-  combo(253, 444, 551, 1313, 0);
-  create(L"STATIC", L"날씨 지역", 0, 253, 484, 551, 23, 1322, 0);
-  combo(253, 510, 362, 1314, 0);
-  button(L"현재 위치 찾기", 630, 508, 174, 1320, 0);
-  for (auto &r : regions_)
-    SendMessageW(control(1314), CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(r.name.c_str()));
-  create(L"STATIC", L"시간대 (비우면 Windows 설정 · 예: Asia/Seoul)", 0, 253, 550, 551, 23, 1323, 0);
-  edit(253, 576, 551, 1315, 0);
-  button(L"적용", 662, 628, 142, 1316, 0);
-  button(L"이전 달", 253, 628, 113, 1317, 0);
-  button(L"오늘", 375, 628, 100, 1318, 0);
-  button(L"다음 달", 484, 628, 113, 1319, 0);
-  label(L"날씨 서비스 · 모든 날씨 위젯에 적용", 27, 67, 777, 1);
-  auto weatherProvider = combo(27, 94, 450, 1403, 1);
-  addItem(weatherProvider, L"기상청");
-  addItem(weatherProvider, L"Open-Meteo");
-  button(L"날씨 서비스 적용", 496, 94, 304, 1404, 1);
-  create(L"STATIC", L"", 0, 27, 136, 777, 26, 1405, 1);
-  label(L"기상청 API허브 인증키", 27, 173, 777, 1);
-  edit(27, 201, 775, 1400, 1, true);
-  button(L"날씨 인증키 저장", 27, 244, 224, 1401, 1);
-  button(L"날씨 서비스 안내", 264, 244, 224, 1402, 1);
-  label(L"기상청 키는 PC에 암호화해 보관합니다. 공공데이터포털 ServiceKey와 다릅니다.", 27, 285, 777, 1);
-  label(L"Google 캘린더 · 일정 조회 전용", 27, 330, 777, 1);
-  label(L"데스크톱 앱 OAuth 클라이언트 ID", 27, 365, 777, 1);
-  edit(27, 392, 775, 1410, 1);
-  label(L"클라이언트 보안 비밀 (발급 정보에 있을 때 입력)", 27, 431, 777, 1);
-  edit(27, 458, 775, 1411, 1);
-  button(L"브라우저에서 연결", 27, 500, 224, 1412, 1);
-  button(L"연결 해제", 264, 500, 224, 1413, 1);
-  label(L"표시할 캘린더 (여러 개 선택 가능)", 27, 546, 777, 1);
-  create(L"LISTBOX", L"", WS_TABSTOP | WS_BORDER | WS_VSCROLL | LBS_EXTENDEDSEL, 27, 575, 580, 83, 1414, 1);
-  button(L"캘린더 선택 저장", 620, 575, 182, 1415, 1);
-  create(L"STATIC", calendar_.account().status, 0, 27, 666, 777, 25, 1416, 1);
-  weatherControls();
-  label(L"전체 테마", 27, 71, 777, 2);
-  auto global = combo(27, 103, 450, 1500, 2);
-  for (auto &p : palettes())
-    addItem(global, p.name);
-  SendMessageW(global, CB_SETCURSEL, settings_.theme, 0);
-  button(L"전체 테마 적용", 496, 102, 304, 1501, 2);
-  check(L"Windows 로그인 시 시작", 27, 168, 550, 1502, 2);
-  SendMessageW(control(1502), BM_SETCHECK, startup_.enabled() ? BST_CHECKED : BST_UNCHECKED, 0);
-  button(L"레이아웃 내보내기", 27, 225, 363, 1503, 2);
-  button(L"레이아웃 가져오기", 408, 225, 392, 1504, 2);
-  button(L"진단 정보 저장", 27, 279, 363, 1505, 2);
-  button(L"데이터 폴더 열기", 408, 279, 392, 1506, 2);
-  label(L"위젯은 트레이 아이콘에서 관리할 수 있습니다.", 27, 347, 777, 2);
-  label(L"트레이 아이콘을 ^ 영역에 둘지는 Windows 작업표시줄 설정에서 지정합니다.", 27, 379, 777, 2);
-  label(L"정렬 모드에서는 드래그 이동과 투명한 위젯 복구가 가능합니다.", 27, 429, 777, 2);
-  label(L"일정과 인증정보는 레이아웃 내보내기에 포함되지 않습니다.", 27, 462, 777, 2);
-  check(L"CPU 온도 표시 · 처음에는 센서 도우미 설치 필요", 27, 493, 777, 1510, 2);
-  create(L"STATIC", L"", 0, 27, 525, 777, 24, 1511, 2);
-  button(L"센서 도우미 설치 / 복구", 27, 559, 365, 1512, 2);
-  button(L"센서 도우미 제거", 408, 559, 392, 1513, 2);
-  button(L"Tempos 종료", 27, 615, 773, 1507, 2);
-  create(L"STATIC", L"", 0, 27, 71, 777, 23, 1621, 3);
-  check(L"시계 · 오전 / 오후 12시간 표시", 27, 120, 777, 1600, 3);
-  check(L"날씨 · 화씨 (°F)", 27, 162, 777, 1601, 3);
-  check(L"네트워크 · 바이트 단위 (KiB/s, MiB/s)", 27, 204, 777, 1602, 3);
-  check(L"디스크 · 이진 단위 (GiB, TiB)", 27, 246, 777, 1603, 3);
-  check(L"캘린더 · 월요일부터 한 주 시작", 27, 288, 777, 1604, 3);
-  create(L"STATIC", L"시스템 정보 표시 항목", 0, 27, 351, 777, 23, 1622, 3);
-  check(L"PC 이름", 27, 393, 350, 1610, 3);
-  check(L"Windows 버전", 405, 393, 395, 1611, 3);
-  check(L"CPU 이름", 27, 435, 350, 1612, 3);
-  check(L"GPU 이름", 405, 435, 395, 1613, 3);
-  check(L"가동 시간", 27, 477, 350, 1614, 3);
-  button(L"표시 옵션 적용", 27, 615, 773, 1620, 3);
-  label(L"Tempos · 바탕화면 위젯", 27, 71, 777, 4);
-  create(L"STATIC", L"현재 버전 " + wide(TEMPOS_VERSION_STRING) + L" · Windows x64", 0, 27, 105, 777, 25, 1700, 4);
-  label(L"제작자  Poyal  ·  poyal.work@gmail.com", 27, 143, 777, 4);
-  button(L"사용 안내", 27, 187, 180, 1708, 4);
-  button(L"GitHub", 222, 187, 180, 1706, 4);
-  button(L"문의·오류 신고", 417, 187, 180, 1707, 4);
-  button(L"이메일", 612, 187, 188, 1712, 4);
-  check(L"앱을 시작할 때 새 버전 확인", 27, 250, 777, 1713, 4);
-  create(L"STATIC", L"", 0, 27, 293, 777, 54, 1701, 4);
-  create(L"STATIC", L"", 0, 27, 350, 777, 25, 1709, 4);
-  button(L"업데이트 확인", 27, 395, 180, 1702, 4);
-  button(L"업데이트 설치", 222, 395, 180, 1703, 4);
-  button(L"취소", 417, 395, 180, 1704, 4);
-  button(L"변경 내역 보기", 612, 395, 188, 1705, 4);
-  create(L"STATIC", L"", 0, 27, 453, 777, 74, 1710, 4);
-  create(L"STATIC", L"", 0, 27, 545, 777, 66, 1714, 4);
-  label(L"업데이트 확인·다운로드에는 GitHub를 사용합니다. 설정과 계정 정보는 보내지 않습니다.", 27, 640, 777, 4);
-  create(L"STATIC", L"", 0, 22, 695, 802, 26, 1999, -1);
-  selectTab(0);
-  sensorControls();
-  updateControls();
-  updateViewport();
 }
 void App::updateControls() {
   if (!updates_ || !control(1700)) return;
@@ -591,119 +423,6 @@ void App::weatherControls() {
                  kma ? L"기상청: 개인 인증키 필요 · 외부 요청 최소 10분 (5분 선택 시 캐시 사용)"
                      : L"Open-Meteo: 키 없이 사용 · 비상업적 이용 · 외부 요청 최소 15분");
 }
-void App::selectTab(int tab) {
-  tab_ = tab;
-  for (auto &[hwnd, page] : controls_)
-    ShowWindow(hwnd, page < 0 || page == tab ? SW_SHOW : SW_HIDE);
-  if (tab == 1) {
-    weatherControls();
-    SetWindowTextW(control(1416), calendar_.account().status.c_str());
-    auto account = calendar_.account();
-    SendMessageW(control(1414), LB_RESETCONTENT, 0, 0);
-    for (size_t i = 0; i < account.calendars.size(); ++i) {
-      auto &c = account.calendars[i];
-      SendMessageW(control(1414), LB_ADDSTRING, 0, reinterpret_cast<LPARAM>(c.name.c_str()));
-      SendMessageW(
-          control(1414), LB_SETSEL,
-          std::find(account.selected.begin(), account.selected.end(), c.id) != account.selected.end(), i);
-    }
-  }
-  if (tab == 2) sensorControls();
-  if (tab == 4) updateControls();
-  if (tab == 3) {
-    auto *w = find(selected_);
-    for (int id : {1600, 1601, 1602, 1603, 1604, 1610, 1611, 1612, 1613, 1614, 1620})
-      EnableWindow(control(id), w != nullptr);
-    if (w) {
-      auto check = [&](int id, bool value) {
-        SendMessageW(control(id), BM_SETCHECK, value ? BST_CHECKED : BST_UNCHECKED, 0);
-      };
-      check(1600, w->twelveHour);
-      check(1601, w->fahrenheit);
-      check(1602, w->networkBytes);
-      check(1603, w->binaryDisk);
-      check(1604, w->weekStart == 1);
-      for (int i = 0; i < 5; ++i)
-        check(1610 + i, w->systemFields[i]);
-    }
-  }
-  layoutWidgetFields();
-}
-void App::layoutWidgetFields() {
-  auto *w = find(selected_);
-  auto is = [&](Kind kind) { return w && w->kind == kind; };
-  auto show = [&](int id, bool visible, int page) {
-    ShowWindow(control(id), visible && tab_ == page ? SW_SHOW : SW_HIDE);
-  };
-  auto move = [&](int id, int x, int y, int width, int height) {
-    MoveWindow(control(id), MulDiv(x, settingsDpi_, 96) - GetScrollPos(main_, SB_HORZ),
-               MulDiv(y, settingsDpi_, 96) - GetScrollPos(main_, SB_VERT), MulDiv(width, settingsDpi_, 96),
-               MulDiv(height, settingsDpi_, 96), TRUE);
-  };
-  const bool graph = is(Kind::Cpu) || is(Kind::Gpu) || is(Kind::Memory) || is(Kind::Network);
-  const bool device = is(Kind::Gpu) || is(Kind::Network) || (is(Kind::Disk) && w->size != Size::L);
-  const bool timezone = is(Kind::Clock) || is(Kind::Calendar);
-  const bool month = is(Kind::Calendar) && (w->size == Size::L || w->size == Size::XL);
-  show(1310, is(Kind::Clock), 0);
-  show(1311, graph, 0);
-  show(1312, is(Kind::Weather), 0);
-  for (int id : {1310, 1311, 1312})
-    move(id, 253, 373, 551, 27);
-  int y = is(Kind::Clock) || graph || is(Kind::Weather) ? 418 : 382;
-  show(1321, device, 0);
-  show(1313, device, 0);
-  if (device) {
-    SetWindowTextW(control(1321), is(Kind::Network) ? L"네트워크 집계 대상"
-                                  : is(Kind::Disk)  ? L"볼륨"
-                                                    : L"GPU 장치");
-    move(1321, 253, y, 551, 23);
-    move(1313, 253, y + 26, 551, 220);
-    y += 66;
-  }
-  for (int id : {1322, 1314, 1320})
-    show(id, is(Kind::Weather), 0);
-  if (is(Kind::Weather)) {
-    move(1322, 253, y, 551, 23);
-    move(1314, 253, y + 26, 362, 220);
-    move(1320, 630, y + 24, 174, 31);
-    y += 66;
-  }
-  show(1323, timezone, 0);
-  show(1315, timezone, 0);
-  if (timezone) {
-    move(1323, 253, y, 551, 23);
-    move(1315, 253, y + 26, 551, 27);
-    y += 66;
-  }
-  for (int id : {1317, 1318, 1319})
-    show(id, month, 0);
-  move(1317, 253, y + 12, 113, 31);
-  move(1318, 375, y + 12, 100, 31);
-  move(1319, 484, y + 12, 113, 31);
-  move(1316, 662, y + 12, 142, 31);
-  EnableWindow(control(1320), is(Kind::Weather) && locationTarget_.empty());
-
-  const Kind optionKinds[]{Kind::Clock, Kind::Weather, Kind::Network, Kind::Disk, Kind::Calendar};
-  bool hasOptions = false;
-  for (int i = 0; i < 5; ++i) {
-    bool visible = is(optionKinds[i]);
-    show(1600 + i, visible, 3);
-    move(1600 + i, 27, 120, 777, 27);
-    hasOptions |= visible;
-  }
-  show(1622, is(Kind::System), 3);
-  move(1622, 27, 120, 777, 23);
-  for (int i = 0; i < 5; ++i) {
-    show(1610 + i, is(Kind::System), 3);
-    move(1610 + i, 27, 163 + i * 42, 777, 27);
-  }
-  hasOptions |= is(Kind::System);
-  show(1620, hasOptions, 3);
-  move(1620, 27, is(Kind::System) ? 393 : 176, 773, 31);
-  SetWindowTextW(control(1621), !w            ? L"위젯 탭에서 위젯을 선택하세요."
-                                : !hasOptions ? L"이 위젯의 표시 설정은 위젯 탭에서 변경할 수 있어요."
-                                              : (std::wstring(kindName(w->kind)) + L" 표시 옵션").c_str());
-}
 void App::findLocation() {
   auto *w = find(selected_);
   if (!w || w->kind != Kind::Weather || !locationTarget_.empty())
@@ -734,6 +453,7 @@ void App::findLocation() {
 void App::applyLocation(LocationResult result) {
   bool same = selected_ == locationTarget_ && choice(1314) == locationRegionChoice_;
   locationTarget_.clear();
+  EnableWindow(control(1320), TRUE);
   layoutWidgetFields();
   if (!same || !find(selected_) || find(selected_)->kind != Kind::Weather) {
     status(L"선택한 위젯이나 지역이 바뀌어 위치 결과를 적용하지 않았어요.");
@@ -749,6 +469,7 @@ void App::applyLocation(LocationResult result) {
     return;
   }
   SendMessageW(control(1314), CB_SETCURSEL, *index, 0);
+  editorChanged();
   status(regions_[*index].name + L"을 선택했어요. 적용을 누르면 이 지역을 계속 사용합니다.");
 }
 void App::updateList() {
@@ -759,7 +480,8 @@ void App::updateList() {
   SendMessageW(list, LB_RESETCONTENT, 0, 0);
   for (size_t i = 0; i < settings_.widgets.size(); ++i) {
     auto &w = settings_.widgets[i];
-    auto name = std::wstring(kindName(w.kind)) + L" · " + std::wstring(sizeName(w.size));
+    auto name = (w.alias.empty() ? std::wstring(kindName(w.kind)) : w.alias) + L" · " +
+                std::wstring(sizeName(w.size));
     SendMessageW(list, LB_ADDSTRING, 0, reinterpret_cast<LPARAM>(name.c_str()));
     if (w.id == selected_)
       SendMessageW(list, LB_SETCURSEL, i, 0);
@@ -768,10 +490,15 @@ void App::updateList() {
     selected_ = settings_.widgets.front().id;
     SendMessageW(list, LB_SETCURSEL, 0, 0);
   }
-  loadControls();
+  if (!dirty_ || !find(selected_))
+    loadControls();
+  if (tab_ == 3)
+    refreshLayouts();
 }
 void App::loadControls() {
   loading_ = true;
+  dirty_ = false;
+  errorField_ = 0;
   auto *w = find(selected_);
   for (int id = 1300; id <= 1320; ++id)
     EnableWindow(control(id), w != nullptr);
@@ -804,7 +531,7 @@ void App::loadControls() {
   for (size_t i = 0; i < monitors_.size(); ++i) {
     auto &m = monitors_[i];
     item(1304, m.name + L" · " + std::to_wstring(m.dpi * 100 / 96) + L"%");
-    if (w->monitor == m.id || w->monitor.empty() && m.primary)
+    if (w->monitor == m.id || (w->monitor.empty() && m.primary))
       set(1304, int(i));
   }
   SetWindowTextW(control(1305), std::to_wstring(w->backgroundTransparency).c_str());
@@ -812,6 +539,14 @@ void App::loadControls() {
   auto check = [&](int id, bool yes) {
     SendMessageW(control(id), BM_SETCHECK, yes ? BST_CHECKED : BST_UNCHECKED, 0);
   };
+  SetWindowTextW(control(1324), w->alias.c_str());
+  check(1600, w->twelveHour);
+  check(1601, w->fahrenheit);
+  check(1602, w->networkBytes);
+  check(1603, w->binaryDisk);
+  check(1604, w->weekStart == 1);
+  for (int i = 0; i < 5; ++i)
+    check(1610 + i, w->systemFields[i]);
   check(1307, w->clickThrough);
   check(1308, w->locked);
   check(1309, w->topmost);
@@ -824,6 +559,10 @@ void App::loadControls() {
   clear(1313);
   if (providers_ && (w->kind == Kind::Gpu || w->kind == Kind::Network || w->kind == Kind::Disk))
     devices_ = providers_->devices(w->kind);
+  if (!w->source.empty() && (w->kind == Kind::Gpu || w->kind == Kind::Network || w->kind == Kind::Disk) &&
+      std::none_of(devices_.begin(), devices_.end(),
+                   [&](const Device &device) { return device.id == w->source; }))
+    devices_.push_back({w->source, L"연결되지 않은 장치 · " + w->source});
   item(1313, w->kind == Kind::Network ? L"전체 네트워크" : L"기본 장치");
   set(1313, 0);
   for (size_t i = 0; i < devices_.size(); ++i) {
@@ -877,10 +616,12 @@ bool App::place(Widget &w, bool keep) {
   w.monitor = mi->id;
   return true;
 }
-void App::applyControls() {
+std::optional<Widget> App::editorValue(int &field, std::wstring &error) {
   auto *current = find(selected_);
   if (!current)
-    return;
+    return {};
+  field = 1300;
+  error = L"입력값을 확인하세요.";
   Widget w = *current;
   try {
     int size = choice(1300), scale = choice(1301), refresh = choice(1303), monitor = choice(1304);
@@ -900,8 +641,40 @@ void App::applyControls() {
         throw std::runtime_error("integer");
       return n;
     };
-    w.backgroundTransparency = integer(1305);
-    w.transparency = integer(1306);
+    auto percent = [&](int id) {
+      field = id;
+      error = L"입력값은 0부터 100까지의 정수여야 합니다.";
+      int n = integer(id);
+      if (n < 0 || n > 100)
+        throw std::runtime_error("percentage");
+      return n;
+    };
+    w.backgroundTransparency = percent(1305);
+    w.transparency = percent(1306);
+    w.alias = input(1324);
+    switch (w.kind) {
+    case Kind::Clock:
+      w.twelveHour = checked(1600);
+      break;
+    case Kind::Weather:
+      w.fahrenheit = checked(1601);
+      break;
+    case Kind::Network:
+      w.networkBytes = checked(1602);
+      break;
+    case Kind::Disk:
+      w.binaryDisk = checked(1603);
+      break;
+    case Kind::Calendar:
+      w.weekStart = checked(1604) ? 1 : 0;
+      break;
+    case Kind::System:
+      for (int i = 0; i < 5; ++i)
+        w.systemFields[i] = checked(1610 + i);
+      break;
+    default:
+      break;
+    }
     w.clickThrough = checked(1307);
     w.locked = checked(1308);
     w.topmost = checked(1309);
@@ -914,7 +687,7 @@ void App::applyControls() {
     }
     w.graph = checked(1311);
     w.weatherAuto = checked(1312);
-    if (w.kind == Kind::Gpu || w.kind == Kind::Network || w.kind == Kind::Disk) {
+    if (w.kind == Kind::Gpu || w.kind == Kind::Network || (w.kind == Kind::Disk && w.size != Size::L)) {
       int i = choice(1313);
       w.source = i > 0 && i <= int(devices_.size()) ? devices_[i - 1].id : L"";
     }
@@ -929,22 +702,49 @@ void App::applyControls() {
         w.longitude = r.lon;
       }
     }
+    field = 1315;
+    error = L"시간대 입력값을 확인하세요. 예: Asia/Seoul";
     w.timezone = input(1315);
     if (!w.timezone.empty())
       static_cast<void>(std::chrono::locate_zone(utf8(w.timezone)));
+    field = 1300;
+    error = L"선택한 설정의 입력값을 확인하세요.";
     if (!validateWidget(w))
       throw std::runtime_error("values");
-    if (!place(w))
-      throw std::runtime_error("space");
-    auto next = settings_;
-    next.widgets[size_t(current - settings_.widgets.data())] = std::move(w);
-    if (!commit(std::move(next)))
-      return;
-    rebuild();
-    status(L"설정을 적용했어요.");
+    return w;
   } catch (...) {
-    status(L"입력값을 확인하세요. 투명도는 0–100%, 크기는 화면 안의 빈 공간에 맞아야 해요.");
+    return {};
   }
+}
+bool App::applyControls() {
+  int field = 0;
+  std::wstring error;
+  auto w = editorValue(field, error);
+  auto current = find(selected_);
+  if (!current)
+    return false;
+  if (w && !place(*w)) {
+    w.reset();
+    field = 1300;
+    error = L"선택한 크기를 배치할 빈 공간이 없습니다.";
+  }
+  if (!w) {
+    errorField_ = field;
+    SetWindowTextW(control(1231), error.c_str());
+    status(error);
+    updateViewport();
+    focusField(control(1231));
+    SetFocus(control(field));
+    return false;
+  }
+  auto next = settings_;
+  next.widgets[size_t(current - settings_.widgets.data())] = std::move(*w);
+  if (!commit(std::move(next)))
+    return false;
+  dirty_ = false;
+  rebuild();
+  status(L"설정을 적용했어요.");
+  return true;
 }
 void App::save() {
   if (!store_.save(settings_))
@@ -1266,6 +1066,8 @@ void App::draw(WidgetWindow &window) {
 #endif
   if (renderer_.draw(window.hwnd, window.surface, *w, data.get(), settings_.theme, settings_.edit,
                      window.dpi)) {
+    if (settingsBuilt_ && tab_ == 0 && selected_ == window.id && IsWindowVisible(main_))
+      InvalidateRect(control(1212), nullptr, FALSE);
     window.renderedAt = monotonic();
     window.contentTime = nowUnix();
     ++redraws_;
@@ -1338,9 +1140,10 @@ void App::openSettings(const std::wstring &id) {
     updateList();
   }
   if (!id.empty()) {
+    if (selected_ != id && !leaveEditor())
+      return;
     selected_ = id;
     selectTab(0);
-    TabCtrl_SetCurSel(control(1000), 0);
     updateList();
   }
   ShowWindow(main_, SW_SHOW);
@@ -1369,6 +1172,11 @@ void App::menu(HWND owner, bool widget) {
   AppendMenuW(menu, MF_STRING | (settings_.edit ? MF_CHECKED : 0), 2002, L"정렬 모드");
   AppendMenuW(menu, MF_STRING, 2003, settings_.hidden ? L"모든 위젯 표시" : L"모든 위젯 숨기기");
   AppendMenuW(menu, MF_STRING, 2004, L"지금 새로고침");
+  auto layouts = CreatePopupMenu();
+  AppendMenuW(layouts, MF_STRING | MF_CHECKED, 3000, settings_.layoutName.c_str());
+  for (size_t i = 0; i < settings_.otherLayouts.size(); ++i)
+    AppendMenuW(layouts, MF_STRING, UINT_PTR(3001 + i), settings_.otherLayouts[i].layoutName.c_str());
+  AppendMenuW(menu, MF_POPUP, UINT_PTR(layouts), L"배치");
   AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
   AppendMenuW(menu, MF_STRING, 2005, L"종료");
   POINT point{};
@@ -1409,6 +1217,66 @@ void App::calendarMonth(Widget &current, int delta) {
     }
 }
 void App::command(int id, int notification) {
+  if (loading_)
+    return;
+  if (id >= 3000) {
+    if (id > 3000 && leaveEditor())
+      layoutCommand(1807, size_t(id - 3000));
+    return;
+  }
+  if (id >= 1000 && id <= 1004 && notification == BN_CLICKED) {
+    selectTab(id - 1000);
+    return;
+  }
+  if (id == 1012 && notification == CBN_SELCHANGE) {
+    selectTab(int(SendMessageW(control(id), CB_GETITEMDATA, choice(id), 0)));
+    return;
+  }
+  if (id == 1802 && notification == LBN_SELCHANGE) {
+    int index = int(SendMessageW(control(1802), LB_GETCURSEL, 0, 0));
+    if (index >= 0 && size_t(index) <= settings_.otherLayouts.size()) {
+      auto &layout = index ? settings_.otherLayouts[index - 1] : static_cast<const Layout &>(settings_);
+      SetWindowTextW(control(1804), layout.layoutName.c_str());
+      EnableWindow(control(1807), index > 0);
+      EnableWindow(control(1808), index > 0);
+    }
+    return;
+  }
+  if (id >= 1805 && id <= 1808 && notification == BN_CLICKED) {
+    layoutCommand(id, size_t(SendMessageW(control(1802), LB_GETCURSEL, 0, 0)));
+    return;
+  }
+  if (notification == BN_SETFOCUS || notification == EN_SETFOCUS ||
+      (notification == CBN_SETFOCUS &&
+       (id == 1201 || id >= 1300 && id <= 1304 || id == 1313 || id == 1314 || id == 1403 || id == 1500)))
+    focusField(control(id));
+  if (id == 1325 && notification == BN_CLICKED) {
+    loadControls();
+    status(L"마지막으로 적용한 설정으로 되돌렸습니다.");
+    return;
+  }
+  bool combo = id >= 1300 && id <= 1304 || id == 1313 || id == 1314;
+  bool edit = id == 1305 || id == 1306 || id == 1315 || id == 1324;
+  bool check = id >= 1307 && id <= 1312 || id >= 1600 && id <= 1604 || id >= 1610 && id <= 1614;
+  if (combo || edit || check) {
+    if ((combo && notification == CBN_SELCHANGE) || (edit && notification == EN_CHANGE) ||
+        (check && notification == BN_CLICKED)) {
+      if (id == 1310)
+        SendMessageW(control(1303), CB_SETCURSEL, checked(1310) ? 0 : 1, 0);
+      if (id == 1303 && find(selected_) && find(selected_)->kind == Kind::Clock)
+        SendMessageW(control(1310), BM_SETCHECK, choice(1303) == 0 ? BST_CHECKED : BST_UNCHECKED, 0);
+      editorChanged();
+    }
+    return;
+  }
+  if ((id == 1202 || id == 1203 || id == 1206 || id == 1507 || id == 2005 || id == 1703 ||
+       (id >= 1317 && id <= 1319)) &&
+      !leaveEditor())
+    return;
+  if (id == 1206 && notification == BN_CLICKED) {
+    duplicateWidget();
+    return;
+  }
   if (id >= 1702 && id <= 1713) {
     if (id == 1702 && updates_ && !installRequested_) {
       updateInstallError_.clear(); updates_->check();
@@ -1449,7 +1317,14 @@ void App::command(int id, int notification) {
   if (id == 1200 && notification == LBN_SELCHANGE) {
     int i = int(SendMessageW(control(1200), LB_GETCURSEL, 0, 0));
     if (i >= 0 && i < int(settings_.widgets.size())) {
-      selected_ = settings_.widgets[i].id;
+      auto target = settings_.widgets[i].id;
+      if (target == selected_)
+        return;
+      if (!leaveEditor()) {
+        updateList();
+        return;
+      }
+      selected_ = target;
       loadControls();
     }
     return;
@@ -1489,6 +1364,7 @@ void App::command(int id, int notification) {
       status(L"날씨 서비스를 모든 날씨 위젯에 적용했어요.");
     }
     weatherControls();
+    updateViewport();
   } else if (id == 1401) {
     auto key = utf8(input(1400));
     if (key.empty() || key.size() > 1024) {
@@ -1579,8 +1455,15 @@ void App::command(int id, int notification) {
     wchar_t path[MAX_PATH] = L"tempos-layout.json";
     OPENFILENAMEW ofn{sizeof ofn};
     ofn.hwndOwner = main_;
+    std::wstring title = (id == 1503 ? L"내보내기 · " : L"가져오기 · 교체 대상: ") + settings_.layoutName;
+    if (id == 1504)
+      title += L" (파일의 날씨 서비스는 모든 배치에 적용)";
+    ofn.lpstrTitle = title.c_str();
     ofn.lpstrFilter = L"JSON 레이아웃\0*.json\0\0";
     ofn.lpstrFile = path;
+#ifdef TEMPOS_TEST_HOST
+    ofn.lpstrInitialDir = store_.root().c_str();
+#endif
     ofn.nMaxFile = MAX_PATH;
     ofn.lpstrDefExt = L"json";
     ofn.Flags = OFN_NOCHANGEDIR | (id == 1503 ? OFN_OVERWRITEPROMPT : OFN_FILEMUSTEXIST);
@@ -1595,9 +1478,13 @@ void App::command(int id, int notification) {
           if (!content)
             throw std::runtime_error("read");
           auto imported = readSettings(Json::parse(*content));
-          imported.cpuTemperatureEnabled = settings_.cpuTemperatureEnabled;
-          imported.checkUpdatesOnStart = settings_.checkUpdatesOnStart;
-          if (!commit(std::move(imported)))
+          auto next = settings_;
+          next.widgets = std::move(imported.widgets);
+          next.theme = imported.theme;
+          next.weatherProvider = imported.weatherProvider;
+          next.hidden = false;
+          next.edit = false;
+          if (!commit(std::move(next)))
             return;
           rebuild();
           status(L"레이아웃을 가져왔어요.");
@@ -1625,29 +1512,7 @@ void App::command(int id, int notification) {
     diagnose();
   else if (id == 1506)
     ShellExecuteW(main_, L"open", store_.root().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-  else if (id == 1620) {
-    if (auto *current = find(selected_)) {
-      auto next = settings_;
-      auto *w = &next.widgets[size_t(current - settings_.widgets.data())];
-      if (w->kind == Kind::Clock)
-        w->twelveHour = checked(1600);
-      if (w->kind == Kind::Weather)
-        w->fahrenheit = checked(1601);
-      if (w->kind == Kind::Network)
-        w->networkBytes = checked(1602);
-      if (w->kind == Kind::Disk)
-        w->binaryDisk = checked(1603);
-      if (w->kind == Kind::Calendar)
-        w->weekStart = checked(1604) ? 1 : 0;
-      if (w->kind == Kind::System)
-        for (int i = 0; i < 5; ++i)
-          w->systemFields[i] = checked(1610 + i);
-      if (!commit(std::move(next)))
-        return;
-      rebuild();
-      status(L"표시 옵션을 적용했어요.");
-    }
-  } else if (id == 1507 || id == 2005) {
+  else if (id == 1507 || id == 2005) {
     closing_ = true;
     save();
     PostQuitMessage(0);
@@ -1666,9 +1531,49 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     return 0;
   }
   switch (msg) {
-  case WM_CTLCOLORSTATIC:
-    SetBkMode(reinterpret_cast<HDC>(w), TRANSPARENT);
-    return reinterpret_cast<LRESULT>(GetSysColorBrush(COLOR_WINDOW));
+  case WM_SETTINGCHANGE:
+  case WM_THEMECHANGED:
+    settingsTheme();
+    rebuild();
+    return 0;
+  case WM_PAINT:
+    if (settingsBuilt_) {
+      PAINTSTRUCT ps{};
+      auto dc = BeginPaint(hwnd, &ps);
+      paintSettings(dc);
+      EndPaint(hwnd, &ps);
+      return 0;
+    }
+    break;
+  case WM_ERASEBKGND:
+    if (settingsBuilt_)
+      return 1;
+    break;
+  case WM_PRINTCLIENT:
+    if (settingsBuilt_) {
+      paintSettings(reinterpret_cast<HDC>(w));
+      return 0;
+    }
+    break;
+  case WM_DRAWITEM:
+    if (settingsBuilt_ && l) {
+      drawSettingItem(*reinterpret_cast<DRAWITEMSTRUCT *>(l));
+      return TRUE;
+    }
+    break;
+  case WM_CTLCOLOREDIT:
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORBTN:
+  case WM_CTLCOLORSTATIC: {
+    if (!settingsBuilt_)
+      break;
+    int id = GetDlgCtrlID(reinterpret_cast<HWND>(l));
+    bool input = msg == WM_CTLCOLOREDIT || msg == WM_CTLCOLORLISTBOX;
+    bool canvas = id == 1011 || id == 1999;
+    SetTextColor(reinterpret_cast<HDC>(w), textColor_);
+    SetBkColor(reinterpret_cast<HDC>(w), input ? inputColor_ : canvas ? canvasColor_ : paneColor_);
+    return reinterpret_cast<LRESULT>(input ? inputBrush_ : canvas ? canvasBrush_ : paneBrush_);
+  }
   case WM_COMMAND:
     command(LOWORD(w), HIWORD(w));
     return 0;
@@ -1696,12 +1601,6 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     return LRESULT((micros(dropped.QuadPart - moved.QuadPart) << 32) | (micros(moved.QuadPart - start.QuadPart) + 1));
   }
 #endif
-  case WM_NOTIFY:
-    if (reinterpret_cast<NMHDR *>(l)->idFrom == 1000 && reinterpret_cast<NMHDR *>(l)->code == TCN_SELCHANGE) {
-      selectTab(TabCtrl_GetCurSel(control(1000)));
-      return 0;
-    }
-    break;
   case WM_TIMER:
     if (w == 1)
       tick();
@@ -1746,7 +1645,7 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
       updateNotified_ = true;
       auto info = tray_; info.uFlags = NIF_INFO; info.dwInfoFlags = NIIF_INFO;
       wcscpy_s(info.szInfoTitle, L"Tempos 새 버전");
-      wcscpy_s(info.szInfo, L"설정의 About · 업데이트에서 확인하고 설치할 수 있습니다.");
+      wcscpy_s(info.szInfo, L"설정의 정보 및 업데이트에서 확인하고 설치할 수 있습니다.");
       Shell_NotifyIconW(NIM_MODIFY, &info);
     }
 #endif
@@ -1763,14 +1662,12 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
       menu(main_);
       break;
     case NIN_BALLOONUSERCLICK:
-      openSettings(); TabCtrl_SetCurSel(control(1000), 4); selectTab(4);
+      openSettings();
+      selectTab(4);
       break;
     }
     return 0;
   case WM_DISPLAYCHANGE:
-    rebuild();
-    return 0;
-  case WM_SETTINGCHANGE:
     rebuild();
     return 0;
   case WM_TIMECHANGE:
@@ -1798,18 +1695,8 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
       font_ =
           CreateFontW(-MulDiv(14, nextDpi, 96), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
-      for (auto &[child, page] : controls_) {
-        RECT bounds{};
-        GetWindowRect(child, &bounds);
-        MapWindowPoints(nullptr, hwnd, reinterpret_cast<POINT *>(&bounds), 2);
-        SetWindowPos(child, nullptr, MulDiv(bounds.left, nextDpi, settingsDpi_),
-                     MulDiv(bounds.top, nextDpi, settingsDpi_),
-                     MulDiv(bounds.right - bounds.left, nextDpi, settingsDpi_),
-                     MulDiv(bounds.bottom - bounds.top, nextDpi, settingsDpi_),
-                     SWP_NOZORDER | SWP_NOACTIVATE);
-        SendMessageW(child, WM_SETFONT, reinterpret_cast<WPARAM>(font_), TRUE);
-      }
       settingsDpi_ = nextDpi;
+      settingsTheme();
       DeleteObject(oldFont);
     }
     auto *r = reinterpret_cast<RECT *>(l);
@@ -1854,13 +1741,15 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
       position = info.nMax;
       break;
     }
-    scrollSettings(hwnd, bar, position);
+    scrollTo(position);
     return 0;
   }
   case WM_MOUSEWHEEL:
-    scrollSettings(hwnd, SB_VERT, GetScrollPos(hwnd, SB_VERT) - GET_WHEEL_DELTA_WPARAM(w) * 42 / 120);
+    scrollTo(GetScrollPos(hwnd, SB_VERT) - GET_WHEEL_DELTA_WPARAM(w) * 42 / 120);
     return 0;
   case WM_CLOSE:
+    if (!leaveEditor())
+      return 0;
     settings_.edit = false;
     rebuild();
     ShowWindow(hwnd, SW_HIDE);
@@ -1879,10 +1768,65 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
   }
   return DefWindowProcW(hwnd, msg, w, l);
 }
+#ifdef TEMPOS_TEST_HOST
+// Copy the already presented layered surface when an unrelated topmost window covers
+// the desktop. The fixed path belongs to the isolated TestHost data directory.
+static bool captureWidgetClient(HWND hwnd, const RenderSurface &surface, const std::filesystem::path &root) {
+  if (!surface.raster)
+    return false;
+  BITMAPINFO info{};
+  auto &header = info.bmiHeader;
+  header.biSize = sizeof header;
+  header.biWidth = LONG(surface.width);
+  header.biHeight = -LONG(surface.height);
+  header.biPlanes = 1;
+  header.biBitCount = 32;
+  header.biCompression = BI_RGB;
+  void *pixels{};
+  HDC dc = CreateCompatibleDC(nullptr);
+  if (!dc)
+    return false;
+  HBITMAP bitmap = CreateDIBSection(dc, &info, DIB_RGB_COLORS, &pixels, nullptr, 0);
+  bool saved = false;
+  if (bitmap) {
+    auto old = SelectObject(dc, bitmap);
+    RECT bounds{0, 0, LONG(surface.width), LONG(surface.height)};
+    SetDCBrushColor(dc, RGB(237, 244, 250));
+    FillRect(dc, &bounds, static_cast<HBRUSH>(GetStockObject(DC_BRUSH)));
+    SendMessageW(hwnd, WM_PRINTCLIENT, reinterpret_cast<WPARAM>(dc), PRF_CLIENT);
+    GdiFlush();
+    DWORD bytes = surface.width * surface.height * 4;
+    BITMAPFILEHEADER file{0x4d42, DWORD(sizeof file + sizeof header + bytes), 0, 0, sizeof file + sizeof header};
+    std::ofstream out(root / L"widget-surface.bmp", std::ios::binary);
+    out.write(reinterpret_cast<const char *>(&file), sizeof file);
+    out.write(reinterpret_cast<const char *>(&header), sizeof header);
+    out.write(static_cast<const char *>(pixels), bytes);
+    out.close();
+    saved = bool(out);
+    SelectObject(dc, old);
+    DeleteObject(bitmap);
+  }
+  DeleteDC(dc);
+  return saved;
+}
+#endif
 LRESULT App::widgetMessage(WidgetWindow &window, UINT msg, WPARAM wp, LPARAM lp) {
   auto *w = find(window.id);
   HWND hwnd = window.hwnd;
   switch (msg) {
+#ifdef TEMPOS_TEST_HOST
+  case WM_APP + 70:
+    return captureWidgetClient(hwnd, window.surface, store_.root());
+#endif
+  case WM_PRINTCLIENT:
+    if (window.surface.raster) {
+      const auto &s = window.surface;
+      BLENDFUNCTION blend{AC_SRC_OVER, 0, s.raster->opacity, AC_SRC_ALPHA};
+      AlphaBlend(reinterpret_cast<HDC>(wp), 0, 0, int(s.width), int(s.height), s.raster->dc, 0, 0,
+                 int(s.width), int(s.height), blend);
+      return 0;
+    }
+    break;
   case WM_GETOBJECT:
     if (static_cast<LONG>(lp) == UiaRootObjectId && window.accessible)
       return UiaReturnRawElementProvider(hwnd, wp, lp, window.accessible);
@@ -2035,6 +1979,7 @@ void App::diagnose() {
   j["gdiObjects"] = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
   j["userObjects"] = GetGuiResources(GetCurrentProcess(), GR_USEROBJECTS);
   j["redraws"] = redraws_;
+  j["previewDraws"] = previewDraws_;
   j["softwareRendering"] = renderer_.software();
   j["hidden"] = settings_.hidden;
   j["fixture"] = fixture_;

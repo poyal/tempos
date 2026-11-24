@@ -79,6 +79,7 @@ struct Palette {
 const std::array<Palette, 9> &palettes();
 struct Widget {
   std::wstring id = newId();
+  std::wstring alias;
   Kind kind = Kind::Clock;
   Size size = Size::M;
   int scale = 100;
@@ -98,13 +99,17 @@ struct Widget {
   int weekStart = 0;
   std::array<bool, 5> systemFields{true, true, true, true, true};
 };
-struct Settings {
-  int version = 1, theme = 1;
+struct Layout {
+  std::wstring layoutId = L"default", layoutName = L"기본 배치";
+  int theme = 1;
+  std::vector<Widget> widgets;
+};
+struct Settings : Layout {
+  std::vector<Layout> otherLayouts;
   WeatherProvider weatherProvider = WeatherProvider::OpenMeteo;
   bool edit = false, hidden = false;
   bool cpuTemperatureEnabled = false;
   bool checkUpdatesOnStart = true;
-  std::vector<Widget> widgets;
 };
 bool validateWidget(Widget &widget);
 struct Monitor {

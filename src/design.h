@@ -4,6 +4,7 @@
 namespace tempos::design {
 inline constexpr float padding = 20;
 inline constexpr float slimPadding = 17;
+inline constexpr float slimBottom = 8, compactBottom = 12, regularBottom = 16;
 inline constexpr float radius = 24;
 inline constexpr float graphStroke = 2;
 inline constexpr float iconSize = 20;

@@ -1,0 +1,133 @@
+{
+  "version": "0.1.5",
+  "sourceBase": "d4cbda06cb89e22f5f3d2dcb71a50d3d7395375a",
+  "sourceAtBuild": "base plus local v0.1.5 changes, identified by release tag",
+  "checkedAt": "2026-11-24T11:46:13.838Z",
+  "binaries": {
+    "releaseApp": "7DC2E041EA986608263CAA04592BC128E92789B65987618CA84054CA3F6E1333",
+    "releaseTestHost": "836464A64523268F66B5058D8425AAF8BF6AB4359F9125A85FB7566F2BEB032F",
+    "asanTestHost": "A7648EE24AB0257235865BEBCB59EE8D3DDCBFBB28B960572E0236561AD258E8"
+  },
+  "core": {
+    "release": {
+      "passed": 9699,
+      "failed": 0,
+      "command": "out/release/tempos_tests.exe"
+    },
+    "asan": {
+      "passed": 9699,
+      "failed": 0,
+      "command": "ctest --preset asan"
+    }
+  },
+  "suites": {
+    "release": {
+      "manifest": "full-validation-20261124-204144/manifest.json",
+      "runs": [
+        {
+          "mode": "workspace-editor",
+          "folder": "e2e-20261124-204145-005",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 62,
+          "fail": 0,
+          "skip": 0,
+          "skips": []
+        },
+        {
+          "mode": "ui-review",
+          "folder": "e2e-20261124-204206-983",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 532,
+          "fail": 0,
+          "skip": 0,
+          "skips": []
+        },
+        {
+          "mode": "updates",
+          "folder": "e2e-20261124-204317-956 업데이트 검사",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 83,
+          "fail": 0,
+          "skip": 0,
+          "skips": []
+        },
+        {
+          "mode": "legacy-grid",
+          "folder": "e2e-20261124-204337-015",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 28,
+          "fail": 0,
+          "skip": 0,
+          "skips": []
+        },
+        {
+          "mode": "persistence",
+          "folder": "e2e-20261124-204344-592",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 223,
+          "fail": 0,
+          "skip": 106,
+          "skips": [
+            "nine-saved: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "edit-exit-0: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "edit-exit-1: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "edit-exit-2: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "settings-closed: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "restarted: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "shell-notification-126: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "shell-notification-26: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "shell-notification-49249: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "shown-after-restart: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "middle-removed: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS",
+            "deletion-restarted: desktop hit test obscured by external window CASCADIA_HOSTING_WINDOW_CLASS"
+          ]
+        },
+        {
+          "mode": "windows-real",
+          "folder": "e2e-20261124-204427-193",
+          "api": "mock",
+          "collectors": "real",
+          "pass": 52,
+          "fail": 0,
+          "skip": 1,
+          "skips": [
+            "No valid sensor reading; status 3. This suite never installs a driver or sensor service."
+          ]
+        }
+      ]
+    },
+    "asan": {
+      "manifest": "full-validation-20261124-204509/manifest.json",
+      "runs": [
+        {
+          "mode": "workspace-editor",
+          "folder": "e2e-20261124-204509-621",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 62,
+          "fail": 0,
+          "skip": 0,
+          "skips": []
+        },
+        {
+          "mode": "updates",
+          "folder": "e2e-20261124-204535-969 업데이트 검사",
+          "api": "mock",
+          "collectors": "fixture",
+          "pass": 83,
+          "fail": 0,
+          "skip": 0,
+          "skips": []
+        }
+      ]
+    }
+  },
+  "installerLifecycle": "SKIP: existing Tempos registered and running",
+  "liveApis": "not exercised; HTTP mock for app E2E, actual local counters in windows-real",
+  "initialFailures": "Both default sandbox core runs stopped at DPAPI save. Identical binaries passed in the Windows user session."
+}
