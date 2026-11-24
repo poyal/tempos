@@ -1,5 +1,9 @@
 # 검증 기록
 
+## Windows v0.1.6 릴리즈 · 2026-11-24
+
+서명 패치 ZIP, 두 버전 사이의 파일 교체, 정상 기동 확인과 중단 복구를 검사했습니다. [Release·ASan 결과와 검사 범위](validation/release-v0.1.6.md) · [릴리즈 노트](releases/v0.1.6.md)
+
 ## Windows v0.1.5 릴리즈 · 2026-11-24
 
 격리된 Windows TestHost에서 설정 편집, 배치 저장·복원, 위젯 37개 구성과 업데이트를 검사했습니다. [최종 후보의 Release·ASan 결과와 검사 범위](validation/release-v0.1.5.md) · [릴리즈 노트](releases/v0.1.5.md)

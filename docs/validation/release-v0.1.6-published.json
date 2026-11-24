@@ -1,0 +1,65 @@
+{
+  "checkedAt": "2026-11-24T21:46:03.5899400+09:00",
+  "version": "v0.1.6",
+  "latest": true,
+  "sourceCommit": "d07c6be49dabc15edcd9703a43396438871e889b",
+  "sourceDirty": false,
+  "url": "https://github.com/poyal/tempos/releases/tag/v0.1.6",
+  "publishedAt": "2026-11-24T12:45:33Z",
+  "draftAssetsVerified": true,
+  "publicAuthentication": "none",
+  "appSha256": "8070B62C908A0879EDD36FD06360A22A810F7B62740939AD174DAD4A64127904",
+  "patchFilesVerified": 327,
+  "signature": "Ed25519 verified against the checked-in Tempos public key",
+  "windowsVerification": "https://github.com/poyal/tempos/actions/runs/45396016891",
+  "assets": [
+    {
+      "name": "Tempos-0.1.6-win-x64.exe",
+      "bytes": 46546305,
+      "sha256": "A0EAB39C6863317FC685854C6CDBD3E735522EFD3172DBD17EB65CFA0CEBB417",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/Tempos-0.1.6-win-x64.exe"
+    },
+    {
+      "name": "Tempos-0.1.6-win-x64.zip",
+      "bytes": 51797069,
+      "sha256": "912510FB783F005AD0277471413770006DCAC986D8BC0567086C7C8345F7CE79",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/Tempos-0.1.6-win-x64.zip"
+    },
+    {
+      "name": "Tempos-0.1.6-win-x64-update.zip",
+      "bytes": 51938140,
+      "sha256": "EB32F180C879966F1B61436A36E52247FED85DFC9B729353B24A664F8741B229",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/Tempos-0.1.6-win-x64-update.zip"
+    },
+    {
+      "name": "update-win-x64.json",
+      "bytes": 202,
+      "sha256": "B315F26B307556D99D508CA70C9CD570792CABBEA79EB4C5E74245246C47242C",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/update-win-x64.json"
+    },
+    {
+      "name": "update-win-x64.json.sig",
+      "bytes": 64,
+      "sha256": "45530DE37C0EAAD2E8652DBC3F58201AB3EC7DA5BB0E439BE690073261C32A99",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/update-win-x64.json.sig"
+    },
+    {
+      "name": "Tempos-0.1.6-win-x64.exe.sha256",
+      "bytes": 92,
+      "sha256": "7D4E427B4CF46CBFE84C123C1C0FFEAAC49C1F37EF1605D725149CDD3F3BB201",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/Tempos-0.1.6-win-x64.exe.sha256"
+    },
+    {
+      "name": "Tempos-0.1.6-win-x64.zip.sha256",
+      "bytes": 92,
+      "sha256": "5F6DFB79C0D2D29FFB9A9F960991B3EBF4E2802D077173B0481B5BFEC4ECE14A",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/Tempos-0.1.6-win-x64.zip.sha256"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 652,
+      "sha256": "BD1E24F2226817F94B27F18A838D9D20D7872B612EC137F4BDC81088D873EB94",
+      "url": "https://github.com/poyal/tempos/releases/download/v0.1.6/SHA256SUMS.txt"
+    }
+  ]
+}
