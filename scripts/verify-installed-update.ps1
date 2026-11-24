@@ -25,8 +25,12 @@ function CheckInventory {
 function WindowOf([Diagnostics.Process]$p){
   for($i=0;$i -lt 300;$i++){
     if($p.HasExited){throw "App exited before initialization: $($p.ExitCode)"}
-    $p.Refresh()
-    if($p.MainWindowHandle -ne 0 -and [NativeUpdateTest]::GetDlgItem($p.MainWindowHandle,1703) -ne 0){return $p.MainWindowHandle}
+    $window=[NativeUpdateTest]::FindWindow('Tempos.Management',$null)
+    [uint32]$ownerPid=0
+    if($window -ne 0){
+      [void][NativeUpdateTest]::GetWindowThreadProcessId($window,[ref]$ownerPid)
+      if($ownerPid -eq $p.Id -and [NativeUpdateTest]::GetDlgItem($window,1703) -ne 0){return $window}
+    }
     Start-Sleep -Milliseconds 100
   }
   throw 'No initialized settings window.'
@@ -35,6 +39,8 @@ Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
 public class NativeUpdateTest {
+  [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string cls,string title);
+  [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr window,out uint processId);
   [DllImport("user32.dll")] public static extern IntPtr GetDlgItem(IntPtr window, int id);
   [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr window, int msg, IntPtr w, IntPtr l);
 }
