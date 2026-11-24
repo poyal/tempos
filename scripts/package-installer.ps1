@@ -1,5 +1,5 @@
 param(
-  [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.1.5',
+  [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.1.6',
   [string]$PackageZip,
   [string]$NsisCompiler
 )
@@ -44,6 +44,8 @@ foreach($doc in Get-ChildItem -LiteralPath (Join-Path $payload 'docs') -Recurse 
   if($updated -ne $content){[IO.File]::WriteAllText($doc.FullName,$updated,[Text.UTF8Encoding]::new($false))}
 }
 function Quote-Nsis([string]$value){return $value.Replace('$','$$').Replace('"','$\"')}
+$inventoryFile=Join-Path $payload 'tempos-files.json'
+[IO.File]::WriteAllText($inventoryFile,'[]')
 $files=@(Get-ChildItem -LiteralPath $payload -Recurse -File | Sort-Object FullName)
 $install=[Collections.Generic.List[string]]::new()
 $uninstall=[Collections.Generic.List[string]]::new()
@@ -67,6 +69,22 @@ $output=Join-Path $root "artifacts/Tempos-$Version-win-x64.exe"
 $kib=[int][Math]::Ceiling(($files | Measure-Object Length -Sum).Sum/1024)
 $icon=Join-Path $root 'resources/tempos.ico'
 $sidebar=Join-Path $root 'resources/installer-sidebar.bmp'
+$uninstaller=Join-Path $payload 'Uninstall Tempos.exe'
+$factory=Join-Path $stage 'make-uninstaller.exe'
+& $NsisCompiler /V2 /INPUTCHARSET UTF8 "/DAPP_VERSION=$Version" "/DINSTALLER_OUT=$factory" "/DEXPORT_UNINSTALLER=$uninstaller" "/DAPP_ICON=$icon" "/DAPP_SIDEBAR=$sidebar" "/DPAYLOAD_INSTALL=$installFile" "/DPAYLOAD_UNINSTALL=$uninstallFile" "/DPAYLOAD_KIB=$kib" (Join-Path $root 'installer/tempos.nsi')
+if($LASTEXITCODE){throw 'Uninstaller generation build failed.'}
+$factoryProcess=Start-Process -FilePath $factory -ArgumentList '/S' -Wait -PassThru -WindowStyle Hidden
+if($factoryProcess.ExitCode -or !(Test-Path -LiteralPath $uninstaller)){throw 'Uninstaller generation failed.'}
+$install.Add('SetOutPath "$INSTDIR"')
+$install.Add('File "'+(Quote-Nsis $uninstaller)+'"')
+[IO.File]::WriteAllLines($installFile,$install,[Text.UTF8Encoding]::new($true))
+$manifest+= [ordered]@{path='Uninstall Tempos.exe';length=(Get-Item $uninstaller).Length;sha256=(Get-FileHash $uninstaller).Hash}
+$inventory=@(foreach($item in $manifest){if($item.path -ne 'tempos-files.json'){@{path=$item.path;sha256=$item.sha256.ToLowerInvariant()}}})
+[IO.File]::WriteAllText($inventoryFile,(ConvertTo-Json -InputObject $inventory -Compress),[Text.UTF8Encoding]::new($false))
+$item=@($manifest|Where-Object path -eq 'tempos-files.json')[0]
+$item.length=(Get-Item $inventoryFile).Length
+$item.sha256=(Get-FileHash $inventoryFile).Hash
+$kib=[int][Math]::Ceiling(($manifest | Measure-Object length -Sum).Sum/1024)
 & $NsisCompiler /V3 /INPUTCHARSET UTF8 "/DAPP_VERSION=$Version" "/DINSTALLER_OUT=$output" "/DAPP_ICON=$icon" "/DAPP_SIDEBAR=$sidebar" "/DPAYLOAD_INSTALL=$installFile" "/DPAYLOAD_UNINSTALL=$uninstallFile" "/DPAYLOAD_KIB=$kib" (Join-Path $root 'installer/tempos.nsi')
 if($LASTEXITCODE){throw 'NSIS compilation failed.'}
 $hash=(Get-FileHash -LiteralPath $output -Algorithm SHA256).Hash
@@ -74,5 +92,16 @@ $hash=(Get-FileHash -LiteralPath $output -Algorithm SHA256).Hash
 $sourceCommit=(& git -C $root rev-parse HEAD | Out-String).Trim()
 $sourceDirty=-not [string]::IsNullOrWhiteSpace((& git -C $root status --porcelain | Out-String))
 $record=[ordered]@{version=$Version;createdAt=[DateTimeOffset]::Now;sourceCommit=$sourceCommit;sourceDirty=$sourceDirty;installer=$output;sha256=$hash;size=(Get-Item -LiteralPath $output).Length;inputZip=Split-Path $PackageZip -Leaf;inputZipSha256=$zipHash;executableSha256=$exeHash;compilerVersion=(& $NsisCompiler /VERSION | Out-String).Trim();compilerSha256=(Get-FileHash -LiteralPath $NsisCompiler -Algorithm SHA256).Hash;payload=$payload;files=$manifest}
+$updateZip=Join-Path $root "artifacts/Tempos-$Version-win-x64-update.zip"
+$zipTemp=Join-Path $stage 'update.zip'
+$archive=[IO.Compression.ZipFile]::Open($zipTemp,[IO.Compression.ZipArchiveMode]::Create)
+try {
+  foreach($item in $manifest){
+    [void][IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive,(Join-Path $payload $item.path),$item.path,[IO.Compression.CompressionLevel]::Optimal)
+  }
+} finally {$archive.Dispose()}
+[IO.File]::Move($zipTemp,$updateZip,$true)
+$record.updateZip=Split-Path $updateZip -Leaf
+$record.updateZipSha256=(Get-FileHash $updateZip).Hash
 $record | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $root 'artifacts/installer-package.json') -Encoding utf8
 [pscustomobject]@{installer=$output;sha256=$hash;payloadFiles=$files.Count;executableSha256=$exeHash} | ConvertTo-Json

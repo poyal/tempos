@@ -5,6 +5,27 @@ using App = FlaUI.Core.Application;
 
 internal static partial class Program
 {
+    static string PrepareUpdateInstall(string source)
+    {
+        string installed = Directory.CreateDirectory(Path.Combine(Data, "installed")).FullName;
+        string stage = Directory.CreateDirectory(Path.Combine(Data, "candidate")).FullName;
+        string binary = Path.GetDirectoryName(source)!;
+        void Payload(string dir, string app, string marker)
+        {
+            File.Copy(app, Path.Combine(dir,"Tempos.TestHost.exe"));
+            File.WriteAllText(Path.Combine(dir, marker), marker);
+            var files = Directory.GetFiles(dir).Select(p => new { path = Path.GetFileName(p), sha256 = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(p))) }).ToList();
+            File.WriteAllText(Path.Combine(dir,"tempos-files.json"), System.Text.Json.JsonSerializer.Serialize(files));
+        }
+        Payload(installed, source, "obsolete.txt");
+        Payload(stage, Path.Combine(binary,"Tempos.UpdateCandidate.exe"), "added.txt");
+        string runtime = Path.Combine(binary,"clang_rt.asan_dynamic-x86_64.dll");
+        if (File.Exists(runtime)) File.Copy(runtime,Path.Combine(installed,Path.GetFileName(runtime)));
+        File.WriteAllText(Path.Combine(installed,"user-note.txt"),"사용자 파일");
+        System.IO.Compression.ZipFile.CreateFromDirectory(stage,Path.Combine(Data,"update-fixture.zip"));
+        return Path.Combine(installed,"Tempos.TestHost.exe");
+    }
+
     static void Updates(ref App? app, string exe)
     {
         NativeButton(1316);
@@ -59,11 +80,11 @@ internal static partial class Program
         Scenario("slow"); NativeButton(1702);
         Check(!IsWindowEnabled(GetDlgItem(Window.Properties.NativeWindowHandle,1702)) && IsWindowEnabled(GetDlgItem(Window.Properties.NativeWindowHandle,1704)), "Checking disables duplicate work and permits cancellation");
         NativeButton(1704); Check(AwaitUpdate()["phase"]!.GetValue<int>() == 0, "Check cancellation returns to idle");
-        foreach(var mode in new[]{"corrupt","short","oversize","unsafe-redirect","redirect-loop","timeout"})
+        foreach(var mode in new[]{"bad-signature","corrupt","short","oversize","unsafe-redirect","redirect-loop","timeout"})
         {
             CheckUpdate(download:mode); NativeButton(1703);
             Check(AwaitUpdate()["phase"]!.GetValue<int>() == 6 && !app!.HasExited, "Rejected download keeps current app running: "+mode);
-            Check(!Directory.GetFiles(Path.Combine(Data,"updates"),"*.exe",SearchOption.AllDirectories).Any(), "Rejected download leaves no executable: "+mode);
+            Check(!Directory.GetFiles(Path.Combine(Data,"updates"),"*-update.zip",SearchOption.AllDirectories).Any(), "Rejected download leaves no executable: "+mode);
         }
         CheckUpdate(download:"slow"); NativeButton(1703);
         Check(UpdateState()["busy"]!.GetValue<bool>(), "Installer download is asynchronous");
@@ -71,7 +92,7 @@ internal static partial class Program
         Check(JsonNode.DeepEquals(saved,Settings()), "Update checks and failed downloads preserve all widget settings");
         CheckUpdate(download:"slow"); NativeButton(1703);
         Quit(app!); app=null;
-        Check(!Directory.GetFiles(Path.Combine(Data,"updates"),"*.exe",SearchOption.AllDirectories).Any(), "Closing during download cancels work and deletes the partial file without an installer launch");
+        Check(!Directory.GetFiles(Path.Combine(Data,"updates"),"*-update.zip",SearchOption.AllDirectories).Any(), "Closing during download cancels work and deletes the partial file without an installer launch");
         app=Start(exe); Tab(4); AwaitUpdate();
         NativeButton(1713);
         Check(!Settings()["checkUpdatesOnStart"]!.GetValue<bool>(), "Startup update setting persists disabled state");
@@ -82,16 +103,40 @@ internal static partial class Program
         Tab(4); NativeButton(1713);
         Check(JsonNode.DeepEquals(saved,Settings()), "Restoring startup preference preserves original complete settings");
 
-        for(int attempt=0;attempt<2;attempt++)
+        string installDir=Path.GetDirectoryName(exe)!;
+        for(int attempt=0;attempt<4;attempt++)
         {
-            int installerExit=attempt==0?7:0;
+            int installerExit=attempt==0?7:attempt==1?17:attempt==2?9:0;
             var resultPath=Path.Combine(Data,"update-result.json");
             if(File.Exists(resultPath))File.Delete(resultPath);
-            CheckUpdate(download:"redirect",installerExit:installerExit);
+            CheckUpdate(download:"redirect",installerExit:installerExit==9?0:installerExit);
+            NativeButton(1703);
+            Check(AwaitUpdate()["phase"]!.GetValue<int>()==5 && !app!.HasExited,"Signed ZIP ready; user chooses restart");
+            if(attempt==0)
+            {
+                Quit(app!); app=Start(exe); Tab(4);
+                Check(AwaitUpdate()["phase"]!.GetValue<int>()==5,"Ready package survives a normal restart");
+                File.WriteAllText(Path.Combine(installDir,"added.txt"),"foreign");
+                NativeButton(1703);
+                Check(!app.HasExited && File.ReadAllText(Path.Combine(installDir,"added.txt"))=="foreign" &&
+                      !string.IsNullOrEmpty(UpdateState()["installError"]!.GetValue<string>()),"Unmanaged file collision detected before app shutdown");
+                File.Delete(Path.Combine(installDir,"added.txt"));
+            }
+            using var lockedFile=installerExit==9
+                ? File.Open(Path.Combine(installDir,"obsolete.txt"), FileMode.Open, FileAccess.Read, FileShare.Read) : null;
             int originalPid=app!.ProcessId;
             NativeButton(1703);
-            Check(WaitExit(app,20000), "Verified update handoff cleanly exits only the owned TestHost");
+            Check(WaitExit(app,30000),"Verified update handoff exits only the owned TestHost");
             app.Dispose(); app=null;
+            if(installerExit==17)
+            {
+                var interrupted=Path.Combine(Data,"test-update-interrupted");
+                var until=DateTime.UtcNow.AddSeconds(30);
+                while(!File.Exists(interrupted) && DateTime.UtcNow<until)Thread.Sleep(100);
+                Check(File.Exists(interrupted),"Interrupted file replacement leaves a recoverable transaction");
+                using var trigger=Process.Start(new ProcessStartInfo(exe,$"--settings --data-dir \"{Data}\""){UseShellExecute=false})!;
+                trigger.WaitForExit(10000);
+            }
             JsonNode? result=null;
             var deadline=DateTime.UtcNow.AddSeconds(30);
             while(DateTime.UtcNow<deadline)
@@ -116,12 +161,13 @@ internal static partial class Program
             }
             Check(Window.Properties.ProcessId.Value==restartedPid,"Reopened About window belongs to restarted app");
             Tab(4); AwaitUpdate();
-            Check(result["installerMode"]!.GetValue<string>()=="mock" && result["exit"]!.GetValue<int>()==installerExit && result["success"]!.GetValue<bool>()==(installerExit==0),"Real process handoff records mocked installer success/failure accurately");
-            Check(Element(1714).Name.Contains(installerExit==0?"완료했습니다":"완료하지 못했습니다"),"About shows the installation outcome after restart");
-            Check(JsonNode.DeepEquals(saved,Settings()),"Installer handoff and restart preserve complete settings");
-            var folder=result["jobFolder"]!.GetValue<string>();
-            Check(Path.GetFullPath(folder).StartsWith(Path.GetFullPath(Path.Combine(Data,"updates"))+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase),"Helper and mock installer artifacts stay inside this run's update directory");
-            Check(JsonNode.Parse(File.ReadAllText(Path.Combine(folder,"mock-installer.json")))!["mock"]!.GetValue<bool>(),"Installer boundary uses a dedicated mock process, never the user installation");
+            bool success=installerExit==0;
+            Check(result["success"]!.GetValue<bool>()==success && result["previous"]!.GetValue<string>()==version,"Result recorded after verified startup or rollback");
+            Check(FileVersionInfo.GetVersionInfo(exe).ProductVersion==(success?"99.0.0":version),"Running executable is the expected real version");
+            Check(File.Exists(Path.Combine(installDir,"added.txt"))==success && File.Exists(Path.Combine(installDir,"obsolete.txt"))!=success,"Managed additions and removals follow installed version");
+            Check(File.ReadAllText(Path.Combine(installDir,"user-note.txt"))=="사용자 파일","Unmanaged file preserved");
+            Check(JsonNode.DeepEquals(saved,Settings()),"Rollbacks and successful update preserve settings");
+            Check(Element(1714).Name.Contains(success?"완료했습니다":"복원했습니다"),"About displays the final installed or restored version");
         }
         Quit(app!); app=null;
     }

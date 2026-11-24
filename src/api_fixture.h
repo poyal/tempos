@@ -4,6 +4,7 @@
 #include "weather_fixture.h"
 #include "updates.h"
 #include <bcrypt.h>
+#include <monocypher-ed25519.h>
 namespace tempos {
 inline void mockApiLog(const std::filesystem::path &root, std::string endpoint, bool matched,
                        std::string mode = "normal") {
@@ -17,15 +18,32 @@ inline Json mockApiOptions(const std::filesystem::path &root) {
     return Json::parse(*text);
   return Json::object();
 }
-inline std::string mockUpdateBytes() { return "MZ" + std::string(254, 'T'); }
+// RFC 8032 test vector 1. Only TestHost and unit tests compile this fixture.
+inline constexpr char mockUpdateKey[] = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a";
+inline std::string mockDigest(const std::string &bytes) {
+  uint8_t digest[32]{};
+  BCryptHash(BCRYPT_SHA256_ALG_HANDLE, nullptr, 0, reinterpret_cast<PUCHAR>(const_cast<char *>(bytes.data())), ULONG(bytes.size()), digest, 32);
+  std::string hex;
+  for (auto c : digest) { hex += "0123456789abcdef"[c >> 4]; hex += "0123456789abcdef"[c & 15]; }
+  return hex;
+}
 inline Response mockUpdateResponse(const std::filesystem::path &root, const std::wstring &host,
                                    const std::wstring &path, std::stop_token stop) {
   Json options = Json::object();
   try { if (auto text = boundedRead(root / L"update-scenario.json", 16384)) options = Json::parse(*text); }
   catch (...) { return {0, ERROR_INVALID_DATA}; }
   const bool check = host == updateHost && path == updateFeed;
+  auto version = options.value("version", std::string(TEMPOS_VERSION_STRING));
+  auto name = packageName(version);
+  auto base = L"/poyal/tempos/releases/download/v" + wide(version) + L"/";
+  bool cdn = host == L"release-assets.githubusercontent.com" && path == L"/github-production-release-asset/mock/package";
+  bool zip = cdn || path == base + wide(name);
+  bool manifest = path == base + wide(updateManifestName);
+  bool signature = path == base + wide(updateSignatureName);
+  bool matched = check || cdn || (host == L"github.com" && (zip || manifest || signature));
   auto mode = options.value(check ? "check" : "download", std::string("normal"));
-  mockApiLog(root, utf8(host + path.substr(0, path.find(L'?'))), true, mode);
+  mockApiLog(root, utf8(host + path), matched, mode);
+  if (!matched) return {0, ERROR_ACCESS_DENIED};
   if (mode == "slow") {
     std::mutex mutex; std::condition_variable_any cv; std::unique_lock lock(mutex);
     cv.wait_for(lock, stop, 2s, [] { return false; });
@@ -35,29 +53,39 @@ inline Response mockUpdateResponse(const std::filesystem::path &root, const std:
   if (mode == "quota") return {429, 0, "{}", 60};
   if (mode == "server-error") return {503, 0, "{}"};
   if (mode == "malformed") return {200, 0, "not-json"};
-  auto version = options.value("version", std::string(TEMPOS_VERSION_STRING));
-  auto bytes = mockUpdateBytes();
+  auto bytes = boundedRead(root / L"update-fixture.zip", maxUpdateBytes).value_or(std::string(256, 'T'));
+  auto hex = mockDigest(bytes);
   if (!check) {
-    if (mode == "unsafe-redirect") return {302, 0, {}, 0, L"https://evil.example/installer.exe"};
-    if (mode == "redirect-loop" || (mode == "redirect" && host == L"github.com"))
-      return {302, 0, {}, 0, L"https://release-assets.githubusercontent.com/github-production-release-asset/mock/installer"};
-    if (mode == "corrupt") bytes[3] = 'X';
+    auto body = Json{{"format","tempos-update-v1"},{"version",version},{"platform","win-x64"},
+                     {"name",name},{"bytes",bytes.size()},{"sha256",hex}}.dump();
+    if (manifest) return {200, 0, body};
+    if (signature) {
+      uint8_t seed[32] = {0x9d,0x61,0xb1,0x9d,0xef,0xfd,0x5a,0x60,0xba,0x84,0x4a,0xf4,0x92,0xec,0x2c,0xc4,
+                          0x44,0x49,0xc5,0x69,0x7b,0x32,0x69,0x19,0x70,0x3b,0xac,0x03,0x1c,0xae,0x7f,0x60};
+      uint8_t secret[64], pub[32], sig[64];
+      crypto_ed25519_key_pair(secret,pub,seed);
+      crypto_ed25519_sign(sig,secret,reinterpret_cast<const uint8_t *>(body.data()),body.size());
+      if (mode == "bad-signature") sig[0] ^= 1;
+      return {200,0,std::string(reinterpret_cast<char *>(sig),64)};
+    }
+    if (mode == "unsafe-redirect") return {302, 0, {}, 0, L"https://example.invalid/package"};
+    if (mode == "redirect-loop" || (mode == "redirect" && !cdn))
+      return {302, 0, {}, 0, L"https://release-assets.githubusercontent.com/github-production-release-asset/mock/package"};
+    if (mode == "corrupt") bytes[3] ^= 1;
     if (mode == "short") bytes.resize(16);
     if (mode == "oversize") bytes += 'X';
     return {200, 0, bytes};
   }
-  unsigned char digest[32]{};
-  BCryptHash(BCRYPT_SHA256_ALG_HANDLE, nullptr, 0, reinterpret_cast<PUCHAR>(bytes.data()), ULONG(bytes.size()), digest, sizeof digest);
-  std::string hex;
-  for (auto c : digest) { hex += "0123456789abcdef"[c >> 4]; hex += "0123456789abcdef"[c & 15]; }
-  auto name = "Tempos-" + version + "-win-x64.exe";
-  Json asset = {{"name", name}, {"state", "uploaded"}, {"size", bytes.size()}, {"digest", "sha256:" + hex},
-      {"browser_download_url", "https://github.com/poyal/tempos/releases/download/v" + version + "/" + name}};
-  if (mode == "bad-url") asset["browser_download_url"] = "https://evil.example/installer.exe";
-  if (mode == "bad-digest") asset["digest"] = "sha256:no";
-  Json release = {{"tag_name", "v" + version}, {"draft", mode == "draft"}, {"prerelease", mode == "prerelease"},
-      {"assets", mode == "missing" ? Json::array() : Json::array({asset})}};
-  return {200, 0, release.dump()};
+  auto asset = [&](std::string n) {
+    return Json{{"name", n}, {"state","uploaded"},{"size",bytes.size()},{"digest","sha256:"+hex},
+                {"browser_download_url",utf8(L"https://github.com"+base)+n}};
+  };
+  auto package = asset(name);
+  if (mode == "bad-url") package["browser_download_url"] = "https://example.invalid/package";
+  if (mode == "bad-digest") package["digest"] = "invalid";
+  Json release = {{"tag_name","v"+version},{"draft",mode=="draft"},{"prerelease",mode=="prerelease"},
+    {"assets",mode=="missing" ? Json::array() : Json::array({package,asset(updateManifestName),asset(updateSignatureName)})}};
+  return {200,0,release.dump()};
 }
 inline HttpClient::Transport mockApi(const std::filesystem::path &root) {
   return [root, weather = weatherFixture(root)](const std::wstring &host, const std::wstring &path,
@@ -65,7 +93,7 @@ inline HttpClient::Transport mockApi(const std::filesystem::path &root) {
              std::stop_token stop) -> Response {
     if (method == L"GET" && ((host == updateHost && path == updateFeed) ||
         (host == L"github.com" && path.starts_with(L"/poyal/tempos/releases/download/")) ||
-        (host == L"release-assets.githubusercontent.com" && path == L"/github-production-release-asset/mock/installer")))
+        (host == L"release-assets.githubusercontent.com" && path == L"/github-production-release-asset/mock/package")))
       return mockUpdateResponse(root, host, path, stop);
     const bool weatherRoute = method == L"GET" &&
         ((host == L"api.open-meteo.com" && path.starts_with(L"/v1/forecast?")) ||

@@ -81,6 +81,13 @@ Var RequestedDir
 !macroend
 
 Function .onInit
+!ifdef EXPORT_UNINSTALLER
+  SetSilent silent
+  WriteUninstaller "${EXPORT_UNINSTALLER}"
+  IfErrors 0 +2
+    SetErrorLevel 7
+  Quit
+!endif
   !insertmacro Init
   ReadRegStr $ExistingDir HKCU "${APP_KEY}" "InstallLocation"
   # NSIS can discard an invalid /D= and silently fall back to its default.
@@ -147,7 +154,7 @@ Section "Tempos" Main
   IfErrors 0 +3
     SetErrorLevel 7
     Quit
-  WriteUninstaller "$INSTDIR\Uninstall Tempos.exe"
+  # The same generated uninstaller is bundled in both the installer and update ZIP.
   WriteRegStr HKCU "${APP_KEY}" "InstallLocation" "$INSTDIR"
   WriteRegStr HKCU "${UNINSTALL_KEY}" "DisplayName" "Tempos"
   WriteRegStr HKCU "${UNINSTALL_KEY}" "DisplayVersion" "${APP_VERSION}"

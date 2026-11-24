@@ -2,6 +2,7 @@
 #include "http.h"
 #include "storage.h"
 #include "version.h"
+#include "update_package.h"
 namespace tempos {
 inline constexpr wchar_t updateHost[] = L"api.github.com";
 inline constexpr wchar_t updateFeed[] = L"/repos/poyal/tempos/releases/latest";
@@ -10,7 +11,8 @@ struct UpdateRelease {
   std::string version, tag, sha256;
   std::wstring page, download;
   uint64_t bytes{};
-  bool installable() const { return bytes > 0 && !download.empty() && sha256.size() == 64; }
+  bool metadata{};
+  bool installable() const { return metadata && bytes > 0 && !download.empty() && sha256.size() == 64; }
 };
 int compareVersions(std::string_view left, std::string_view right);
 UpdateRelease parseUpdateRelease(std::string_view json);
@@ -30,7 +32,7 @@ struct UpdateState {
 class UpdateService {
 public:
   UpdateService(HttpClient &, std::filesystem::path root, std::function<void()> notify,
-                std::string currentVersion = TEMPOS_VERSION_STRING);
+                std::string currentVersion = TEMPOS_VERSION_STRING, std::string publicKey = TEMPOS_UPDATE_PUBLIC_KEY);
   ~UpdateService();
   UpdateState state() const;
   bool check();
@@ -42,7 +44,8 @@ private:
   HttpClient &http_;
   std::filesystem::path root_;
   std::function<void()> notify_;
-  std::string current_;
+  std::string current_, key_;
+  bool restoreReady();
   mutable std::mutex mutex_;
   UpdateState state_;
   std::jthread worker_;

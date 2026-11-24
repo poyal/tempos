@@ -27,3 +27,8 @@ Tempos.Sensors.Setup.exe에는 LibreHardwareMonitorLib 0.9.6(MPL-2.0), .NET 10.0
 서명된 PawnIO 2.2.0 공식 설치 파일도 포함합니다. 라이선스는 GPL-2.0-or-later이며 공식 [설치 배포본](https://github.com/namazso/PawnIO.Setup/releases/tag/2.2.0), [드라이버 소스](https://github.com/namazso/PawnIO/tree/5cdf470831fdfff3f7f1d06363ca6b230f3bf35a), [모듈 소스](https://github.com/namazso/PawnIO.Modules)를 참조하세요. 빌드 시 설치 파일의 SHA-256과 Authenticode 서명을 검증합니다.
 
 고정 버전·출처·해시는 `third_party/sensors/dependencies.json`과 `sensors/Tempos.Sensors/packages.lock.json`에 있습니다. 센서 설치 폴더의 `licenses`에 원문 라이선스·외부 고지·패키지 메타데이터와 의존성 목록을 함께 배포합니다. 센서 제거는 공유 PawnIO 드라이버를 제거하지 않습니다.
+
+## 업데이트 서명과 ZIP
+
+- Monocypher 4.0.2의 Ed25519 검증 코드를 사용합니다. 원본 커밋은 `0d85f98c9d9b0227e42cf795cb527dff372b40a4`입니다. 라이선스는 설치 폴더의 `licenses/Monocypher.md`에 있습니다.
+- miniz 3.0.2로 ZIP을 검사하고 압축을 풉니다. 원본 커밋은 `293d4db1b7d0ffee9756d035b9ac6f7431ef8492`입니다. 라이선스는 설치 폴더의 `licenses/miniz.txt`에 있습니다.

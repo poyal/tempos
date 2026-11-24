@@ -48,8 +48,25 @@ node scripts/verify-docs.cjs
 
 빌드는 `out/`, 배포 파일과 로그는 `artifacts/`, 실행별 원본은 `test-results/`, 장기 요약은 `docs/validation/`에 둔다. 기존 검증 근거와 사용자 복구 자료를 임의로 지우지 않는다. 생성물과 사용자 데이터는 Git에 넣지 않는다.
 
-패키징 스크립트는 ZIP 또는 설치 EXE와 각각의 SHA-256 파일을 만든다. 공개 릴리즈 게시 자동화는 구현되어 있지 않다. Git 커밋·푸시와 공개 릴리즈 게시를 구분하며, 게시 요청이 있을 때 검증한 동일 파일을 게시하고 공개 URL에서 재다운로드 해시를 확인한다. 검사 후 다시 패키징했다면 새 설치 EXE를 다시 검사해야 한다.
+v0.1.6부터 아래 절차로 설치 EXE와 서명 패치 ZIP을 같은 릴리즈에 올린다. Git 커밋·푸시와 공개 릴리즈 게시를 구분하며, 게시 요청이 있을 때 검증한 동일 파일을 게시하고 공개 URL에서 재다운로드 해시를 확인한다. 검사 후 다시 패키징했다면 새 설치 EXE를 다시 검사해야 한다.
 
 이미 공개한 태그·ZIP은 바꾸지 않는다. 같은 앱 버전에 설치형을 추가하면 패키징 소스를 별도 태그(예: `v0.1.0-win-x64-installer`)로 남기고 기존 릴리즈에 EXE와 `.exe.sha256`만 추가한다. 게시 후 영수증은 문서 전용 후속 커밋으로 남기며 검증한 설치 파일은 재빌드하지 않는다.
 
 검증 기록에는 다음을 남긴다: 검사 환경, 소스 기준, 실행 파일 해시, 실행별 결과 링크, 실패와 재검사 이유, 실제 서비스 확인 범위, ZIP 해시, 게시 여부. 문서 전용 후속 수정은 바이너리 변경과 구분한다.
+
+## 매 릴리즈의 필수 자산과 순서
+
+**설치 EXE와 패치 ZIP을 같은 정식 태그에 함께 올린다.** 기존 v0.1.4·v0.1.5 설치본은 EXE를 찾으며, v0.1.6부터 앱 내 업데이트는 전용 ZIP과 서명된 메타데이터를 찾는다. 무설치 ZIP도 계속 배포한다.
+
+| 용도 | 필수 파일 |
+| --- | --- |
+| 처음 설치·수동 복구·기존 버전 전환 | `Tempos-<버전>-win-x64.exe`, 같은 이름의 `.exe.sha256` |
+| 앱 내 패치 | `Tempos-<버전>-win-x64-update.zip`, `update-win-x64.json`, `update-win-x64.json.sig` |
+| 무설치 배포 | `Tempos-<버전>-win-x64.zip`, 같은 이름의 `.zip.sha256` |
+| 배포 일괄 검증 | `SHA256SUMS.txt` |
+
+1. 버전을 올리고 Release·ASan 핵심 검사와 격리된 Windows `--updates` E2E를 수행한다. 배포 바이너리는 저장소의 `resources/update-public-key.txt`를 사용한다. 첫 배포에서만 생성한 개인 키는 배포 담당 Windows 계정의 `%LocalAppData%\TemposRelease\update-ed25519.dpapi`에 있다. 다음 릴리즈는 같은 계정에서 기존 키로 서명한다. 개인 키는 Git과 릴리즈 자산에서 제외한다.
+2. 검증한 소스 커밋과 태그를 고정한다. `./scripts/package.ps1 -SkipBuild -Version <버전>`, `./scripts/package-installer.ps1 -Version <버전>`, `./scripts/update-signing-key.ps1 -Sign` 순서로 실행한다. 패치와 설치 EXE에 같은 파일 목록·제거 프로그램이 들어간다.
+3. `node scripts/release-assets.cjs artifacts <버전> --write-sums`를 실행한다. 출력한 여덟 파일을 모두 GitHub 비공개 초안에 첨부한다. 누락, 체크섬 불일치, 잘못된 서명은 명령 실패다. 추가 자산은 별도로 지정할 수 있다.
+4. 초안을 빈 디렉터리에 다시 내려받고 `node scripts/release-assets.cjs <다운로드-폴더> <버전>`과 로컬 원본 비교로 업로드를 확인한다. `Verify signed Windows update` 워크플로를 **후보 태그**에서 실행하며 입력 `previous`에 이전 정식 태그를 지정한다. 깨끗한 Windows 러너가 실제 설치, 패치 적용, 기동 확인, Windows 제거 등록과 제거 후 사용자 파일 보존을 검사한다. 첫 전환에서는 v0.1.5의 EXE 업그레이드를 검사한 뒤 새 프로토콜을 갖춘 0.1.5 시험 빌드로 서명 ZIP 경로를 검사한다.
+5. 검증한 초안을 공개한 뒤 인증 없는 자산 URL로 다시 내려받아 같은 검사와 SHA-256 비교를 수행한다. 대상 태그·커밋·검증 결과·해시·공개 URL을 `docs/validation/`에 기록한다. 실패한 시도와 환경에 따른 SKIP도 별도로 남긴다.

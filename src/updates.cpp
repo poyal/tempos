@@ -2,6 +2,7 @@
 #include <bcrypt.h>
 #include <charconv>
 #include <fstream>
+#include <set>
 namespace tempos {
 static std::array<unsigned, 3> versionParts(std::string_view value) {
   std::array<unsigned, 3> parts{};
@@ -33,13 +34,21 @@ UpdateRelease parseUpdateRelease(std::string_view text) {
   r.version = r.tag.starts_with('v') ? r.tag.substr(1) : r.tag;
   versionParts(r.version);
   r.page = L"https://github.com/poyal/tempos/releases/tag/" + wide(r.tag);
-  const auto name = "Tempos-" + r.version + "-win-x64.exe";
+  const auto name = packageName(r.version);
   const auto expected = L"https://github.com/poyal/tempos/releases/download/" + wide(r.tag + "/" + name);
   const auto &assets = j.at("assets");
   if (!assets.is_array() || assets.size() > 100) throw std::runtime_error("assets");
   int matches = 0;
+  std::set<std::string> metadata;
   for (const auto &a : assets) {
-    if (a.value("name", std::string()) != name) continue;
+    auto assetName = a.value("name", std::string());
+    if (assetName == updateManifestName || assetName == updateSignatureName) {
+      auto address = L"https://github.com/poyal/tempos/releases/download/" + wide(r.tag + "/" + assetName);
+      if (a.value("state", std::string()) == "uploaded" && wide(a.value("browser_download_url", std::string())) == address &&
+          !metadata.insert(assetName).second) throw std::runtime_error("ambiguous metadata");
+      continue;
+    }
+    if (assetName != name) continue;
     if (++matches > 1) throw std::runtime_error("ambiguous installer");
     if (a.value("state", std::string()) != "uploaded" || !a.contains("size") || !a["size"].is_number_unsigned()) continue;
     auto size = a["size"].get<uint64_t>();
@@ -49,6 +58,7 @@ UpdateRelease parseUpdateRelease(std::string_view text) {
     r.download = expected; r.bytes = size; r.sha256 = digest.substr(7);
     std::transform(r.sha256.begin(), r.sha256.end(), r.sha256.begin(), [](unsigned char c) { return char(std::tolower(c)); });
   }
+  r.metadata = metadata.size() == 2;
   return r;
 }
 std::optional<std::pair<std::wstring, std::wstring>> updateDownloadAddress(std::wstring_view url) {
@@ -87,7 +97,24 @@ bool verifyUpdateFile(const std::filesystem::path &file, const UpdateRelease &re
   return !ec && release.installable() && bytes == release.bytes && fileSha256(file) == release.sha256;
 }
 UpdateService::UpdateService(HttpClient &http, std::filesystem::path root, std::function<void()> notify,
-                             std::string current) : http_(http), root_(std::move(root)), notify_(std::move(notify)), current_(std::move(current)) {}
+                             std::string current, std::string key) : http_(http), root_(std::move(root)), notify_(std::move(notify)), current_(std::move(current)), key_(std::move(key)) { restoreReady(); }
+bool UpdateService::restoreReady() {
+  try {
+    auto id = boundedRead(root_ / L"update-ready", 128);
+    if (!id || !validJobId(wide(*id))) return false;
+    auto folder = root_ / L"updates" / wide(*id);
+    checkUpdatePath(root_, folder);
+    auto p = readSignedPackage(folder, key_);
+    if (compareVersions(p.version, current_) <= 0) return false;
+    UpdateRelease r;
+    r.version = p.version; r.tag = "v" + p.version; r.page = L"https://github.com/poyal/tempos/releases/tag/" + wide(r.tag);
+    r.download = r.page; r.bytes = p.bytes; r.sha256 = p.sha256; r.metadata = true;
+    if (!verifyUpdateFile(folder / wide(p.name), r)) return false;
+    state_.release = r; state_.installer = folder / wide(p.name); state_.received = r.bytes;
+    state_.phase = UpdatePhase::Ready; state_.message = L"다운로드가 완료되었습니다. 준비되면 재시작해 주세요.";
+    return true;
+  } catch (...) { return false; }
+}
 UpdateService::~UpdateService() { stop(); }
 void UpdateService::stop() { worker_.request_stop(); if (worker_.joinable()) worker_.join(); }
 void UpdateService::cancel() { worker_.request_stop(); }
@@ -98,7 +125,7 @@ void UpdateService::publish(UpdateState value) {
 }
 bool UpdateService::check() {
   auto next = state();
-  if (next.busy()) return false;
+  if (next.busy() || next.phase == UpdatePhase::Ready) return false;
   stop();
   next = {}; next.phase = UpdatePhase::Checking; next.message = L"새 버전을 확인하고 있습니다…";
   publish(next);
@@ -114,11 +141,12 @@ bool UpdateService::check() {
             : L"업데이트를 확인하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.";
       } else {
         next.release = parseUpdateRelease(response.body);
+        if (key_.size() != 64) next.release->metadata = false;
         bool newer = compareVersions(next.release->version, current_) > 0;
         next.phase = newer ? UpdatePhase::Available : UpdatePhase::Current;
         next.message = newer ? L"새 버전 " + wide(next.release->version) + L"을 사용할 수 있습니다."
                              : L"현재 최신 버전을 사용하고 있습니다.";
-        if (newer && !next.release->installable()) next.message += L" 자동 설치 파일은 아직 준비되지 않았습니다.";
+        if (newer && !next.release->installable()) next.message += L" 앱 내 패치를 사용할 수 없습니다. 변경 내역에서 수동 다운로드해 주세요.";
       }
     } catch (...) { next.phase = UpdatePhase::Error; next.message = L"공개 버전 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요."; }
     next.checkedAt = nowUnix(); publish(next);
@@ -136,34 +164,45 @@ bool UpdateService::download() {
     try {
       auto folder = root_ / L"updates" / newId();
       std::filesystem::create_directories(folder);
-      file = folder / wide("Tempos-" + next.release->version + "-win-x64.exe");
+      checkUpdatePath(root_, folder);
+      file = folder / wide(packageName(next.release->version));
+      auto fetch = [&](std::wstring address, size_t limit, const std::function<bool(std::string_view)> &sink = {}) {
+        for (int redirect = 0; redirect < 4; ++redirect) {
+          auto parsed = updateDownloadAddress(address);
+          if (!parsed) break;
+          auto result = http_.request(parsed->first, parsed->second, L"GET", {}, L"Accept: application/octet-stream\r\n", stop, sink, limit, 10min);
+          if (result.ok()) return result;
+          if (result.error || result.status < 300 || result.status >= 400) break;
+          address = result.location;
+        }
+        throw std::runtime_error("update download");
+      };
+      auto base = next.release->download.substr(0, next.release->download.rfind('/') + 1);
+      for (auto name : {updateManifestName, updateSignatureName}) {
+        auto response = fetch(base + wide(name), name == std::string_view(updateManifestName) ? 65536 : 64);
+        if (!atomicWrite(folder / name, response.body)) throw std::runtime_error("write metadata");
+      }
+      auto manifest = readSignedPackage(folder, key_);
+      if (manifest.version != next.release->version || manifest.bytes != next.release->bytes ||
+          manifest.sha256 != next.release->sha256) throw std::runtime_error("release mismatch");
       std::ofstream output(file, std::ios::binary | std::ios::trunc);
       if (!output) throw std::runtime_error("create update");
-      auto address = next.release->download;
-      Response response;
-      for (int redirect = 0; redirect < 4; ++redirect) {
-        auto parsed = updateDownloadAddress(address);
-        if (!parsed) throw std::runtime_error("update address");
-        uint64_t lastNotify = 0;
-        response = http_.request(parsed->first, parsed->second, L"GET", {}, L"Accept: application/octet-stream\r\n", stop,
-            [&](std::string_view bytes) {
-              output.write(bytes.data(), bytes.size()); next.received += bytes.size();
-              if (next.received - lastNotify >= 512 * 1024) { lastNotify = next.received; publish(next); }
-              return bool(output) && !stop.stop_requested();
-            }, size_t(next.release->bytes), 10min);
-        if (response.error || response.status < 300 || response.status >= 400) break;
-        if (response.location.empty()) break;
-        address = response.location;
-      }
+      uint64_t lastNotify = 0;
+      auto response = fetch(next.release->download, size_t(manifest.bytes), [&](std::string_view bytes) {
+        output.write(bytes.data(), bytes.size()); next.received += bytes.size();
+        if (next.received - lastNotify >= 512 * 1024) { lastNotify = next.received; publish(next); }
+        return bool(output) && !stop.stop_requested();
+      });
       output.close();
       if (stop.stop_requested()) throw std::runtime_error("cancelled");
       if (!response.ok() || !output || !verifyUpdateFile(file, *next.release)) throw std::runtime_error("download verification");
-      next.phase = UpdatePhase::Ready; next.installer = file; next.message = L"다운로드와 파일 검증이 완료됐습니다. 설치를 준비합니다…";
+      if (!atomicWrite(root_ / L"update-ready", utf8(folder.filename().wstring()))) throw std::runtime_error("persist ready");
+      next.phase = UpdatePhase::Ready; next.installer = file; next.message = L"다운로드와 서명 확인을 마쳤습니다. 준비되면 재시작해 주세요.";
     } catch (...) {
-      if (!file.empty()) { std::error_code ec; std::filesystem::remove(file, ec); std::filesystem::remove(file.parent_path(), ec); }
+      if (!file.empty()) { std::error_code ec; std::filesystem::remove(file, ec); for (auto n : {updateManifestName, updateSignatureName}) std::filesystem::remove(file.parent_path() / n, ec); std::filesystem::remove(file.parent_path(), ec); }
       next.phase = stop.stop_requested() ? UpdatePhase::Available : UpdatePhase::Error;
       next.message = stop.stop_requested() ? L"다운로드를 취소했습니다. 현재 앱은 그대로 사용할 수 있습니다."
-          : L"다운로드 또는 파일 검증에 실패했습니다. 현재 앱을 유지합니다. 다시 시도해 주세요.";
+          : L"다운로드 또는 파일 검증에 실패했습니다. 다시 시도하거나 변경 내역에서 수동 다운로드해 주세요.";
       next.installer.clear();
     }
     publish(next);

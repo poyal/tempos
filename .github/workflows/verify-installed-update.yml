@@ -1,0 +1,46 @@
+name: Verify signed Windows update
+on:
+  workflow_dispatch:
+    inputs:
+      previous:
+        description: Previous published stable tag
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  installed-update:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify candidate and previous installer
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS: ${{ inputs.previous }}
+        run: |
+          if ($env:GITHUB_REF_TYPE -ne 'tag' -or $env:GITHUB_REF_NAME -notmatch '^v\d+\.\d+\.\d+$' -or $env:PREVIOUS -notmatch '^v\d+\.\d+\.\d+$') { throw 'Expected release tags.' }
+          gh release download $env:GITHUB_REF_NAME --dir candidate
+          if ($LASTEXITCODE) { throw 'Candidate download failed.' }
+          node scripts/release-assets.cjs candidate $env:GITHUB_REF_NAME.Substring(1)
+          if ($LASTEXITCODE) { throw 'Candidate verification failed.' }
+          gh release download $env:PREVIOUS --pattern "Tempos-$($env:PREVIOUS.Substring(1))-win-x64.exe" --dir candidate
+          if ($LASTEXITCODE) { throw 'Previous installer download failed.' }
+      - name: Exercise actual ZIP update and Windows uninstall
+        shell: pwsh
+        env:
+          PREVIOUS: ${{ inputs.previous }}
+        run: |
+          $arguments=@{Assets='candidate';Version=$env:GITHUB_REF_NAME.Substring(1);Previous=$env:PREVIOUS.Substring(1)}
+          if($env:PREVIOUS -eq 'v0.1.5'){
+            $path=(Resolve-Path CMakeLists.txt).Path
+            $source=[IO.File]::ReadAllText($path).Replace("project(Tempos VERSION $($arguments.Version) ","project(Tempos VERSION 0.1.5 ")
+            [IO.File]::WriteAllText($path,$source)
+            cmake -S . -B baseline -G 'Visual Studio 17 2022' -A x64 -DBUILD_TESTING=OFF
+            if($LASTEXITCODE){throw 'Baseline configure failed.'}
+            cmake --build baseline --config Release --target Tempos --parallel 4
+            if($LASTEXITCODE){throw 'Baseline build failed.'}
+            $arguments.BootstrapExe=(Resolve-Path baseline/Release/Tempos.exe).Path
+          }
+          ./scripts/verify-installed-update.ps1 @arguments

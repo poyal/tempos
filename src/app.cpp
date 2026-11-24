@@ -12,7 +12,7 @@
 #include "api_fixture.h"
 #endif
 namespace tempos {
-constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3, WM_LOCATION = WM_APP + 5, WM_UPDATE = WM_APP + 6;
+constexpr UINT WM_TRAY = WM_APP + 2, WM_ACTION = WM_APP + 3, WM_LOCATION = WM_APP + 5, WM_UPDATE = WM_APP + 6, WM_UPDATE_HEALTH = WM_APP + 7;
 static LRESULT CALLBACK gridProc(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
   if (msg == WM_NCHITTEST)
     return HTTRANSPARENT;
@@ -228,7 +228,7 @@ int App::run() {
       fixture_, std::move(temperatureFixture));
   WTSRegisterSessionNotification(main_, NOTIFY_FOR_THIS_SESSION);
   tray(true);
-  updates_ = std::make_unique<UpdateService>(http_, store_.root(), [this] { PostMessageW(main_, WM_UPDATE, 0, 0); });
+  updates_ = std::make_unique<UpdateService>(http_, store_.root(), [this] { PostMessageW(main_, WM_UPDATE, 0, 0); }, TEMPOS_VERSION_STRING, updatePublicKey());
   rebuild();
   if (visible_ || !store_.warning.empty() || !trayAdded_)
     openSettings();
@@ -239,6 +239,7 @@ int App::run() {
     selectTab(4);
   }
   if (settings_.checkUpdatesOnStart) updates_->check();
+  if (afterUpdate_) PostMessageW(main_, WM_UPDATE_HEALTH, 0, 0);
   MSG message{};
   while (GetMessageW(&message, nullptr, 0, 0) > 0) {
     if (message.message == WM_KEYDOWN && message.wParam == VK_TAB &&
@@ -298,7 +299,8 @@ void App::updateControls() {
       checked = L"마지막 확인: " + std::wstring(formatted);
   }
   SetWindowTextW(control(1709), checked.c_str());
-  EnableWindow(control(1702), !state.busy() && !installRequested_);
+  EnableWindow(control(1702), !state.busy() && state.phase != UpdatePhase::Ready);
+  SetWindowTextW(control(1703), state.phase == UpdatePhase::Ready ? L"재시작하여 적용" : L"업데이트 다운로드");
   bool installed = installedUpdateTarget(runningExecutable());
   EnableWindow(control(1703), installed && !state.busy() && !installRequested_ && state.release &&
       state.release->installable() && compareVersions(state.release->version, TEMPOS_VERSION_STRING) > 0);
@@ -306,12 +308,12 @@ void App::updateControls() {
   EnableWindow(control(1705), state.release.has_value());
   SendMessageW(control(1713), BM_SETCHECK, settings_.checkUpdatesOnStart ? BST_CHECKED : BST_UNCHECKED, 0);
   SetWindowTextW(control(1710), installed
-      ? L"업데이트 설치를 누르면 다운로드·검증 후 앱을 종료하고 설치·재실행합니다.\r\n적용하지 않은 설정은 먼저 적용해 주세요. 다운로드 중에는 취소할 수 있습니다.\r\n저장한 위젯 설정과 연동 정보는 유지됩니다."
+      ? L"패치를 내려받은 뒤 원하는 때 재시작하여 적용하세요.\r\n다운로드 중에도 위젯을 사용할 수 있습니다.\r\n저장한 위젯 설정과 연동 정보는 유지됩니다."
       : L"무설치 실행 중입니다. 변경 내역에서 새 ZIP을 받아 앱을 종료한 뒤 교체해 주세요.\r\n등록된 설치본은 이 창에서 변경하지 않습니다.");
   if (auto previous = boundedRead(store_.root() / L"update-result.json", 16384)) {
     try {
       auto result = Json::parse(*previous);
-      auto resultMessage = L"최근 설치 결과 · " + wide(result.at("version").get<std::string>()) + L"\r\n" + wide(result.at("message").get<std::string>());
+      auto resultMessage = L"최근 업데이트 · " + wide(result.value("previous", std::string())) + L" → " + wide(result.at("version").get<std::string>()) + L"\r\n" + wide(result.at("message").get<std::string>());
       SetWindowTextW(control(1714), resultMessage.c_str());
     } catch (...) { SetWindowTextW(control(1714), L"이전 업데이트 결과를 읽을 수 없습니다."); }
   }
@@ -1269,7 +1271,7 @@ void App::command(int id, int notification) {
     }
     return;
   }
-  if ((id == 1202 || id == 1203 || id == 1206 || id == 1507 || id == 2005 || id == 1703 ||
+  if ((id == 1202 || id == 1203 || id == 1206 || id == 1507 || id == 2005 ||
        (id >= 1317 && id <= 1319)) &&
       !leaveEditor())
     return;
@@ -1281,7 +1283,13 @@ void App::command(int id, int notification) {
     if (id == 1702 && updates_ && !installRequested_) {
       updateInstallError_.clear(); updates_->check();
     } else if (id == 1703 && updates_ && !installRequested_ && installedUpdateTarget(runningExecutable())) {
-      updateInstallError_.clear(); installRequested_ = updates_->download();
+      updateInstallError_.clear();
+      auto state = updates_->state();
+      if (state.phase == UpdatePhase::Ready) {
+        if (leaveEditor() && beginUpdateInstall(state, store_.root(), updateInstallError_)) {
+          installRequested_ = true; PostQuitMessage(0);
+        }
+      } else updates_->download();
     } else if (id == 1704 && updates_) {
       installRequested_ = false; updates_->cancel();
     } else if (id == 1713) {
@@ -1630,16 +1638,17 @@ LRESULT App::message(HWND hwnd, UINT msg, WPARAM w, LPARAM l) {
     if (auto result = location_.take())
       applyLocation(std::move(*result));
     return 0;
+  case WM_UPDATE_HEALTH:
+    if (!acknowledgeUpdate(store_.root(), store_.warning.empty() && windows_.size() == settings_.widgets.size() &&
+        std::all_of(windows_.begin(), windows_.end(), [](const auto &w) { return IsWindow(w->hwnd); })))
+      PostQuitMessage(1);
+    return 0;
   case WM_UPDATE: {
     if (!updates_ || closing_) return 0;
     auto state = updates_->state();
     if (state.phase == UpdatePhase::Error || state.phase == UpdatePhase::Available) installRequested_ = false;
     updateControls();
-    if (state.phase == UpdatePhase::Ready && installRequested_) {
-      installRequested_ = false;
-      if (beginUpdateInstall(state, store_.root(), updateInstallError_)) PostQuitMessage(0);
-      else updateControls();
-    }
+
 #ifndef TEMPOS_TEST_HOST
     if (state.phase == UpdatePhase::Available && !updateNotified_ && trayAdded_) {
       updateNotified_ = true;

@@ -10,6 +10,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   INITCOMMONCONTROLSEX controls{sizeof controls, ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_BAR_CLASSES};
   InitCommonControlsEx(&controls);
   std::filesystem::path root;
+  std::wstring updateToken;
   bool visible = false, fixture = false, afterUpdate = false;
 #ifdef TEMPOS_TEST_HOST
   fixture = true;
@@ -17,18 +18,15 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
 #endif
   int argc = 0;
   auto argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-  if (argc == 3 && std::wstring_view(argv[1]) == L"--apply-update") {
+  if (argc == 3 && (std::wstring_view(argv[1]) == L"--apply-update" || std::wstring_view(argv[1]) == L"--recover-update")) {
+    bool recover = std::wstring_view(argv[1]) == L"--recover-update";
     auto job = std::filesystem::path(argv[2]); LocalFree(argv);
-    int code = tempos::runUpdateHelper(job); RoUninitialize(); return code;
+    int code = tempos::runUpdateHelper(job, recover); RoUninitialize(); return code;
   }
-#ifdef TEMPOS_TEST_HOST
-  if (argc == 3 && std::wstring_view(argv[1]) == L"--mock-update-installer") {
-    auto job = std::filesystem::path(argv[2]); LocalFree(argv);
-    int code = tempos::runMockUpdateInstaller(job); RoUninitialize(); return code;
-  }
-#endif
+
   for (int i = 1; i < argc; ++i) {
     std::wstring arg = argv[i];
+    if (arg == L"--update-token" && i + 1 < argc) updateToken = argv[++i];
     if (arg == L"--settings")
       visible = true;
     if (arg == L"--after-update") afterUpdate = true;
@@ -70,6 +68,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   }
   int result = 1;
   try {
+    if (tempos::resumeUpdate(tempos::Store(root).root(), updateToken)) { CloseHandle(single); RoUninitialize(); return 0; }
     tempos::App app(instance, root, fixture, visible, afterUpdate);
     result = app.run();
   } catch (const std::exception &) {

@@ -23,7 +23,7 @@ void updateTests() {
   atomicWrite(sample, "abc");
   check(fileSha256(sample) == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "Installer SHA-256 matches independent standard vector");
   HttpClient http(mockApi(root));
-  UpdateService service(http, root, [] {}, "0.1.3");
+  UpdateService service(http, root, [] {}, "0.1.3", mockUpdateKey);
   auto scenario = [&](Json j) { check(atomicWrite(root / L"update-scenario.json", j.dump()), "Update HTTP scenario written"); };
   auto wait = [&] {
     auto until = Clock::now() + 5s;
@@ -58,7 +58,7 @@ void updateTests() {
     bool safe = false; try { safe = !parseUpdateRelease(altered.dump()).installable(); } catch (...) { safe = true; }
     check(safe, "Duplicate, oversized, signed-negative, empty, unpublished or unhashed installer is not executable");
   }
-  for (auto mode : {"corrupt", "short", "oversize", "unsafe-redirect", "redirect-loop", "timeout", "server-error"}) {
+  for (auto mode : {"bad-signature", "corrupt", "short", "oversize", "unsafe-redirect", "redirect-loop", "timeout", "server-error"}) {
     scenario({{"version", "0.1.10"}, {"download", mode}}); service.check(); wait();
     check(service.download(), "Trusted release starts a download");
     auto state = wait(); check(state.phase == UpdatePhase::Error && state.installer.empty(), "Failed, truncated, oversized, corrupt or redirected download is never ready to run");

@@ -212,6 +212,7 @@ internal static partial class Program
                 throw new ArgumentException("Mock-only suites cannot run as live API integration.");
             if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
                 throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
+            if (args.Contains("--updates")) exe = PrepareUpdateInstall(exe);
             app = Start(exe);
             if (args.Contains("--isolation")) { Isolation(ref app, exe); return 0; }
             if (args.Contains("--edit-mode")) { EditModeCycles(ref app, exe); return 0; }

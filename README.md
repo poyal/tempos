@@ -16,6 +16,8 @@
 
 시계·시스템 사용량·로컬 달력은 서비스 계정 없이 사용할 수 있습니다. 날씨에는 인터넷이 필요하며 Google 일정 연결과 CPU 온도 표시는 선택 기능입니다. 위젯 배치와 설정은 내 PC에 저장합니다.
 
+**v0.1.6**에서는 서명된 패치를 먼저 받고 원하는 때 재시작할 수 있습니다. 이전 버전 복구와 설치 방법은 [릴리즈 노트](docs/releases/v0.1.6.md)에서 확인하세요.
+
 **v0.1.5**에서는 설정창에서 위젯을 미리 보며 편집하고, 이름을 붙인 배치를 트레이에서 전환할 수 있습니다. [릴리즈 노트](docs/releases/v0.1.5.md) · [설정·위젯 전후 비교 HTML 다운로드](https://github.com/poyal/tempos/releases/download/v0.1.5/tempos-before-after.html)
 
 [![시계·날씨·캘린더·CPU·GPU·메모리·시스템 정보·네트워크·디스크의 M 크기 화면](docs/assets/readme-2026-10-17/overview.png)](docs/assets/readme-2026-10-17/overview.png)
@@ -482,7 +484,7 @@ CPU 온도 활성화는 가져오기 후에도 해당 PC의 기존 설정을 유
 
 ### 업데이트하기
 
-**v0.1.4부터** 설치형은 앱 시작 시 새 버전을 알리고, **설정 → About · 업데이트 → 업데이트 설치**를 누르면 다운로드·파일 검증 후 앱 종료·설치·재실행을 진행합니다. 적용하지 않은 설정은 먼저 적용하세요. 다운로드 중에는 취소할 수 있고, 파일 검증에 실패하면 현재 앱을 유지합니다. **앱을 시작할 때 새 버전 확인**은 끌 수 있습니다. 무설치 ZIP은 변경 내역에서 새 파일을 받아 직접 교체합니다.
+**v0.1.6부터** 설치형에서는 **설정 → 정보 및 업데이트 → 업데이트 다운로드**로 서명된 패치를 받습니다. 위젯을 계속 사용하다가 **재시작하여 적용**을 누르세요. 새 앱의 기동이 확인되면 완료되며, 실패하면 이전 버전과 설정을 복원합니다. v0.1.4·v0.1.5에서는 기존 **업데이트 설치**로 전환 버전을 받습니다. **앱을 시작할 때 새 버전 확인**은 끌 수 있습니다. 무설치 ZIP은 변경 내역에서 새 파일을 받아 직접 교체합니다.
 
 **v0.1.3 이하에서 처음 올리거나 수동 업데이트할 때**는 다음 순서로 진행합니다.
 
@@ -535,7 +537,7 @@ Tempos를 종료한 뒤 **Windows 설정 → 앱 → 설치된 앱 → Tempos �
 
 - [상세 사용 안내](docs/user-guide.md) · [날씨 서비스](docs/weather.md) · [CPU·GPU 온도](docs/sensors.md)
 - [전체 화면과 촬영 조건](docs/screenshots.md) · [최신 화면 촬영·검증 기록](docs/validation/2026-10-17-readme.md)
-- [0.1.5 릴리즈 노트](docs/releases/v0.1.5.md) · [개발 안내](docs/development.md) · [E2E 안내](docs/e2e.md)
+- [0.1.6 릴리즈 노트](docs/releases/v0.1.6.md) · [개발 안내](docs/development.md) · [E2E 안내](docs/e2e.md)
 - [검증 기록](docs/verification.md) · [레이아웃 변경 보고서](docs/validation/2026-10-17-layout-report.html) · [문서 모음](docs/README.md) · [외부 구성요소 고지](THIRD_PARTY_NOTICES.md)
 
 제작자 **Poyal** · [GitHub](https://github.com/poyal/tempos) · [문의·오류 신고](https://github.com/poyal/tempos/issues)
