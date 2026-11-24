@@ -134,6 +134,14 @@ internal static partial class Program
                 var until=DateTime.UtcNow.AddSeconds(30);
                 while(!File.Exists(interrupted) && DateTime.UtcNow<until)Thread.Sleep(100);
                 Check(File.Exists(interrupted),"Interrupted file replacement leaves a recoverable transaction");
+                string interruptedJob=File.ReadAllText(Path.Combine(Data,"update-pending"));
+                string helperPath=Path.Combine(Data,"updates",interruptedJob,"Tempos.UpdateTestRunner.exe");
+                var exited=DateTime.UtcNow.AddSeconds(20);
+                while(true)
+                {
+                    try { using var released=File.Open(helperPath,FileMode.Open,FileAccess.ReadWrite,FileShare.None); break; }
+                    catch(IOException) when(DateTime.UtcNow<exited) { Thread.Sleep(50); }
+                }
                 using var trigger=Process.Start(new ProcessStartInfo(exe,$"--settings --data-dir \"{Data}\""){UseShellExecute=false})!;
                 trigger.WaitForExit(10000);
             }
