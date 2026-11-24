@@ -25,7 +25,7 @@ function CheckInventory {
 function WindowOf([Diagnostics.Process]$p){
   for($i=0;$i -lt 300;$i++){
     if($p.HasExited){throw "App exited before initialization: $($p.ExitCode)"}
-    $window=[NativeUpdateTest]::FindWindow('Tempos.Management',$null)
+    $window=[NativeUpdateTest]::FindWindow('Tempos.Management',[IntPtr]::Zero)
     [uint32]$ownerPid=0
     if($window -ne 0){
       [void][NativeUpdateTest]::GetWindowThreadProcessId($window,[ref]$ownerPid)
@@ -33,13 +33,14 @@ function WindowOf([Diagnostics.Process]$p){
     }
     Start-Sleep -Milliseconds 100
   }
-  throw 'No initialized settings window.'
+  $p.Refresh()
+  throw "No initialized settings window for PID $($p.Id), title '$($p.MainWindowTitle)', session $($p.SessionId)."
 }
 Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
 public class NativeUpdateTest {
-  [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string cls,string title);
+  [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string cls,IntPtr title);
   [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr window,out uint processId);
   [DllImport("user32.dll")] public static extern IntPtr GetDlgItem(IntPtr window, int id);
   [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr window, int msg, IntPtr w, IntPtr l);
@@ -51,6 +52,7 @@ if($BootstrapExe){
   # then install a prior-version build of the new protocol for the first ZIP test.
   Install $Version
   CheckInventory
+  Write-Host "Verified actual $from installer to $targetVersion installer transition."
   if((Get-Item $BootstrapExe).VersionInfo.ProductVersion -ne $from){throw 'Invalid protocol baseline'}
   Copy-Item -LiteralPath $BootstrapExe -Destination $exe -Force
   $inventoryPath=Join-Path $install 'tempos-files.json'
@@ -60,6 +62,7 @@ if($BootstrapExe){
   Set-ItemProperty -LiteralPath $registration -Name DisplayVersion -Value $from
 }
 CheckInventory
+Write-Host "Verified baseline inventory, starting signed update."
 $note=Join-Path $install 'user-note.txt'
 [IO.File]::WriteAllText($note,'preserve')
 $settings=Join-Path $data 'settings.json'
