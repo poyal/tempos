@@ -83,6 +83,8 @@ Var RequestedDir
 Function .onInit
 !ifdef EXPORT_UNINSTALLER
   SetSilent silent
+  ClearErrors
+  SetErrorLevel 0
   WriteUninstaller "${EXPORT_UNINSTALLER}"
   IfErrors 0 +2
     SetErrorLevel 7
@@ -150,7 +152,9 @@ Section "Tempos" Main
   !insertmacro CheckRunning
   SetOverwrite on
   ClearErrors
+!ifndef EXPORT_UNINSTALLER
   !include "${PAYLOAD_INSTALL}"
+!endif
   IfErrors 0 +3
     SetErrorLevel 7
     Quit

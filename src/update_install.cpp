@@ -401,6 +401,8 @@ bool resumeUpdate(const fs::path &root, std::wstring_view token) {
   // Launch only bytes copied from the currently executing, installed application.
   require(CopyFileW(runningExecutable().c_str(), (dir / runnerName).c_str(), FALSE),
           "refresh recovery helper");
+  save(dir / L"recovery-parent.json",
+       Json{{"pid", GetCurrentProcessId()}, {"created", created(GetCurrentProcess())}}.dump());
   Handle helper(launch(dir / runnerName, L"--recover-update " + quote(dir / L"job.json")));
   require(helper.value != nullptr, "cannot recover transaction");
   return true;
@@ -435,7 +437,13 @@ int runUpdateHelper(const fs::path &file, bool recover) {
     require(lock.value && !existing, "concurrent update");
     if (recover) {
       require(same(pending(j.root), dir), "wrong recovery");
-      // The recovery requester still owns the desktop mutex until it exits.
+      // Windows can keep the executable mapped after the desktop mutex is released.
+      if (auto bytes = boundedRead(dir / L"recovery-parent.json", 1024)) {
+        auto initiator = Json::parse(*bytes);
+        Handle process(OpenProcess(SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION, FALSE, initiator.at("pid").get<DWORD>()));
+        if (processMatches(process.value, j.app, initiator.at("created")))
+          require(WaitForSingleObject(process.value, 60000) == WAIT_OBJECT_0, "recovery requester still running");
+      }
       auto desktop = std::wstring(L"Local\\Tempos.Desktop");
 #ifdef TEMPOS_TEST_HOST
       desktop += L".Test." + std::to_wstring(std::hash<std::wstring>{}(testProfileIdentity(j.root)));
@@ -533,7 +541,10 @@ int runUpdateHelper(const fs::path &file, bool recover) {
     finish(j, true, pid);
     PostMessageW(FindWindowW(managementWindowClass(j.root).c_str(), nullptr), WM_APP + 6, 0, 0);
     return 0;
-  } catch (...) {
+  } catch (const std::exception &e) {
+    if (file.filename() == L"job.json" && same(file.parent_path(), runningExecutable().parent_path()) &&
+        validJobId(file.parent_path().filename().wstring()))
+      atomicWrite(file.parent_path() / L"helper-error.txt", e.what());
     return 65;
   }
 }
