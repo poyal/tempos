@@ -1,5 +1,9 @@
 # 검증 기록
 
+## Windows v0.1.7 릴리즈 · 2026-11-25
+
+Release·ASan 검사와 깨끗한 Windows에서 설치형 v0.1.6 → v0.1.7 서명 패치 적용을 확인했다. [배포 검증과 공개 파일 해시](validation/release-v0.1.7.md) · [릴리즈 노트](releases/v0.1.7.md)
+
 ## 설정 메뉴·위젯 선택 · 2026-11-25
 
 [188개 시나리오의 수정 전후 결과와 실제 메뉴 화면](validation/navigation-2026-11-25/results.md)
