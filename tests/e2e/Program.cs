@@ -208,7 +208,7 @@ internal static partial class Program
                 throw new ArgumentException("E2E requires Tempos.TestHost.exe with mock APIs. Production Tempos.exe is a separate --integration-live-api run.");
             if (LiveApis && !Path.GetFileName(exe).Equals("Tempos.exe", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("Live API integration requires an explicit production Tempos.exe path.");
-            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--workspace-editor" or "--design" or "--startup" or "--readme" or "--temperature" or "--updates"))
+            if (LiveApis && args.Any(a => a is "--api-mock" or "--weather" or "--ui-review" or "--workspace-editor" or "--settings-navigation" or "--design" or "--startup" or "--readme" or "--temperature" or "--updates"))
                 throw new ArgumentException("Mock-only suites cannot run as live API integration.");
             if (!LiveApis && args.Contains("--allow-location-to-open-meteo"))
                 throw new ArgumentException("E2E uses mock location. Real location belongs to a separately authorized integration run.");
@@ -221,6 +221,7 @@ internal static partial class Program
             if (args.Contains("--drag-performance")) { DragPerformance(ref app); return 0; }
             if (savedLayoutArg >= 0) { SavedLayout(ref app, exe); return 0; }
             Check(Element(1200).AsListBox().Items.Length == 5, "Initial five widgets");
+            if (args.Contains("--settings-navigation")) { SettingsNavigation(ref app); return 0; }
             if (args.Contains("--workspace-editor")) { WorkspaceEditor(ref app, exe); return 0; }
             if (args.Contains("--windows-real")) { WindowsReal(ref app, exe, !LiveApis || args.Contains("--allow-location-to-open-meteo")); return 0; }
             if (args.Contains("--temperature")) { TemperatureLayout(ref app, exe); return 0; }
@@ -252,7 +253,8 @@ internal static partial class Program
                 NativeCombo(1201, 0); NativeButton(1202); Button(1204);
                 void DragCurrent()
                 {
-                    var state = Diagnostic(); var entry = state["windows"]![0]!;
+                    // Keep the draft open while reading the drag target.
+                    var state = State(); var entry = state["windows"]![0]!;
                     var point = new Point(entry["x"]!.GetValue<int>() + 80, entry["y"]!.GetValue<int>() + 70);
                     ShowWindow(Window.Properties.NativeWindowHandle, 0); Thread.Sleep(300);
                     Check(WindowFromPoint(point) == WidgetHandle(entry), "Drag targets the owned widget");

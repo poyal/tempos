@@ -1,5 +1,9 @@
 # 검증 기록
 
+## 설정 메뉴·위젯 선택 · 2026-11-25
+
+[188개 시나리오의 수정 전후 결과와 실제 메뉴 화면](validation/navigation-2026-11-25/results.md)
+
 ## Windows v0.1.6 릴리즈 · 2026-11-24
 
 서명 패치 ZIP, 두 버전 사이의 파일 교체, 정상 기동 확인과 중단 복구를 검사했습니다. [Release·ASan 결과와 검사 범위](validation/release-v0.1.6.md) · [릴리즈 노트](releases/v0.1.6.md)

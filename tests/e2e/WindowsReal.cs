@@ -34,6 +34,25 @@ internal static partial class Program
         return SendInput(1, ref input, Marshal.SizeOf<DesktopMouseInput>()) == 1;
     }
 
+    static bool ReferenceWindowReceivesPress(Point point)
+    {
+        using var probe = new Form { FormBorderStyle = FormBorderStyle.None, StartPosition = FormStartPosition.Manual,
+            Bounds = new Rectangle(point.X - 30, point.Y - 30, 60, 60), TopMost = true, ShowInTaskbar = false };
+        bool received = false;
+        probe.MouseDown += (_, e) => received |= e.Button == MouseButtons.Left;
+        probe.Show();
+        System.Windows.Forms.Application.DoEvents();
+        Check(WindowFromPoint(point) == probe.Handle && GetCursorPos(out var cursor) && WindowFromPoint(cursor) == probe.Handle,
+              "Input reference window owns the test point before sending the reference click");
+        Check(DesktopMouse(point, 2), "Windows accepts the reference button-down");
+        try
+        {
+            SpinWait.SpinUntil(() => { System.Windows.Forms.Application.DoEvents(); return received; }, 1500);
+        }
+        finally { Check(DesktopMouse(point, 4), "Windows accepts the reference button-up"); }
+        return received;
+    }
+
     static void WindowsReal(ref App? app, string exe, bool locationAllowed)
     {
         Check(Path.GetFileName(exe).Equals(LiveApis ? "Tempos.exe" : "Tempos.TestHost.exe", StringComparison.OrdinalIgnoreCase), "Windows suite uses the executable required by its API boundary");
@@ -204,14 +223,40 @@ internal static partial class Program
             {
                 Check(WindowFromPoint(origin) == WidgetHandle(clock), "OS input targets the owned clock widget");
                 var before = Settings()["widgets"]![0]!.DeepClone();
-                buttonDown = DesktopMouse(origin, 2); Check(buttonDown, "OS mouse button-down delivered");
-                Thread.Sleep(100);
-                Check(DesktopMouse(dragEnd, 0), "OS pointer movement delivered");
-                Thread.Sleep(200);
-                DesktopMouse(dragEnd, 4); buttonDown = false; Thread.Sleep(300);
-                Check(Settings()["widgets"]![0]!["x"]!.GetValue<double>() != before["x"]!.GetValue<double>() ||
-                      Settings()["widgets"]![0]!["y"]!.GetValue<double>() != before["y"]!.GetValue<double>(),
-                      "Real input drag changes saved clock position");
+                buttonDown = DesktopMouse(origin, 2); Check(buttonDown, "Windows accepts the OS mouse button-down");
+                var handle = WidgetHandle(clock);
+                uint thread = GetWindowThreadProcessId(handle, out _);
+                bool OwnsCapture()
+                {
+                    var info = new GuiThreadInfo { Size = Marshal.SizeOf<GuiThreadInfo>() };
+                    return GetGUIThreadInfo(thread, ref info) && info.Capture == handle;
+                }
+                if (!SpinWait.SpinUntil(OwnsCapture, 2000))
+                {
+                    buttonDown = !DesktopMouse(origin, 4);
+                    Check(!buttonDown, "Windows accepts the button-up after the missed press");
+                    bool received = ReferenceWindowReceivesPress(origin);
+                    File.WriteAllText(Path.Combine(Data, "input-reference.json"), JsonSerializer.Serialize(new {
+                        clockCaptured = false, referenceReceivedPress = received }));
+                    if (received)
+                        Check(false, "Clock failed to capture the press although the reference window received OS input");
+                    else
+                        Skip("OS SendInput drag", "The clock did not capture the pointer and an independent WinForms window at the same point received no button-down.");
+                }
+                else
+                {
+                    Check(DesktopMouse(dragEnd, 0), "Windows accepts the OS pointer movement");
+                    Check(SpinWait.SpinUntil(() => GetWindowRect(handle, out var box) &&
+                          Math.Abs(box.X - destination.Value.X) <= 2 && Math.Abs(box.Y - destination.Value.Y) <= 2, 2000),
+                          "The clock follows the OS pointer to the free destination");
+                    buttonDown = !DesktopMouse(dragEnd, 4);
+                    Check(!buttonDown, "Windows accepts the OS mouse button-up");
+                    Check(SpinWait.SpinUntil(() => {
+                        var clockAfterDrop = Settings()["widgets"]![0]!;
+                        return clockAfterDrop["x"]!.GetValue<double>() != before["x"]!.GetValue<double>() ||
+                               clockAfterDrop["y"]!.GetValue<double>() != before["y"]!.GetValue<double>();
+                    }, 3000), "Real input drag changes saved clock position");
+                }
             }
         }
         finally

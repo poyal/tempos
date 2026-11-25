@@ -190,7 +190,9 @@ void App::buildSettings() {
     case List:
     case MultiList:
       cls = L"LISTBOX";
-      style |= WS_TABSTOP | WS_VSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT;
+      style |= WS_TABSTOP | WS_VSCROLL | LBS_NOTIFY;
+      if (id != 1200)
+        style |= LBS_NOINTEGRALHEIGHT;
       if (type == MultiList)
         style |= LBS_EXTENDEDSEL;
       ex = WS_EX_CLIENTEDGE;
@@ -361,7 +363,11 @@ void App::selectTab(int page) {
     updateViewport();
     return;
   }
-  tab_ = page;
+  if (page != tab_) {
+    InvalidateRect(control(1000 + tab_), nullptr, FALSE);
+    tab_ = page;
+    InvalidateRect(control(1000 + tab_), nullptr, FALSE);
+  }
   SetScrollPos(main_, SB_VERT, 0, TRUE);
   SetWindowTextW(control(1011), pages[page]);
   if (page == 1) {
@@ -502,8 +508,11 @@ void App::updateViewport() {
     int listWidth = split ? (width - 18) / 2 : width;
     if (split)
       put(1210, x, listTop - 36, listWidth, 27);
-    put(1200, x, y, listWidth, 76);
-    y += 84;
+    int rowHeight = int(SendMessageW(control(1200), LB_GETITEMHEIGHT, 0, 0));
+    int listPixels = 5 * rowHeight + 2 * GetSystemMetricsForDpi(SM_CYEDGE, dpi);
+    int listHeight = (listPixels * 96 + dpi - 1) / dpi;
+    put(1200, x, y, listWidth, listHeight);
+    y += listHeight + 8;
     put(1201, x, y, listWidth - 74, 30);
     put(1202, x + listWidth - 66, y, 66, 30);
     y += 38;

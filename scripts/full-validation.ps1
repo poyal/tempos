@@ -1,4 +1,4 @@
-param([string]$Dotnet='', [string]$Exe='', [switch]$LongRunning, [string[]]$Modes=@('workspace-editor','edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','updates','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real'))
+param([string]$Dotnet='', [string]$Exe='', [switch]$LongRunning, [string[]]$Modes=@('settings-navigation','workspace-editor','edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','updates','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real'))
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 if(-not $Dotnet){$Dotnet=Join-Path $root '.tools/dotnet/dotnet.exe'}
@@ -13,8 +13,14 @@ New-Item -ItemType Directory -Force $folder|Out-Null
 $runs=[Collections.Generic.List[object]]::new()
 if($LongRunning){$Modes+=@('stress','soak')}
 foreach($mode in $Modes){
-  if($mode -notin @('workspace-editor','edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','updates','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real','stress','soak','layout','readme','smoke')){throw 'Unsupported/unsafe suite mode.'}
+  if($mode -notin @('settings-navigation','workspace-editor','edit-mode','interaction','drag-performance','geometry-matrix','render-cache','legacy-grid','shell-actions','updates','persistence','options','failures','capacity','placement','api-mock','weather','startup','isolation','clock-layout','matrix','behavior','temperature','ui-review','design','visual','windows-real','stress','soak','layout','readme','smoke')){throw 'Unsupported/unsafe suite mode.'}
   if((Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash -ne $hash){throw 'Binary changed during validation.'}
+  $expectedFinalHash=$hash
+  if($mode -eq 'updates'){
+    # This suite replaces its isolated TestHost copy with the update candidate.
+    $candidate=Join-Path (Split-Path $exe -Parent) 'Tempos.UpdateCandidate.exe'
+    $expectedFinalHash=(Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash
+  }
   $before=@(Get-ChildItem (Join-Path $root 'test-results') -Directory -Filter 'e2e-*' | ForEach-Object FullName)
   $log=Join-Path $folder ($mode+'.log')
   Write-Output ('RUN '+$mode+' '+(Get-Date -Format o))
@@ -29,10 +35,10 @@ foreach($mode in $Modes){
   if(-not (Test-Path -LiteralPath $resultFile)){throw 'E2E did not write its result.'}
   $result=Get-Content -LiteralPath $resultFile -Raw -Encoding UTF8|ConvertFrom-Json
   $failed=@($result.results|Where-Object {$_.passed -eq $false}).Count
-  $runs.Add([pscustomobject]@{mode=$mode;folder=$new[0].FullName;exit=$exit;pass=@($result.results|Where-Object {$_.passed -eq $true}).Count;fail=$failed;skip=@($result.results|Where-Object {$_.skipped -eq $true}).Count;sha256=$result.executableSha256})
+  $runs.Add([pscustomobject]@{mode=$mode;folder=$new[0].FullName;exit=$exit;pass=@($result.results|Where-Object {$_.passed -eq $true}).Count;fail=$failed;skip=@($result.results|Where-Object {$_.skipped -eq $true}).Count;inputSha256=$hash;sha256=$result.executableSha256})
   $runs|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $folder 'manifest.json') -Encoding UTF8
   Write-Output ('DONE '+$mode+' exit='+$exit+' failures='+$failed)
-  if($exit -ne 0 -or $failed -ne 0 -or $result.apiMode -ne 'mock' -or $result.executableSha256 -ne $hash){Get-Content $log -Tail 15;throw 'Validation stopped on failure; original results preserved.'}
+  if($exit -ne 0 -or $failed -ne 0 -or $result.apiMode -ne 'mock' -or $result.executableSha256 -ne $expectedFinalHash){Get-Content $log -Tail 15;throw 'Validation stopped on failure; original results preserved.'}
 }
 Write-Output ('VALIDATED '+$folder)
 

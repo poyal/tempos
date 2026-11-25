@@ -49,6 +49,7 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 | `--api-mock` | OAuth 승인 거부·교환·갱신, 캘린더 목록·페이지 합치기·빈 응답·401/403/429/503·시간 초과·비정상 응답·캐시·연결 해제 |
 | `--weather` | 공급자 전환, 키 보존, 신규/구버전 기본값, 요청 공유, 저장 실패, 정상·강제 종료 복원, 레이아웃 가져오기, 오류 응답·WMO 상태·늦은 응답, 위젯 출처 문구 제거 |
 | `--workspace-editor` | v1 프로필 자동 이전과 재실행, 통합 편집·미리보기·되돌리기, 미적용 변경 3가지 선택, 복제, 배치 전환·잠긴 파일·재시작, 단일 배치 가져오기·내보내기, 좁은 창과 테마 예제 캡처. 실제 Win32 입력·파일, 외부 API 목업 |
+| `--settings-navigation` | 5개 설정 페이지 사이의 모든 전환과 같은 페이지 재선택을 넓은 창·좁은 창, 밝게·어둡게·고대비 예제에서 검사한다. 본문에 포커스를 옮긴 뒤 메뉴를 누르고 실제 버튼 픽셀·페이지 제목·본문 또는 축소 메뉴 선택값을 대조한다. 창 크기 전환, 위젯 목록 5행, 미적용 변경을 적용·버리기·계속 편집한 뒤의 목록 선택과 저장값도 확인한다. |
 | `--ui-review` | 9종 선택별 설정, 클릭 무동작·읽기 전용 접근성, 현재 위치 한 번 선택·저장, 전체 네트워크, 37개 크기, 전체 디스크·자동 페이지 순환 |
 | `--startup` | 격리된 레지스트리 등록·해제, 재시작 체크 복원, 공백·한글 데이터 경로, 등록 명령 실행 |
 | `--persistence` | 위젯 ID·설정·실제 창·숨김·중간 삭제·종료 후 복원 |
@@ -74,6 +75,8 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --pe
 
 `--windows-real`은 TestHost의 로컬 수집만 실제로 전환한다. 날씨는 기본 지역에 대한 목업 21°C, 현재 위치는 부산 목업 좌표를 사용한다. OS `SendInput`은 실제 포인터 이동과 저장 위치 변경까지 확인하며, 입력 데스크톱이 이를 허용하지 않으면 SKIP으로 남긴다. 메시지 기반 `--interaction`의 통과로 대체하지 않는다.
 
+OS가 누름 입력을 접수했는데 시계가 마우스를 캡처하지 못하면 버튼을 해제하고 같은 지점에서 독립 WinForms 창도 누름을 받는지 대조한다. 대조 창이 받으면 위젯 캡처 실패, 양쪽 모두 받지 못하면 실제 드래그 SKIP이며 관측값은 `input-reference.json`에 기록한다. 위젯이 캡처한 경우에는 실제 목적지 도달·버튼 해제·저장 좌표 변경을 모두 확인한다.
+
 `--temperature`의 센서 값은 `sensor-scenario.json`의 직렬화된 응답을 실제 온도 파서에 주입한다. 설치 결과는 `sensor-setup-scenario.json`으로 모의하며 TestHost는 실제 센서 설치 프로그램을 실행하지 않는다. 별도 센서 단위 검사는 가짜 수집기와 실제 로컬 이름 있는 파이프를 사용한다. `--windows-real`은 기존 서비스/Windows 드라이버의 실제 온도만 검사하고 없으면 SKIP으로 기록한다. 센서 서비스·PawnIO 설치/제거는 기존 사용자 앱이 있는 이 작업 환경에서 실행하지 않는다.
 
 실제 API 요청은 사용자가 별도로 요청할 때 **실연동 검사**로 실행한다. `--integration-live-api`와 명시적인 배포 `Tempos.exe` 경로가 모두 필요하다. 결과의 `testClass`는 `live-api-integration`이며 일반 E2E와 합산하지 않는다. 이 옵션 자체를 사용자 승인으로 취급하지 않는다.
@@ -89,6 +92,10 @@ dotnet run --project tests/e2e/Tempos.E2E.csproj -c Release --no-build -- . --wi
 `--interaction`, `--drag-performance`, `--soak`의 합성 드래그는 TestHost 전용 `WM_COPYDATA` 배치로 실제 위젯의 DOWN/MOVE/UP 처리기를 한 UI 작업에서 실행한다. 캡처 사이에 실제 포인터 메시지가 끼어드는 자동화 경쟁을 방지하며, 결과 좌표를 주입하지 않는다. 대상 HWND는 해당 TestHost 소유인지 양쪽에서 확인한다. 이 제어 경로는 배포 앱에 포함하지 않는다. 성능 결과는 내부 이동·드롭 시간과 프로세스 간 왕복 시간을 구분하며 실제 마우스 입력 지연으로 표현하지 않는다.
 
 전체 회귀 검사는 다음처럼 순차 실행한다. 첫 실패에서 멈추고 기존 결과를 보존하며, 모드별 원본 경로·통과·실패·SKIP·실행 파일 해시를 `full-validation-*/manifest.json`에 기록한다. `-LongRunning`은 1,000회 스트레스와 실제 2시간 지속 검사를 추가한다. 설치·제거와 실연동 API는 이 목록에 포함하지 않는다.
+
+`--settings-navigation`의 `navigation-dark-roundtrip.png`는 본문을 사용하며 다섯 메뉴를 한 바퀴 돈 직후의 왼쪽 메뉴다. 전체 창 강제 다시 그리기와 `PrintWindow`는 이전 강조색을 지울 수 있으므로 이 모드에서는 설정창 DC에 남은 픽셀을 바로 복사한다. 테마 예제는 실행별 TestHost 폴더에서 지정한다.
+
+전체 회귀 기록의 `inputSha256`은 시작 빌드, `sha256`은 종료 시점의 실행 파일 해시다. `--updates`는 격리 폴더의 TestHost를 실제로 교체하므로 종료 해시를 시험용 업데이트 후보의 SHA-256과 대조한다.
 
 ```powershell
 ./scripts/full-validation.ps1

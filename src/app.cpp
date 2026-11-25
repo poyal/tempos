@@ -1333,6 +1333,8 @@ void App::command(int id, int notification) {
         return;
       }
       selected_ = target;
+      // Applying the previous widget's draft repopulates the list during this notification.
+      SendMessageW(control(1200), LB_SETCURSEL, i, 0);
       loadControls();
     }
     return;
